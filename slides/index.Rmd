@@ -1,0 +1,42 @@
+---
+title: |
+  | BIOF 439: Data Visualization using R
+  | Lectures
+author: Abhijit Dasgupta, PhD
+date: Spring 2019
+
+---
+
+```{r, include = FALSE, eval = knitr::opts_knit$get("rmarkdown.pandoc.to") == "html"}
+# Enables Font Awesome in HTML based bookdown outputs.
+fa <- rmarkdown::html_dependency_font_awesome()
+fa$attachment <- "fonts/fontawesome-webfont.ttf"
+htmltools::tagList(fa)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Lecture One (April 3, 2019)
+
+In this lecture, we'll start a discussion about data visualization. We will also start using R and R Markdown on RStudio Cloud. 
+We will work on a template notebook that I've shared with you on RStudio Cloud, and you can expand on that during class and as we 
+move through the course.
+
+[Slides](lectures/DataViz.pdf)
+
+[Pre-class survey](https://forms.gle/5Dhz6cSsyWy25UXh6)
+
+## Lecture 2 (April 17, 2019)
+
+In this lecture we'll start learning ggplot2, the concepts of layering and piping, and how to create your own theme
+
+[Slides](lectures/ggplot.html){target=_blank}
+
+[Links](../resources.html#ggplot) to ggplot2 resources.
+
+## Lecture 3 (April 24, 2019)
+
+In this lecture we'll spend most of our time learning various aspects of R, and then how that can help with graphics.
+
+[Slides](lectures/Rintro.html){target=_blank} ([Rmd](lectures/Rintro.Rmd))
+
+[Cheatsheets](https://www.rstudio.com/resources/cheatsheets/){target=_blank}
