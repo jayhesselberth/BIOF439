@@ -94,7 +94,7 @@ my_mean <- function(x, na.rm = T){
     x <- x[!is.na(x)]
   }
   s <- sum(x)
-  n <- log10(enterococci)gth(x)
+  n <- length(x)
   mn <- s / n # There is a built-in function mean, so I don't use that word
   return(mn)
 }
@@ -1044,7 +1044,8 @@ library(ggpubr)
 ggplot(
   data=beaches, 
   mapping= aes(x = season_name, y = log10(enterococci), color = season_name)) +
-  geom_boxplot()+geom_jitter()
+  geom_boxplot()+geom_jitter()+
+  labs(x = 'Season', y = expression(paste('log'['10'],'(enterococci)')), color='Season')
 ```
 ]
 .pull-right[
@@ -1065,7 +1066,8 @@ plt <- ggplot(
   data=beaches, 
   mapping= aes(x = season_name, y = log10(enterococci), color = season_name)) +
   geom_boxplot() + 
-  geom_jitter(width=0.1)
+  geom_jitter(width=0.1) +
+  labs(x = 'Season', y = expression(paste('log'['10'],'(enterococci)')), color='Season')
 my_comparisons <- list(c('Autumn','Spring'),
                        c('Spring','Summer'),
                        c('Summer','Winter'),
@@ -1091,7 +1093,9 @@ plt <- ggplot(
   data=beaches, 
   mapping= aes(x = season_name, y = log10(enterococci), color = season_name)) +
   geom_boxplot() + 
-  geom_jitter(width=0.1)
+  geom_jitter(width=0.1)+
+    labs(x = 'Season', y = expression(paste('log'['10'],'(enterococci)')), 
+         color='Season') 
 my_comparisons <- list(c('Autumn','Spring'),
                        c('Spring','Summer'),
                        c('Summer','Winter'),
@@ -1118,14 +1122,14 @@ plt <- ggplot(
   data=beaches, 
   mapping= aes(x = season_name, y = log10(enterococci), color = season_name)) +
   geom_boxplot() + 
-  geom_jitter(width=0.1)
+  geom_jitter(width=0.1)+
+  labs(x = 'Season', y = expression(paste('log'['10'],'(enterococci)')), color='Season')
 my_comparisons <- list(c('Autumn','Spring'),
                        c('Spring','Summer'),
                        c('Summer','Winter'),
                        c('Spring','Winter'))
 plt + stat_compare_means(label.y = 6) + 
   stat_compare_means(comparisons = my_comparisons) +
-  labs(x = 'season_name', y = 'log10(enterococci)gth', color='season_name') + #<<
   theme_bw()+#<<
   theme(axis.title= element_text(size=14),#<<
         axis.text = element_text(size=12),#<<
@@ -1183,8 +1187,9 @@ dat_spine %>%
   select(Pelvic.incidence:Sacral.slope) %>% 
   tidyr::gather(variable, value) %>% 
   ggplot(aes(x = value)) + 
-  geom_density()+
-  facet_wrap(~variable)
+  geom_density() +
+  facet_wrap(~variable) +
+  labs(x = '')
 ```
 ]
 .pull-right[
@@ -1197,8 +1202,13 @@ This is one of my most used tricks for getting facetted plots from wide data
 
 ```{r e1, fig.height=4}
 beaches %>% 
-  ggplot(aes(x = season_name, y = temperature))+
-  geom_boxplot()
+  ggplot(aes(x = season_name, y = temperature)) +
+  geom_boxplot() +
+  scale_y_continuous(labels = scales::unit_format(unit = "\u00B0C")) +
+  labs(x = 'Season', y = 'Temperature') +
+  theme_bw() + 
+  theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14))
 ```
 
 ---
@@ -1208,6 +1218,11 @@ beaches %>%
 ```{r e2, fig.height=4}
 beaches %>% 
   mutate(season_name = fct_relevel(season_name, 'Autumn','Winter','Spring','Summer')) %>% #<<
-  ggplot(aes(x = season_name, y = temperature))+
-  geom_boxplot()
+  ggplot(aes(x = season_name, y = temperature)) +
+  geom_boxplot() +
+  scale_y_continuous(labels = scales::unit_format(unit = "\u00B0C")) +
+  labs(x = 'Season', y = 'Temperature') +
+  theme_bw() + 
+  theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14))
 ```
