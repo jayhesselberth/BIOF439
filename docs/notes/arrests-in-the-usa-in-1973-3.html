@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>2.17 Arrests in the USA in 1973 | BIOF_439.utf8</title>
+  <meta name="description" content="These are course notes for BIOF 439, Data Visualization using R">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="2.17 Arrests in the USA in 1973 | BIOF_439.utf8" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="http://www.araastat.com/BIOF439" />
+  
+  <meta property="og:description" content="These are course notes for BIOF 439, Data Visualization using R" />
+  <meta name="github-repo" content="araastat/BIOF439" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2.17 Arrests in the USA in 1973 | BIOF_439.utf8" />
+  
+  <meta name="twitter:description" content="These are course notes for BIOF 439, Data Visualization using R" />
+  
+
+<meta name="author" content="Abhijit Dasgupta, PhD">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="arrests-in-the-usa-in-1973-2.html">
+<link rel="next" href="themes.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="../style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="http://www.araastat.com/BIOF439">BIOF 439</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a><ul>
+<li class="chapter" data-level="" data-path="reproducibility.html"><a href="reproducibility.html"><i class="fa fa-check"></i>Reproducibility</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="an-introduction-to-biof-439.html"><a href="an-introduction-to-biof-439.html"><i class="fa fa-check"></i><b>1</b> An introduction to BIOF 439</a><ul>
+<li class="chapter" data-level="1.0.1" data-path="an-introduction-to-biof-439.html"><a href="an-introduction-to-biof-439.html#objectives-of-this-course"><i class="fa fa-check"></i><b>1.0.1</b> Objectives of this course</a></li>
+<li class="chapter" data-level="1.0.2" data-path="an-introduction-to-biof-439.html"><a href="an-introduction-to-biof-439.html#course-resources"><i class="fa fa-check"></i><b>1.0.2</b> Course resources</a></li>
+<li class="chapter" data-level="1.1" data-path="homework-policies.html"><a href="homework-policies.html"><i class="fa fa-check"></i><b>1.1</b> Homework policies</a></li>
+<li class="chapter" data-level="1.2" data-path="final-project.html"><a href="final-project.html"><i class="fa fa-check"></i><b>1.2</b> Final Project</a></li>
+<li class="chapter" data-level="1.3" data-path="class-participation.html"><a href="class-participation.html"><i class="fa fa-check"></i><b>1.3</b> Class participation</a></li>
+<li class="chapter" data-level="1.4" data-path="exemplar-data.html"><a href="exemplar-data.html"><i class="fa fa-check"></i><b>1.4</b> Exemplar data</a></li>
+<li class="chapter" data-level="1.5" data-path="contact-info.html"><a href="contact-info.html"><i class="fa fa-check"></i><b>1.5</b> Contact info</a></li>
+<li class="chapter" data-level="1.6" data-path="code-repository.html"><a href="code-repository.html"><i class="fa fa-check"></i><b>1.6</b> Code repository</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="starting-dataviz-using-r-ggplot2.html"><a href="starting-dataviz-using-r-ggplot2.html"><i class="fa fa-check"></i><b>2</b> Starting DataViz using R: ggplot2</a><ul>
+<li class="chapter" data-level="2.0.1" data-path="starting-dataviz-using-r-ggplot2.html"><a href="starting-dataviz-using-r-ggplot2.html#what-is-ggplot2"><i class="fa fa-check"></i><b>2.0.1</b> What is ggplot2?</a></li>
+<li class="chapter" data-level="2.0.2" data-path="starting-dataviz-using-r-ggplot2.html"><a href="starting-dataviz-using-r-ggplot2.html#ggplot2-uses-the-grammar-of-graphics"><i class="fa fa-check"></i><b>2.0.2</b> ggplot2 uses the <strong>grammar</strong> of <strong>graphics</strong></a></li>
+<li class="chapter" data-level="2.0.3" data-path="starting-dataviz-using-r-ggplot2.html"><a href="starting-dataviz-using-r-ggplot2.html#a-dataset"><i class="fa fa-check"></i><b>2.0.3</b> A dataset</a></li>
+<li class="chapter" data-level="2.1" data-path="building-a-graph.html"><a href="building-a-graph.html"><i class="fa fa-check"></i><b>2.1</b> Building a graph</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="building-a-graph.html"><a href="building-a-graph.html#the-grammar"><i class="fa fa-check"></i><b>2.1.1</b> The grammar</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="exercise-1.html"><a href="exercise-1.html"><i class="fa fa-check"></i><b>2.2</b> Exercise 1</a></li>
+<li class="chapter" data-level="2.3" data-path="peeking-under-the-hood.html"><a href="peeking-under-the-hood.html"><i class="fa fa-check"></i><b>2.3</b> Peeking under the hood</a></li>
+<li class="chapter" data-level="2.4" data-path="section-12.html"><a href="section-12.html"><i class="fa fa-check"></i><b>2.4</b> ]</a></li>
+<li class="chapter" data-level="2.5" data-path="exploring-aesthetics.html"><a href="exploring-aesthetics.html"><i class="fa fa-check"></i><b>2.5</b> Exploring aesthetics</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="exploring-aesthetics.html"><a href="exploring-aesthetics.html#mapping-color"><i class="fa fa-check"></i><b>2.5.1</b> Mapping color</a></li>
+<li class="chapter" data-level="2.5.2" data-path="exploring-aesthetics.html"><a href="exploring-aesthetics.html#adding-groups-to-the-mapping"><i class="fa fa-check"></i><b>2.5.2</b> Adding groups to the mapping</a></li>
+<li class="chapter" data-level="2.5.3" data-path="exploring-aesthetics.html"><a href="exploring-aesthetics.html#fixing-the-legend-ordering"><i class="fa fa-check"></i><b>2.5.3</b> Fixing the legend ordering</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="whoops.html"><a href="whoops.html"><i class="fa fa-check"></i><b>2.6</b> Whoops!!!</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="whoops.html"><a href="whoops.html#fixing-the-legend-ordering-1"><i class="fa fa-check"></i><b>2.6.1</b> Fixing the legend ordering</a></li>
+<li class="chapter" data-level="2.6.2" data-path="whoops.html"><a href="whoops.html#you-can-also-fill-based-on-data"><i class="fa fa-check"></i><b>2.6.2</b> You can also fill based on data</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="exercise-2.html"><a href="exercise-2.html"><i class="fa fa-check"></i><b>2.7</b> Exercise 2</a></li>
+<li class="chapter" data-level="2.8" data-path="exploring-geometries.html"><a href="exploring-geometries.html"><i class="fa fa-check"></i><b>2.8</b> Exploring geometries</a></li>
+<li class="chapter" data-level="2.9" data-path="univariate-plots.html"><a href="univariate-plots.html"><i class="fa fa-check"></i><b>2.9</b> Univariate plots</a><ul>
+<li class="chapter" data-level="2.9.1" data-path="univariate-plots.html"><a href="univariate-plots.html#histograms"><i class="fa fa-check"></i><b>2.9.1</b> Histograms</a></li>
+<li class="chapter" data-level="2.9.2" data-path="univariate-plots.html"><a href="univariate-plots.html#histograms-1"><i class="fa fa-check"></i><b>2.9.2</b> Histograms</a></li>
+<li class="chapter" data-level="2.9.3" data-path="univariate-plots.html"><a href="univariate-plots.html#density-plots"><i class="fa fa-check"></i><b>2.9.3</b> Density plots</a></li>
+<li class="chapter" data-level="2.9.4" data-path="univariate-plots.html"><a href="univariate-plots.html#density-plots-1"><i class="fa fa-check"></i><b>2.9.4</b> Density plots</a></li>
+<li class="chapter" data-level="2.9.5" data-path="univariate-plots.html"><a href="univariate-plots.html#layering-geometries"><i class="fa fa-check"></i><b>2.9.5</b> Layering geometries</a></li>
+<li class="chapter" data-level="2.9.6" data-path="univariate-plots.html"><a href="univariate-plots.html#bar-plots-categorical-variable"><i class="fa fa-check"></i><b>2.9.6</b> Bar plots (categorical variable)</a></li>
+<li class="chapter" data-level="2.9.7" data-path="univariate-plots.html"><a href="univariate-plots.html#bar-plots-categorical-variable-1"><i class="fa fa-check"></i><b>2.9.7</b> Bar plots (categorical variable)</a></li>
+<li class="chapter" data-level="2.9.8" data-path="univariate-plots.html"><a href="univariate-plots.html#bar-plots-categorical-variable-2"><i class="fa fa-check"></i><b>2.9.8</b> Bar plots (categorical variable)</a></li>
+<li class="chapter" data-level="2.9.9" data-path="univariate-plots.html"><a href="univariate-plots.html#graphing-tabulated-data"><i class="fa fa-check"></i><b>2.9.9</b> Graphing tabulated data</a></li>
+<li class="chapter" data-level="2.9.10" data-path="univariate-plots.html"><a href="univariate-plots.html#graphing-tabulated-data-1"><i class="fa fa-check"></i><b>2.9.10</b> Graphing tabulated data</a></li>
+<li class="chapter" data-level="2.9.11" data-path="univariate-plots.html"><a href="univariate-plots.html#peeking-under-the-hood-1"><i class="fa fa-check"></i><b>2.9.11</b> Peeking under the hood</a></li>
+</ul></li>
+<li class="chapter" data-level="2.10" data-path="bivariate-plots.html"><a href="bivariate-plots.html"><i class="fa fa-check"></i><b>2.10</b> Bivariate plots</a><ul>
+<li class="chapter" data-level="2.10.1" data-path="bivariate-plots.html"><a href="bivariate-plots.html#scatter-plots"><i class="fa fa-check"></i><b>2.10.1</b> Scatter plots</a></li>
+<li class="chapter" data-level="2.10.2" data-path="bivariate-plots.html"><a href="bivariate-plots.html#scatter-plots-1"><i class="fa fa-check"></i><b>2.10.2</b> Scatter plots</a></li>
+<li class="chapter" data-level="2.10.3" data-path="bivariate-plots.html"><a href="bivariate-plots.html#scatter-plots-2"><i class="fa fa-check"></i><b>2.10.3</b> Scatter plots</a></li>
+<li class="chapter" data-level="2.10.4" data-path="bivariate-plots.html"><a href="bivariate-plots.html#scatter-plots-3"><i class="fa fa-check"></i><b>2.10.4</b> Scatter plots</a></li>
+<li class="chapter" data-level="2.10.5" data-path="bivariate-plots.html"><a href="bivariate-plots.html#doing-some-computations"><i class="fa fa-check"></i><b>2.10.5</b> Doing some computations</a></li>
+<li class="chapter" data-level="2.10.6" data-path="bivariate-plots.html"><a href="bivariate-plots.html#doing-some-computations-1"><i class="fa fa-check"></i><b>2.10.6</b> Doing some computations</a></li>
+<li class="chapter" data-level="2.10.7" data-path="bivariate-plots.html"><a href="bivariate-plots.html#computations-over-groups"><i class="fa fa-check"></i><b>2.10.7</b> Computations over groups</a></li>
+<li class="chapter" data-level="2.10.8" data-path="bivariate-plots.html"><a href="bivariate-plots.html#computations-over-groups-1"><i class="fa fa-check"></i><b>2.10.8</b> Computations over groups</a></li>
+<li class="chapter" data-level="2.10.9" data-path="bivariate-plots.html"><a href="bivariate-plots.html#computations-over-groups-2"><i class="fa fa-check"></i><b>2.10.9</b> Computations over groups</a></li>
+<li class="chapter" data-level="2.10.10" data-path="bivariate-plots.html"><a href="bivariate-plots.html#computations-over-groups-3"><i class="fa fa-check"></i><b>2.10.10</b> Computations over groups</a></li>
+<li class="chapter" data-level="2.10.11" data-path="bivariate-plots.html"><a href="bivariate-plots.html#computations-over-groups-4"><i class="fa fa-check"></i><b>2.10.11</b> Computations over groups</a></li>
+<li class="chapter" data-level="2.10.12" data-path="bivariate-plots.html"><a href="bivariate-plots.html#box-plots"><i class="fa fa-check"></i><b>2.10.12</b> Box Plots</a></li>
+<li class="chapter" data-level="2.10.13" data-path="bivariate-plots.html"><a href="bivariate-plots.html#box-plots-1"><i class="fa fa-check"></i><b>2.10.13</b> Box Plots</a></li>
+<li class="chapter" data-level="2.10.14" data-path="bivariate-plots.html"><a href="bivariate-plots.html#violin-plots"><i class="fa fa-check"></i><b>2.10.14</b> Violin plots</a></li>
+<li class="chapter" data-level="2.10.15" data-path="bivariate-plots.html"><a href="bivariate-plots.html#strip-plots"><i class="fa fa-check"></i><b>2.10.15</b> Strip plots</a></li>
+<li class="chapter" data-level="2.10.16" data-path="bivariate-plots.html"><a href="bivariate-plots.html#strip-plots-1"><i class="fa fa-check"></i><b>2.10.16</b> Strip plots</a></li>
+<li class="chapter" data-level="2.10.17" data-path="bivariate-plots.html"><a href="bivariate-plots.html#strip-plots-2"><i class="fa fa-check"></i><b>2.10.17</b> Strip plots</a></li>
+<li class="chapter" data-level="2.10.18" data-path="bivariate-plots.html"><a href="bivariate-plots.html#layers-again"><i class="fa fa-check"></i><b>2.10.18</b> Layers, again</a></li>
+<li class="chapter" data-level="2.10.19" data-path="bivariate-plots.html"><a href="bivariate-plots.html#layers-again-1"><i class="fa fa-check"></i><b>2.10.19</b> Layers, again</a></li>
+</ul></li>
+<li class="chapter" data-level="2.11" data-path="exploring-grouped-data.html"><a href="exploring-grouped-data.html"><i class="fa fa-check"></i><b>2.11</b> Exploring grouped data</a><ul>
+<li class="chapter" data-level="2.11.1" data-path="exploring-grouped-data.html"><a href="exploring-grouped-data.html#grids-of-graphs"><i class="fa fa-check"></i><b>2.11.1</b> Grids of graphs</a></li>
+<li class="chapter" data-level="2.11.2" data-path="exploring-grouped-data.html"><a href="exploring-grouped-data.html#grids-of-graphs-1"><i class="fa fa-check"></i><b>2.11.2</b> Grids of graphs</a></li>
+</ul></li>
+<li class="chapter" data-level="2.12" data-path="scales.html"><a href="scales.html"><i class="fa fa-check"></i><b>2.12</b> Scales</a></li>
+<li class="chapter" data-level="2.13" data-path="order-and-orientation.html"><a href="order-and-orientation.html"><i class="fa fa-check"></i><b>2.13</b> Order and orientation</a></li>
+<li class="chapter" data-level="2.14" data-path="arrests-in-the-usa-in-1973.html"><a href="arrests-in-the-usa-in-1973.html"><i class="fa fa-check"></i><b>2.14</b> Arrests in the USA in 1973</a></li>
+<li class="chapter" data-level="2.15" data-path="arrests-in-the-usa-in-1973-1.html"><a href="arrests-in-the-usa-in-1973-1.html"><i class="fa fa-check"></i><b>2.15</b> Arrests in the USA in 1973</a></li>
+<li class="chapter" data-level="2.16" data-path="arrests-in-the-usa-in-1973-2.html"><a href="arrests-in-the-usa-in-1973-2.html"><i class="fa fa-check"></i><b>2.16</b> Arrests in the USA in 1973</a></li>
+<li class="chapter" data-level="2.17" data-path="arrests-in-the-usa-in-1973-3.html"><a href="arrests-in-the-usa-in-1973-3.html"><i class="fa fa-check"></i><b>2.17</b> Arrests in the USA in 1973</a></li>
+<li class="chapter" data-level="2.18" data-path="themes.html"><a href="themes.html"><i class="fa fa-check"></i><b>2.18</b> Themes</a></li>
+<li class="chapter" data-level="2.19" data-path="color-schemes.html"><a href="color-schemes.html"><i class="fa fa-check"></i><b>2.19</b> Color schemes</a><ul>
+<li class="chapter" data-level="2.19.1" data-path="color-schemes.html"><a href="color-schemes.html#specifying-colors"><i class="fa fa-check"></i><b>2.19.1</b> Specifying colors</a></li>
+</ul></li>
+<li class="chapter" data-level="2.20" data-path="specifying-colors-1.html"><a href="specifying-colors-1.html"><i class="fa fa-check"></i><b>2.20</b> Specifying colors</a><ul>
+<li class="chapter" data-level="2.20.1" data-path="specifying-colors-1.html"><a href="specifying-colors-1.html#themes-1"><i class="fa fa-check"></i><b>2.20.1</b> Themes</a></li>
+<li class="chapter" data-level="2.20.2" data-path="specifying-colors-1.html"><a href="specifying-colors-1.html#themes-2"><i class="fa fa-check"></i><b>2.20.2</b> Themes</a></li>
+<li class="chapter" data-level="2.20.3" data-path="specifying-colors-1.html"><a href="specifying-colors-1.html#themes-3"><i class="fa fa-check"></i><b>2.20.3</b> Themes</a></li>
+<li class="chapter" data-level="2.20.4" data-path="specifying-colors-1.html"><a href="specifying-colors-1.html#themes-4"><i class="fa fa-check"></i><b>2.20.4</b> Themes</a></li>
+<li class="chapter" data-level="2.20.5" data-path="specifying-colors-1.html"><a href="specifying-colors-1.html#themes-5"><i class="fa fa-check"></i><b>2.20.5</b> Themes</a></li>
+</ul></li>
+<li class="chapter" data-level="2.21" data-path="animations.html"><a href="animations.html"><i class="fa fa-check"></i><b>2.21</b> Animations</a><ul>
+<li class="chapter" data-level="2.21.1" data-path="animations.html"><a href="animations.html#gganimate"><i class="fa fa-check"></i><b>2.21.1</b> gganimate</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html"><i class="fa fa-check"></i><b>3</b> A quick tour of R</a><ul>
+<li class="chapter" data-level="3.0.1" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#the-bare-essentials"><i class="fa fa-check"></i><b>3.0.1</b> The bare essentials</a></li>
+<li class="chapter" data-level="3.0.2" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#the-bare-essentials-1"><i class="fa fa-check"></i><b>3.0.2</b> The bare essentials</a></li>
+<li class="chapter" data-level="3.0.3" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#the-bare-essentials-2"><i class="fa fa-check"></i><b>3.0.3</b> The bare essentials</a></li>
+<li class="chapter" data-level="3.0.4" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#the-bare-essentials-3"><i class="fa fa-check"></i><b>3.0.4</b> The bare essentials</a></li>
+<li class="chapter" data-level="3.0.5" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#the-bare-essentials-4"><i class="fa fa-check"></i><b>3.0.5</b> The bare essentials</a></li>
+<li class="chapter" data-level="3.0.6" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#data-types"><i class="fa fa-check"></i><b>3.0.6</b> Data types</a></li>
+<li class="chapter" data-level="3.0.7" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#data-types-1"><i class="fa fa-check"></i><b>3.0.7</b> Data types</a></li>
+<li class="chapter" data-level="3.0.8" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#data-types-2"><i class="fa fa-check"></i><b>3.0.8</b> Data types</a></li>
+<li class="chapter" data-level="3.0.9" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#data-types-3"><i class="fa fa-check"></i><b>3.0.9</b> Data types</a></li>
+<li class="chapter" data-level="3.0.10" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#data-types-4"><i class="fa fa-check"></i><b>3.0.10</b> Data types</a></li>
+<li class="chapter" data-level="3.0.11" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#data-types-5"><i class="fa fa-check"></i><b>3.0.11</b> Data types</a></li>
+<li class="chapter" data-level="3.0.12" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#data-types-6"><i class="fa fa-check"></i><b>3.0.12</b> Data types</a></li>
+<li class="chapter" data-level="3.0.13" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#data-types-7"><i class="fa fa-check"></i><b>3.0.13</b> Data types</a></li>
+<li class="chapter" data-level="3.0.14" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#data-types-8"><i class="fa fa-check"></i><b>3.0.14</b> Data types</a></li>
+<li class="chapter" data-level="3.0.15" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#packages-in-r"><i class="fa fa-check"></i><b>3.0.15</b> Packages in R</a></li>
+<li class="chapter" data-level="3.0.16" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#installing-packages"><i class="fa fa-check"></i><b>3.0.16</b> Installing packages</a></li>
+<li class="chapter" data-level="3.0.17" data-path="a-quick-tour-of-r.html"><a href="a-quick-tour-of-r.html#using-packages"><i class="fa fa-check"></i><b>3.0.17</b> Using packages</a></li>
+<li class="chapter" data-level="3.1" data-path="tidying-data-using-the-tidyverse.html"><a href="tidying-data-using-the-tidyverse.html"><i class="fa fa-check"></i><b>3.1</b> Tidying data using the tidyverse</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="tidying-data-using-the-tidyverse.html"><a href="tidying-data-using-the-tidyverse.html#what-is-the-tidyverse"><i class="fa fa-check"></i><b>3.1.1</b> What is the <span>“Tidyverse”</span>?</a></li>
+<li class="chapter" data-level="3.1.2" data-path="tidying-data-using-the-tidyverse.html"><a href="tidying-data-using-the-tidyverse.html#what-is-the-tidyverse-1"><i class="fa fa-check"></i><b>3.1.2</b> What is the <span>“Tidyverse”</span>?</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="tidying-data.html"><a href="tidying-data.html"><i class="fa fa-check"></i><b>3.2</b> Tidying data</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="tidying-data.html"><a href="tidying-data.html#tidy-data"><i class="fa fa-check"></i><b>3.2.1</b> Tidy data</a></li>
+<li class="chapter" data-level="3.2.2" data-path="tidying-data.html"><a href="tidying-data.html#tidy-data-1"><i class="fa fa-check"></i><b>3.2.2</b> Tidy data</a></li>
+<li class="chapter" data-level="3.2.3" data-path="tidying-data.html"><a href="tidying-data.html#let-us-count-the-ways"><i class="fa fa-check"></i><b>3.2.3</b> Let us count the ways</a></li>
+<li class="chapter" data-level="3.2.4" data-path="tidying-data.html"><a href="tidying-data.html#ways-to-have-messy-i.e.not-tidy-data"><i class="fa fa-check"></i><b>3.2.4</b> Ways to have messy (i.e. not tidy) data</a></li>
+<li class="chapter" data-level="3.2.5" data-path="tidying-data.html"><a href="tidying-data.html#ways-to-have-messy-i.e.not-tidy-data-1"><i class="fa fa-check"></i><b>3.2.5</b> Ways to have messy (i.e. not tidy) data</a></li>
+<li class="chapter" data-level="3.2.6" data-path="tidying-data.html"><a href="tidying-data.html#ways-to-have-messy-i.e.not-tidy-data-2"><i class="fa fa-check"></i><b>3.2.6</b> Ways to have messy (i.e. not tidy) data</a></li>
+<li class="chapter" data-level="3.2.7" data-path="tidying-data.html"><a href="tidying-data.html#tidying-data-1"><i class="fa fa-check"></i><b>3.2.7</b> Tidying data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3.3</b> Cleaning data</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#some-actions-on-data"><i class="fa fa-check"></i><b>3.3.1</b> Some actions on data</a></li>
+<li class="chapter" data-level="3.3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#example-data"><i class="fa fa-check"></i><b>3.3.2</b> Example data</a></li>
+<li class="chapter" data-level="3.3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#example-data-link"><i class="fa fa-check"></i><b>3.3.3</b> Example data (<span>link</span>)</a></li>
+<li class="chapter" data-level="3.3.4" data-path="cleaning-data.html"><a href="cleaning-data.html#the-tidyverse-package"><i class="fa fa-check"></i><b>3.3.4</b> The <code>tidyverse</code> package</a></li>
+<li class="chapter" data-level="3.3.5" data-path="cleaning-data.html"><a href="cleaning-data.html#the-tidyverse-package-1"><i class="fa fa-check"></i><b>3.3.5</b> The <code>tidyverse</code> package</a></li>
+<li class="chapter" data-level="3.3.6" data-path="cleaning-data.html"><a href="cleaning-data.html#core-tidyverse-packages"><i class="fa fa-check"></i><b>3.3.6</b> Core <code>tidyverse</code> packages</a></li>
+<li class="chapter" data-level="3.3.7" data-path="cleaning-data.html"><a href="cleaning-data.html#additional-tidyverse-packages"><i class="fa fa-check"></i><b>3.3.7</b> Additional <code>tidyverse</code> packages</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="pipes.html"><a href="pipes.html"><i class="fa fa-check"></i><b>3.4</b> Pipes</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="pipes.html"><a href="pipes.html#pipes-1"><i class="fa fa-check"></i><b>3.4.1</b> Pipes</a></li>
+<li class="chapter" data-level="3.4.2" data-path="pipes.html"><a href="pipes.html#verbs-to-use-in-pipes"><i class="fa fa-check"></i><b>3.4.2</b> Verbs to use in pipes</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="a-complicated-example.html"><a href="a-complicated-example.html"><i class="fa fa-check"></i><b>3.5</b> A complicated example</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="a-complicated-example.html"><a href="a-complicated-example.html#grab-the-raw-data"><i class="fa fa-check"></i><b>3.5.1</b> Grab the raw data</a></li>
+<li class="chapter" data-level="3.5.2" data-path="a-complicated-example.html"><a href="a-complicated-example.html#look-at-the-annotation-data"><i class="fa fa-check"></i><b>3.5.2</b> Look at the annotation data</a></li>
+<li class="chapter" data-level="3.5.3" data-path="a-complicated-example.html"><a href="a-complicated-example.html#separate-annotation-into-columns"><i class="fa fa-check"></i><b>3.5.3</b> Separate annotation into columns</a></li>
+<li class="chapter" data-level="3.5.4" data-path="a-complicated-example.html"><a href="a-complicated-example.html#get-rid-of-padding-in-annotation"><i class="fa fa-check"></i><b>3.5.4</b> Get rid of padding in annotation</a></li>
+<li class="chapter" data-level="3.5.5" data-path="a-complicated-example.html"><a href="a-complicated-example.html#get-rid-of-some-columns"><i class="fa fa-check"></i><b>3.5.5</b> Get rid of some columns</a></li>
+<li class="chapter" data-level="3.5.6" data-path="a-complicated-example.html"><a href="a-complicated-example.html#make-data-tidy"><i class="fa fa-check"></i><b>3.5.6</b> Make data tidy</a></li>
+<li class="chapter" data-level="3.5.7" data-path="a-complicated-example.html"><a href="a-complicated-example.html#split-columns"><i class="fa fa-check"></i><b>3.5.7</b> Split columns</a></li>
+<li class="chapter" data-level="3.5.8" data-path="a-complicated-example.html"><a href="a-complicated-example.html#get-rid-of-rows-with-missing-expression-or-name"><i class="fa fa-check"></i><b>3.5.8</b> Get rid of rows with missing expression or name</a></li>
+<li class="chapter" data-level="3.5.9" data-path="a-complicated-example.html"><a href="a-complicated-example.html#visualize"><i class="fa fa-check"></i><b>3.5.9</b> Visualize</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="modeling-and-the-broom-package.html"><a href="modeling-and-the-broom-package.html"><i class="fa fa-check"></i><b>3.6</b> Modeling and the broom package</a></li>
+<li class="chapter" data-level="3.7" data-path="representing-model-relationships.html"><a href="representing-model-relationships.html"><i class="fa fa-check"></i><b>3.7</b> Representing model relationships</a></li>
+<li class="chapter" data-level="3.8" data-path="y-depends-on.html"><a href="y-depends-on.html"><i class="fa fa-check"></i><b>3.8</b> <code>y</code> depends on …</a></li>
+<li class="chapter" data-level="3.9" data-path="representing-model-relationships-1.html"><a href="representing-model-relationships-1.html"><i class="fa fa-check"></i><b>3.9</b> Representing model relationships</a></li>
+<li class="chapter" data-level="3.10" data-path="our-first-model.html"><a href="our-first-model.html"><i class="fa fa-check"></i><b>3.10</b> Our first model</a></li>
+<li class="chapter" data-level="3.11" data-path="our-first-model-1.html"><a href="our-first-model-1.html"><i class="fa fa-check"></i><b>3.11</b> Our first model</a></li>
+<li class="chapter" data-level="3.12" data-path="our-first-model-2.html"><a href="our-first-model-2.html"><i class="fa fa-check"></i><b>3.12</b> Our first model</a></li>
+<li class="chapter" data-level="3.13" data-path="our-first-model-3.html"><a href="our-first-model-3.html"><i class="fa fa-check"></i><b>3.13</b> Our first model</a></li>
+<li class="chapter" data-level="3.14" data-path="our-first-model-4.html"><a href="our-first-model-4.html"><i class="fa fa-check"></i><b>3.14</b> Our first model</a><ul>
+<li class="chapter" data-level="3.14.1" data-path="our-first-model-4.html"><a href="our-first-model-4.html#displaying-model-results"><i class="fa fa-check"></i><b>3.14.1</b> Displaying model results</a></li>
+</ul></li>
+<li class="chapter" data-level="3.15" data-path="displaying-model-results-1.html"><a href="displaying-model-results-1.html"><i class="fa fa-check"></i><b>3.15</b> Displaying model results</a></li>
+<li class="chapter" data-level="3.16" data-path="displaying-model-results-2.html"><a href="displaying-model-results-2.html"><i class="fa fa-check"></i><b>3.16</b> Displaying model results</a></li>
+<li class="chapter" data-level="3.17" data-path="displaying-model-results-3.html"><a href="displaying-model-results-3.html"><i class="fa fa-check"></i><b>3.17</b> Displaying model results</a></li>
+<li class="chapter" data-level="3.18" data-path="displaying-model-results-4.html"><a href="displaying-model-results-4.html"><i class="fa fa-check"></i><b>3.18</b> Displaying model results</a></li>
+<li class="chapter" data-level="3.19" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html"><i class="fa fa-check"></i><b>3.19</b> Displaying model results</a><ul>
+<li class="chapter" data-level="3.19.1" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html#showing-group-differences-figure-1"><i class="fa fa-check"></i><b>3.19.1</b> Showing group differences (“Figure 1”)</a></li>
+<li class="chapter" data-level="3.19.2" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html#showing-group-differences-figure-1-1"><i class="fa fa-check"></i><b>3.19.2</b> Showing group differences (“Figure 1”)</a></li>
+<li class="chapter" data-level="3.19.3" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html#showing-group-differences-figure-1-2"><i class="fa fa-check"></i><b>3.19.3</b> Showing group differences (“Figure 1”)</a></li>
+<li class="chapter" data-level="3.19.4" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html#showing-group-differences-figure-1-3"><i class="fa fa-check"></i><b>3.19.4</b> Showing group differences (“Figure 1”)</a></li>
+<li class="chapter" data-level="3.19.5" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html#showing-group-differences-figure-1-4"><i class="fa fa-check"></i><b>3.19.5</b> Showing group differences (“Figure 1”)</a></li>
+<li class="chapter" data-level="3.19.6" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html#manipulating-data-for-plotting"><i class="fa fa-check"></i><b>3.19.6</b> Manipulating data for plotting</a></li>
+<li class="chapter" data-level="3.19.7" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html#manipulating-data-for-plotting-1"><i class="fa fa-check"></i><b>3.19.7</b> Manipulating data for plotting</a></li>
+<li class="chapter" data-level="3.19.8" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html#manipulating-data-for-plotting-2"><i class="fa fa-check"></i><b>3.19.8</b> Manipulating data for plotting</a></li>
+<li class="chapter" data-level="3.19.9" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html#re-ordering-factors"><i class="fa fa-check"></i><b>3.19.9</b> Re-ordering factors</a></li>
+<li class="chapter" data-level="3.19.10" data-path="displaying-model-results-5.html"><a href="displaying-model-results-5.html#re-ordering-factors-1"><i class="fa fa-check"></i><b>3.19.10</b> Re-ordering factors</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><div class="line-block">BIOF 439: Data Visualization using R<br />
+Course Notes</div></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="arrests-in-the-usa-in-1973-3" class="section level2">
+<h2><span class="header-section-number">2.17</span> Arrests in the USA in 1973</h2>
+<p>.pull-left[</p>
+<pre class="sourceCode r"><code class="sourceCode r">arrests &lt;-<span class="st"> </span><span class="kw">import</span>(<span class="st">&#39;data/USArrests.csv&#39;</span>)
+<span class="kw">ggplot</span>(
+  <span class="dt">data =</span> arrests,
+  <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">fct_reorder</span>(State, Murder), <span class="co"># Order by murder rate </span>
+      <span class="dt">y =</span> Murder)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&#39;identity&#39;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&#39;State&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Murder rate&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="co">#&lt;&lt;</span>
+<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="co">#&lt;&lt;</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.grid.major.y =</span> <span class="kw">element_blank</span>(),<span class="co">#&lt;&lt;</span>
+        <span class="dt">panel.grid.minor.y =</span> <span class="kw">element_blank</span>()) <span class="op">+</span><span class="st"> </span><span class="co">#&lt;&lt;</span>
+<span class="st">  </span><span class="kw">coord_flip</span>()</code></pre>
+<p>Cleaning it up a little</p>
+<p>]
+.pull-right[
+<img src="02-ggplot_files/figure-html/unnamed-chunk-68-1.png" width="672" />]</p>
+<p>???</p>
+<p>Note that we flip after we’ve done all the manipulation</p>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="arrests-in-the-usa-in-1973-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="themes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["BIOF_439.pdf"],
+"toc": {
+"collapse": "subsection"
+},
+"toolbar": {
+"position": "static"
+},
+"search": true,
+"scroll_highlight": true
+});
+});
+</script>
+
+</body>
+
+</html>
