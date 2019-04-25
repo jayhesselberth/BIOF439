@@ -180,9 +180,10 @@ my_list
 ```{r Rintro-7, echo=F, eval=T, ref.label='b1'}
 
 ```
-
 ]
 ---
+
+
 
 ## Data types
 
