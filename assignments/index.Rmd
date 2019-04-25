@@ -1,0 +1,22 @@
+---
+title: Assignments
+author: BIOF 439
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    css: ../style.css
+---
+
+All assignments must be completed as RMarkdown documents with an accompanying
+HTML document derived from it. Assignments will be submitted via RStudio Cloud. 
+
+See the [instructions](instructions.html) for how to do this
+
+----
+
+## Assignments
+
+Week 1: [Homework 1](HW/HW1.html)
+
+Week 2: [Homework 2](HW/HW2.html)
