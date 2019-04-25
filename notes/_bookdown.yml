@@ -8,11 +8,11 @@ output_dir: ../docs/notes
 rmd_files:
   html:
   - index.Rmd
-  - 02-ggplot.Rmd
   - 00-introduction.Rmd
+  - 02-ggplot.Rmd
   - 03-Rintro.Rmd
   latex:
   - index1.Rmd
-  - 02-ggplot.Rmd
   - 00-introduction.Rmd
+  - 02-ggplot.Rmd
   - 03-Rintro.Rmd
