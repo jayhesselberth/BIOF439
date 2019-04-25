@@ -184,7 +184,6 @@ my_list
 ---
 
 
-
 ## Data types
 
 ### data.frame/tibble
