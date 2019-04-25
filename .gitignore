@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+Personal/*
+
+img/*
+.Rapp.history
+slides/lectures/*_files/*
+slides/lectures/*_cache/*
+slides/lectures/data/*
+*/*_cache/*
+notes/_bookdown_files/*
+.drake/*

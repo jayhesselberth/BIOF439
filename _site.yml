@@ -1,0 +1,32 @@
+name: BIOF 439
+output_dir: docs
+exclude: ['Personal','slides','assignments','notes', 'R', 'README.Rmd']
+navbar:
+  title: Data Visualization using R
+  left:
+    - text: "Home"
+      href: index.html
+    - text: Syllabus
+      href: syllabus.html
+    - text: Instructor bio
+      href: bio.html
+    - text: Lectures
+      href: slides/
+    - text: Homework
+      href: assignments/
+    - text: Resources
+      href: resources.html
+  right:
+    - text: Course Notes
+      href: notes/
+    - icon: fa-slack
+      text: Slack
+      href: https://biof439dataviz.slack.com
+    - icon: fa-github
+      text: GitHub
+      href: https://www.github.com/araastat/BIOF439
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    css: ./style.css
