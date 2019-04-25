@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>A quick tour of R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Abhijit Dasgupta, PhD" />
+    <link href="Rintro_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="robot.css" type="text/css" />
+    <link rel="stylesheet" href="robot-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# A quick tour of R
+### Abhijit Dasgupta, PhD
+### Spring 2019
+
+---
+
+
+
+
+layout: true
+
+&lt;div class="my-header"&gt;
+&lt;span&gt;BIOF 439, Spring 2019&lt;/span&gt;&lt;/div&gt;
+
+---
+
+## The bare essentials
+
+- Everything in R is an object with a name
+- Things are nouns
+    - Nouns in R are _data objects_, like scalars, matrices, data.frames/tibbles, strings, vectors
+- Nouns are acted upon by verbs
+    - Verbs in R are _functions_, like `mean(x)`, `nrow(d)`, `dim(d)`, `ggplot` and so on
+- You can modify verbs with adverbs
+    - Adverbs in R are _function options_, like `mean(x, na.rm=T)`, `geom_point(color='green')`
+
+---
+
+## The bare essentials
+- You have to name things to store them
+    - This is done with the `&lt;-` operator, e.g. 
+        - `mn &lt;- mean(x, na.rm=T)` stores the result of the average
+        - `my_theme &lt;- function() theme_bw() + theme(axis.title=element_text(size=14))` stores the function, which you'll call as `my_theme()`
+
+&gt; You can see the objects you have created either by typing `ls()` in the console, or looking in the Environment pane
+
+&gt; Note, built-in objects don't show up in the Environment pane or using `ls()`
+
+---
+
+## The bare essentials
+
+There are three kinds of brackets in R
+
+`[]` are used for extracting elements from arrays, matrices, data frames.
+
+- `x[3]` is the 3rd element of an array `x`
+- `d[1,3]` is the element in the 1st row and 3rd column of a matrix/data frame `d`
+- `d[2,]` is the entire first __row__ of a matrix/data frame `d`
+- `d[,4]` is the entire 4th __column__ of a matrix/data frame `d`
+    
+---
+
+## The bare essentials
+
+There are three kinds of brackets in R
+
+`()` are used for specifying arguments to functions
+
+- `mean(x)` gives the mean of an array of numbers `x`
+- `summary(d)` gives a summary representation of a data frame `d`
+
+---
+
+## The bare essentials
+
+There are three kinds of brackets in R
+
+`{}` are used to contain groups of commands/statements
+
+.pull-left[
+
+A conditional statement
+
+
+```r
+if (age &lt; 18){
+   person &lt;- 'Minor'
+} else if (age &gt; 65) {
+  person &lt;- 'Senior'
+} else {
+  person &lt;- 'Adult'
+}
+```
+]
+.pull-right[
+
+A function definition
+
+
+```r
+my_mean &lt;- function(x, na.rm = T){
+  if(na.rm){
+    x &lt;- x[!is.na(x)]
+  }
+  s &lt;- sum(x)
+  n &lt;- log10(enterococci)gth(x)
+  mn &lt;- s / n # There is a built-in function mean, so I don't use that word
+  return(mn)
+}
+```
+
+]
+
+---
+
+## Data types
+
+A __scalar:__
+
+- `29`
+- `"cherry"`
+- `TRUE`
+
+---
+
+## Data types
+
+### A __scalar:__
+
+- `29` : _numeric_
+- `"cherry"`: _character_
+- `TRUE`: _logical_
+
+---
+
+## Data types
+
+### Vectors/Arrays
+
+These are constructed using the `c()` function (for _concatenate_).
+
+
+```r
+c(1,2,5,6,7,8)
+```
+
+```
+#&gt;  [1] 1 2 5 6 7 8
+```
+
+```r
+c('apple','berry','melon','citrus')
+```
+
+```
+#&gt;  [1] "apple"  "berry"  "melon"  "citrus"
+```
+
+&gt; Vectors must all contain objects of the same type. Can't mix and match
+
+
+---
+
+## Data types
+
+### Matrices (2-d arrays)
+
+These are typically built from vectors
+
+
+```r
+x &lt;- c(1,2,4,5,6,7)
+y &lt;- 10:16  # Shortcut for c(10,11,12,13,14,15,16)
+```
+
+.pull-left[
+
+```r
+cbind(x, y) # Vectors as columns
+```
+
+```
+#&gt;       x  y
+#&gt;  [1,] 1 10
+#&gt;  [2,] 2 11
+#&gt;  [3,] 4 12
+#&gt;  [4,] 5 13
+#&gt;  [5,] 6 14
+#&gt;  [6,] 7 15
+#&gt;  [7,] 1 16
+```
+]
+.pull-right[
+
+```r
+rbind(x, y) # Vectors as rows
+```
+
+```
+#&gt;    [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+#&gt;  x    1    2    4    5    6    7    1
+#&gt;  y   10   11   12   13   14   15   16
+```
+]
+
+---
+
+## Data types
+
+### Lists
+
+Lists are basically buckets or containers. Each element of a list can be anything, even other lists
+
+.pull-left[
+
+```r
+my_list &lt;- list('a', c(2,3,5,6), head(mpg))
+my_list
+```
+]
+.pull-right[
+
+```
+#&gt;  [[1]]
+#&gt;  [1] "a"
+#&gt;  
+#&gt;  [[2]]
+#&gt;  [1] 2 3 5 6
+#&gt;  
+#&gt;  [[3]]
+#&gt;  # A tibble: 6 x 11
+#&gt;    manufacturer model displ  year   cyl trans  drv     cty   hwy fl    class
+#&gt;    &lt;chr&gt;        &lt;chr&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;
+#&gt;  1 audi         a4      1.8  1999     4 auto(… f        18    29 p     comp…
+#&gt;  2 audi         a4      1.8  1999     4 manua… f        21    29 p     comp…
+#&gt;  3 audi         a4      2    2008     4 manua… f        20    31 p     comp…
+#&gt;  4 audi         a4      2    2008     4 auto(… f        21    30 p     comp…
+#&gt;  5 audi         a4      2.8  1999     6 auto(… f        16    26 p     comp…
+#&gt;  6 audi         a4      2.8  1999     6 manua… f        18    26 p     comp…
+```
+
+]
+---
+
+## Data types
+
+### data.frame/tibble
+
+This is the typical container for tabular data
+
+- must be rectangular
+- each column can be of a different type
+- elements within each column have to be of the same type
+
+---
+
+## Data types
+
+### data.frame/tibble
+
+
+```r
+beaches &lt;- rio::import('data/sydneybeaches3.csv') # use the import function from the package rio
+class(beaches)
+```
+
+```
+#&gt;  [1] "data.frame"
+```
+
+```r
+dim(beaches)
+```
+
+```
+#&gt;  [1] 344  12
+```
+
+```r
+head(beaches)
+```
+
+```
+#&gt;          date year month day season rainfall temperature enterococci
+#&gt;  1 2013-01-02 2013     1   2      1      0.0        23.4         6.7
+#&gt;  2 2013-01-06 2013     1   6      1      0.0        30.3         2.0
+#&gt;  3 2013-01-12 2013     1  12      1      0.0        31.4        69.1
+#&gt;  4 2013-01-18 2013     1  18      1      0.0        46.4         9.0
+#&gt;  5 2013-01-24 2013     1  24      1      0.0        27.5        33.9
+#&gt;  6 2013-01-30 2013     1  30      1      0.6        26.6        26.5
+#&gt;    day_num month_num month_name season_name
+#&gt;  1       2         1    January      Summer
+#&gt;  2       6         1    January      Summer
+#&gt;  3      12         1    January      Summer
+#&gt;  4      18         1    January      Summer
+#&gt;  5      24         1    January      Summer
+#&gt;  6      30         1    January      Summer
+```
+
+
+---
+
+## Data types
+
+### data.frame/tibble
+
+
+```r
+library(tidyverse) # Activate the tidyverse package
+beaches_t &lt;- as_tibble(beaches)
+class(beaches_t)
+```
+
+```
+#&gt;  [1] "tbl_df"     "tbl"        "data.frame"
+```
+
+```r
+beaches_t
+```
+
+```
+#&gt;  # A tibble: 344 x 12
+#&gt;     date   year month   day season rainfall temperature enterococci day_num
+#&gt;     &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt;    &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;   &lt;int&gt;
+#&gt;   1 2013…  2013     1     2      1      0          23.4         6.7       2
+#&gt;   2 2013…  2013     1     6      1      0          30.3         2         6
+#&gt;   3 2013…  2013     1    12      1      0          31.4        69.1      12
+#&gt;   4 2013…  2013     1    18      1      0          46.4         9        18
+#&gt;   5 2013…  2013     1    24      1      0          27.5        33.9      24
+#&gt;   6 2013…  2013     1    30      1      0.6        26.6        26.5      30
+#&gt;   7 2013…  2013     2     5      1      0.1        25.7        66.9      36
+#&gt;   8 2013…  2013     2    11      1      8          22.2       118.       42
+#&gt;   9 2013…  2013     2    17      1     13.6        26.3        75        48
+#&gt;  10 2013…  2013     2    23      1      7.2        24.8       311.       54
+#&gt;  # … with 334 more rows, and 3 more variables: month_num &lt;int&gt;,
+#&gt;  #   month_name &lt;chr&gt;, season_name &lt;chr&gt;
+```
+
+---
+
+## Data types
+
+### data.frame/tibble
+
+Extracting columns from a data frame:
+
+1. `beaches$temperature`
+1. `beaches[,'temperature']`
+1. `beaches[['temperature']]`
+1. `beaches[,7]`
+1. `beaches[[7]]`
+---
+
+## Packages in R
+
+R is a modular environment with some base functionality that is augmented by __packages__ (think of them as modules)
+
+- Packages can contain _functions_ and _data_
+- There are over 15K packages on CRAN, the Comprehensive R Archive Network
+- There are over 1600 packages on Bioconductor, the main repository for bioinformatics resources
+    - Analytic, Annotation, Experimental data and Workflow packages
+
+--
+
+#### Finding packages
+
+1. CRAN [Task views](https://cran.r-project.org/web/views/){target=_blank}
+1. Bioconductor [BiocViews](http://bioconductor.org/packages/release/BiocViews.html){target=_blank}
+1. GitHub (open source collaboration and version control environment)
+
+---
+
+## Installing packages
+
+.pull-left[
+### From CRAN
+
+```r
+install.packages("tidyverse")
+```
+
+### From Bioconductor
+
+```r
+install.packages("BiocManager") # do once 
+BioManager::install('limma')
+```
+
+### From GitHub
+
+
+```r
+install.packages('remotes') # do once
+remotes::install_github("rstudio/rmarkdown") # usual format is username/packagename
+```
+]
+.pull-right[
+&gt; GitHub often hosts development version of packages published on CRAN or Bioconductor
+
+&gt; Both CRAN and Bioconductor have stringent checks to make sure packages can run properly, with no obvious program flaws. There are typically no
+  guarantees about analytic or theoretical correctness, but most packages have been crowd-validated and there are several reliable developer groups
+  including RStudio
+]
+
+---
+
+## Using packages
+
+You have to first "activate" the package in your current working session using the `library` function.
+
+
+
+.pull-left[
+
+```r
+ggplot(beaches, aes(temperature, rainfall)) +
+  geom_point()
+```
+
+```
+#&gt;  Error in ggplot(beaches, aes(temperature, rainfall)): could not find function "ggplot"
+```
+]
+
+--
+
+.pull-right[
+
+```r
+library(ggplot2) # or library(tidyverse)
+ggplot(beaches, aes(temperature, rainfall)) +
+  geom_point()
+```
+
+![](Rintro_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+
+]
+
+---
+class: center, middle
+
+# Tidying data using the tidyverse
+
+---
+
+## What is the ["Tidyverse"](http://www.tidyverse.org)?
+
+
+
+&lt;div style="display:flex;align-items:center;font-size:30pt;font-family:serif;width:100%;height:300px;background-color:wheat;text-align:center; border: 1px solid red; position: relative;"&gt;
+
+The tidyverse is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures
+
+&lt;/div&gt;
+
+---
+
+## What is the ["Tidyverse"](http://www.tidyverse.org)?
+
+A set of R packages that:
+
+&lt;ul&gt;
+  &lt;li&gt; help make data more computer-friendly
+  &lt;li&gt;while making your code more human-friendly
+&lt;/ul&gt;
+
+- Most of these packages are (co-)written by Dr. Hadley Wickham, who has rockstar status in the R world
+- They are supported by the company RStudio
+
+---
+class:middle, center
+
+# Tidying data
+
+---
+
+## Tidy data
+
+&lt;div style="display:flex;align-items:center;font-size:30pt;font-family:sans-serif;width:100%;height:300px;background-color:wheat;text-align:center; padding-left:30px;border: 1px solid red; position: relative;"&gt;
+
+Tidy datasets are all alike, &lt;br/&gt;
+but every messy data is messy in its own way
+
+&lt;/div&gt;
+
+---
+
+## Tidy data
+
+Tidy data is a **computer-friendly** format based on the following characteristics:
+
+- Each row is one observation
+- Each column is one variable
+- Each set of observational unit forms a table
+
+All other forms of data can be considered **messy data**.
+
+---
+
+## Let us count the ways
+
+There are many ways data can be messy. An incomplete list....
+
++ Column headers are values, not variables
++ Multiple variables are stored in a single column
++ Variables are stored in both rows and columns
++ Multiple types of observational units are saved in the same table
++ A single observational unit is stored in multiple tables
+
+---
+
+## Ways to have messy (i.e. not tidy) data
+
+1. Column headers contain values
+
+Country   |   &lt; $10K    | $10-20K    | $20-50K   | $50-100K    | &gt; $100K
+----------|-------------|------------|-----------|-------------|---------
+India     |   40        |  25        |   25      |  9          |  1
+USA       |   20        |  20        |  20       | 30          |  10
+
+---
+
+## Ways to have messy (i.e. not tidy) data
+
+Column headers contain values
+
+Country   |   Income  | Percentage
+----------|-----------|------------
+India     |  &lt; $10K   |  40
+USA       |  &lt; $10K   | 20
+
+This is a case of reshaping or melting 
+
+---
+
+## Ways to have messy (i.e. not tidy) data
+
+Multiple variables in one column
+
+Country  | Year   | M_0-14  | F_0-14  | M_ 15-60  | F_15-60  | M_60+  | F_60+
+---------|--------|---------|---------|-----------|----------|--------|-------
+UK       |  2010  |         |         |           |          |        | 
+UK       |  2011  |         |         |           |          |        | 
+
+&lt;p&gt;
+Separating columns into different variables
+
+Country  | Year   | Gender  | Age    | Count
+---------|--------|---------|--------|-------
+
+
+
+
+---
+
+## Tidying data
+
+The typical steps are 
+
++ Transforming data from wide to tall (*gather*) and from tall to wide (*spread*)
++ Separating columns into different columns
++ Putting columns together into new variables
+
+---
+class: middle, center
+
+# Cleaning data
+
+---
+
+## Some actions on data
+
++ Creating new variables (*mutate*)
++ Choose some columns (*select*)
++ Selecting rows based on some criteria (*filter*)
++ Sort data based on some variables (*arrange*)
+
+---
+
+## Example data
+
+
+```r
+head(mtcars, 3)
+```
+
+```
+#&gt;                 mpg cyl disp  hp drat    wt  qsec vs am gear carb
+#&gt;  Mazda RX4     21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+#&gt;  Mazda RX4 Wag 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+#&gt;  Datsun 710    22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+```
+
+
+- Car names are in an attribute of the data.frame called `rownames`. So it's not in a column
+- We might want to convert fuel economy to metric 
+- We might just want to look at the relationship between displacement and fuel economy based on number of cylinders
+
+---
+
+## Example data ([link](https://dl.dropboxusercontent.com/s/pqavhcckshqxtjm/brca.csv))
+
+
+```r
+link &lt;- 'https://dl.dropboxusercontent.com/s/pqavhcckshqxtjm/brca.csv'
+brca_data &lt;- rio::import(link)
+```
+&lt;img src = "https://dl.dropboxusercontent.com/s/k3r12s7d22zhku8/Screenshot%202018-09-26%2000.27.50.png" 
+  width="600" height="150"&gt;&lt;/img&gt;
+
+---
+
+## The `tidyverse` package
+
+The `tidyverse` package is a meta-package that installs a set of packages that are useful for data 
+cleaning, data tidying and data munging (manipulating data to get a computationally "attractive" 
+dataset)
+
+---
+
+## The `tidyverse` package
+
+
+```r
+# install.packages('tidyverse')
+library(tidyverse)
+```
+
+
+&gt; You can specify a function from a particular package as `dplyr::filter`. Note there
+are two colons there
+
+
+---
+
+## Core `tidyverse` packages
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Package &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ggplot2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Data visualization &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; tibble &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; data.frame on steroids &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; tidyr &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Data tidying (today) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; readr &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Reading text files (CSV) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; purrr &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Applying functions to data iteratively &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dplyr &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Data cleaning and munging (today) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; stringr &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; String (character) manipulation &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; forcats &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manipulating categorical variables &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+## Additional `tidyverse` packages
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Package &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; readxl &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Read Excel files &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; haven &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Read SAS, SPSS, Stata files &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; lubridate &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Deal with dates and times &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; magrittr &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Provides the pipe operator %&amp;gt;% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; glue &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Makes pasting text and data easier &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+### Additional useful packages
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Package &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; broom &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Turns the results of models or analysis into tidy datasets &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fs &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Allows directory and file manipulation in OS-agnostic manner &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; here &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Allows robust specification of directory structure in a Project &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+class: middle, center
+
+# Pipes
+
+---
+
+## Pipes
+
+Pipes (denoted `%&gt;%`, spoken as "then") are to analytic pipelines as `+` is to `ggplot` layers
+
+
+```r
+mpg1 &lt;- mpg %&gt;% mutate(id=1:n()) %&gt;% select(id, year, trans, cty, hwy)
+mpg_metric &lt;- mpg1 %&gt;% 
+  mutate_at(vars(cty, hwy), function(x) {x * 1.6/3.8})
+```
+
+.pull-left[
+
+Original data
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; id &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; hwy &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; auto(l5) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; manual(m6) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; auto(av) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; auto(l5) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 26 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+.pull-right[
+
+Transformed data
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; id &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; hwy &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; auto(l5) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.578947 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.21053 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.842105 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.21053 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; manual(m6) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.421053 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.05263 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; auto(av) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.842105 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.63158 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; auto(l5) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.736842 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.94737 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+--
+
+&gt; Note I'm assigning a name to the transformed data. Otherwise it'll be lost
+
+---
+
+## Verbs to use in pipes
+
+The verbs in `tidyverse` are specially useful in pipes
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Verb &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Functionality &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; mutate &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Transform a column with some function &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; select &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Select some columns in the data &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; arrange &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Order the data frame by values of a column(s) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; filter &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Keep only rows that meet some data criterion &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; group_by &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Group by levels of a variable &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; gather &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Transform a wide dataset to a long dataset &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; spread &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Transform a long dataset to a wide dataset &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; separate &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Separate one column into several columns &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; unite &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Concatenate several columns into 1 column &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+Pipes almost always start with a data.frame/tibble object, and then "pipes" that data through different transformations (functions)
+
+At each `%&gt;%`, the results of the previous step are used as input for the next step.
+
+---
+class: middle, center
+
+# A complicated example
+
+---
+
+## Grab the raw data
+
+
+```r
+url &lt;- "http://varianceexplained.org/files/Brauer2008_DataSet1.tds"
+raw_data &lt;- read_delim(url, delim='\t')
+head(raw_data)
+```
+
+```
+#&gt;  # A tibble: 6 x 40
+#&gt;    GID   YORF  NAME  GWEIGHT G0.05  G0.1 G0.15  G0.2 G0.25  G0.3 N0.05  N0.1
+#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1 GENE… A_06… SFB2…       1 -0.24 -0.13 -0.21 -0.15 -0.05 -0.05  0.2   0.24
+#&gt;  2 GENE… A_06… "   …       1  0.28  0.13 -0.4  -0.48 -0.11  0.17  0.31  0   
+#&gt;  3 GENE… A_06… QRI7…       1 -0.02 -0.27 -0.27 -0.02  0.24  0.25  0.23  0.06
+#&gt;  4 GENE… A_06… CFT2…       1 -0.33 -0.41 -0.24 -0.03 -0.03  0     0.2  -0.25
+#&gt;  5 GENE… A_06… SSO2…       1  0.05  0.02  0.4   0.34 -0.13 -0.14 -0.35 -0.09
+#&gt;  6 GENE… A_06… PSP2…       1 -0.69 -0.03  0.23  0.2   0    -0.27  0.17 -0.4 
+#&gt;  # … with 28 more variables: N0.15 &lt;dbl&gt;, N0.2 &lt;dbl&gt;, N0.25 &lt;dbl&gt;,
+#&gt;  #   N0.3 &lt;dbl&gt;, P0.05 &lt;dbl&gt;, P0.1 &lt;dbl&gt;, P0.15 &lt;dbl&gt;, P0.2 &lt;dbl&gt;,
+#&gt;  #   P0.25 &lt;dbl&gt;, P0.3 &lt;dbl&gt;, S0.05 &lt;dbl&gt;, S0.1 &lt;dbl&gt;, S0.15 &lt;dbl&gt;,
+#&gt;  #   S0.2 &lt;dbl&gt;, S0.25 &lt;dbl&gt;, S0.3 &lt;dbl&gt;, L0.05 &lt;dbl&gt;, L0.1 &lt;dbl&gt;,
+#&gt;  #   L0.15 &lt;dbl&gt;, L0.2 &lt;dbl&gt;, L0.25 &lt;dbl&gt;, L0.3 &lt;dbl&gt;, U0.05 &lt;dbl&gt;,
+#&gt;  #   U0.1 &lt;dbl&gt;, U0.15 &lt;dbl&gt;, U0.2 &lt;dbl&gt;, U0.25 &lt;dbl&gt;, U0.3 &lt;dbl&gt;
+```
+
+
+---
+
+## Look at the annotation data
+
+
+```r
+head(raw_data$NAME)
+```
+
+```
+#&gt;  [1] "SFB2       || ER to Golgi transport || molecular function unknown || YNL049C || 1082129"          
+#&gt;  [2] "          || biological process unknown || molecular function unknown || YNL095C || 1086222"      
+#&gt;  [3] "QRI7       || proteolysis and peptidolysis || metalloendopeptidase activity || YDL104C || 1085955"
+#&gt;  [4] "CFT2       || mRNA polyadenylylation* || RNA binding || YLR115W || 1081958"                       
+#&gt;  [5] "SSO2       || vesicle fusion* || t-SNARE activity || YMR183C || 1081214"                          
+#&gt;  [6] "PSP2       || biological process unknown || molecular function unknown || YML017W || 1083036"
+```
+
+
+---
+
+## Separate annotation into columns
+
+
+```r
+cleaned_data &lt;- raw_data %&gt;% 
+* separate(NAME, c("name", "BP", "MF", "systematic_name", "number"),
+*          sep = "\\|\\|")
+head(cleaned_data)
+```
+
+```
+#&gt;  # A tibble: 6 x 44
+#&gt;    GID   YORF  name  BP    MF    systematic_name number GWEIGHT G0.05  G0.1
+#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;           &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1 GENE… A_06… "SFB… " ER… " mo… " YNL049C "     " 108…       1 -0.24 -0.13
+#&gt;  2 GENE… A_06… "   … " bi… " mo… " YNL095C "     " 108…       1  0.28  0.13
+#&gt;  3 GENE… A_06… "QRI… " pr… " me… " YDL104C "     " 108…       1 -0.02 -0.27
+#&gt;  4 GENE… A_06… "CFT… " mR… " RN… " YLR115W "     " 108…       1 -0.33 -0.41
+#&gt;  5 GENE… A_06… "SSO… " ve… " t-… " YMR183C "     " 108…       1  0.05  0.02
+#&gt;  6 GENE… A_06… "PSP… " bi… " mo… " YML017W "     " 108…       1 -0.69 -0.03
+#&gt;  # … with 34 more variables: G0.15 &lt;dbl&gt;, G0.2 &lt;dbl&gt;, G0.25 &lt;dbl&gt;,
+#&gt;  #   G0.3 &lt;dbl&gt;, N0.05 &lt;dbl&gt;, N0.1 &lt;dbl&gt;, N0.15 &lt;dbl&gt;, N0.2 &lt;dbl&gt;,
+#&gt;  #   N0.25 &lt;dbl&gt;, N0.3 &lt;dbl&gt;, P0.05 &lt;dbl&gt;, P0.1 &lt;dbl&gt;, P0.15 &lt;dbl&gt;,
+#&gt;  #   P0.2 &lt;dbl&gt;, P0.25 &lt;dbl&gt;, P0.3 &lt;dbl&gt;, S0.05 &lt;dbl&gt;, S0.1 &lt;dbl&gt;,
+#&gt;  #   S0.15 &lt;dbl&gt;, S0.2 &lt;dbl&gt;, S0.25 &lt;dbl&gt;, S0.3 &lt;dbl&gt;, L0.05 &lt;dbl&gt;,
+#&gt;  #   L0.1 &lt;dbl&gt;, L0.15 &lt;dbl&gt;, L0.2 &lt;dbl&gt;, L0.25 &lt;dbl&gt;, L0.3 &lt;dbl&gt;,
+#&gt;  #   U0.05 &lt;dbl&gt;, U0.1 &lt;dbl&gt;, U0.15 &lt;dbl&gt;, U0.2 &lt;dbl&gt;, U0.25 &lt;dbl&gt;,
+#&gt;  #   U0.3 &lt;dbl&gt;
+```
+
+
+---
+
+## Get rid of padding in annotation
+
+
+```r
+cleaned_data &lt;- raw_data %&gt;% 
+  separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), 
+           sep = "\\|\\|") %&gt;% 
+* mutate_at(vars(name:systematic_name), funs(stringr::str_trim))
+head(cleaned_data)
+```
+
+```
+#&gt;  # A tibble: 6 x 44
+#&gt;    GID   YORF  name  BP    MF    systematic_name number GWEIGHT G0.05  G0.1
+#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;           &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1 GENE… A_06… SFB2  ER t… mole… YNL049C         " 108…       1 -0.24 -0.13
+#&gt;  2 GENE… A_06… ""    biol… mole… YNL095C         " 108…       1  0.28  0.13
+#&gt;  3 GENE… A_06… QRI7  prot… meta… YDL104C         " 108…       1 -0.02 -0.27
+#&gt;  4 GENE… A_06… CFT2  mRNA… RNA … YLR115W         " 108…       1 -0.33 -0.41
+#&gt;  5 GENE… A_06… SSO2  vesi… t-SN… YMR183C         " 108…       1  0.05  0.02
+#&gt;  6 GENE… A_06… PSP2  biol… mole… YML017W         " 108…       1 -0.69 -0.03
+#&gt;  # … with 34 more variables: G0.15 &lt;dbl&gt;, G0.2 &lt;dbl&gt;, G0.25 &lt;dbl&gt;,
+#&gt;  #   G0.3 &lt;dbl&gt;, N0.05 &lt;dbl&gt;, N0.1 &lt;dbl&gt;, N0.15 &lt;dbl&gt;, N0.2 &lt;dbl&gt;,
+#&gt;  #   N0.25 &lt;dbl&gt;, N0.3 &lt;dbl&gt;, P0.05 &lt;dbl&gt;, P0.1 &lt;dbl&gt;, P0.15 &lt;dbl&gt;,
+#&gt;  #   P0.2 &lt;dbl&gt;, P0.25 &lt;dbl&gt;, P0.3 &lt;dbl&gt;, S0.05 &lt;dbl&gt;, S0.1 &lt;dbl&gt;,
+#&gt;  #   S0.15 &lt;dbl&gt;, S0.2 &lt;dbl&gt;, S0.25 &lt;dbl&gt;, S0.3 &lt;dbl&gt;, L0.05 &lt;dbl&gt;,
+#&gt;  #   L0.1 &lt;dbl&gt;, L0.15 &lt;dbl&gt;, L0.2 &lt;dbl&gt;, L0.25 &lt;dbl&gt;, L0.3 &lt;dbl&gt;,
+#&gt;  #   U0.05 &lt;dbl&gt;, U0.1 &lt;dbl&gt;, U0.15 &lt;dbl&gt;, U0.2 &lt;dbl&gt;, U0.25 &lt;dbl&gt;,
+#&gt;  #   U0.3 &lt;dbl&gt;
+```
+
+
+---
+
+## Get rid of some columns
+
+
+```r
+cleaned_data &lt;- raw_data %&gt;% 
+  separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), 
+           sep = "\\|\\|") %&gt;% 
+  mutate_at(vars(name:systematic_name), funs(stringr::str_trim)) %&gt;% 
+* select(-number, -GID, -YORF, -GWEIGHT)
+head(cleaned_data)
+```
+
+```
+#&gt;  # A tibble: 6 x 40
+#&gt;    name  BP    MF    systematic_name G0.05  G0.1 G0.15  G0.2 G0.25  G0.3
+#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;           &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1 SFB2  ER t… mole… YNL049C         -0.24 -0.13 -0.21 -0.15 -0.05 -0.05
+#&gt;  2 ""    biol… mole… YNL095C          0.28  0.13 -0.4  -0.48 -0.11  0.17
+#&gt;  3 QRI7  prot… meta… YDL104C         -0.02 -0.27 -0.27 -0.02  0.24  0.25
+#&gt;  4 CFT2  mRNA… RNA … YLR115W         -0.33 -0.41 -0.24 -0.03 -0.03  0   
+#&gt;  5 SSO2  vesi… t-SN… YMR183C          0.05  0.02  0.4   0.34 -0.13 -0.14
+#&gt;  6 PSP2  biol… mole… YML017W         -0.69 -0.03  0.23  0.2   0    -0.27
+#&gt;  # … with 30 more variables: N0.05 &lt;dbl&gt;, N0.1 &lt;dbl&gt;, N0.15 &lt;dbl&gt;,
+#&gt;  #   N0.2 &lt;dbl&gt;, N0.25 &lt;dbl&gt;, N0.3 &lt;dbl&gt;, P0.05 &lt;dbl&gt;, P0.1 &lt;dbl&gt;,
+#&gt;  #   P0.15 &lt;dbl&gt;, P0.2 &lt;dbl&gt;, P0.25 &lt;dbl&gt;, P0.3 &lt;dbl&gt;, S0.05 &lt;dbl&gt;,
+#&gt;  #   S0.1 &lt;dbl&gt;, S0.15 &lt;dbl&gt;, S0.2 &lt;dbl&gt;, S0.25 &lt;dbl&gt;, S0.3 &lt;dbl&gt;,
+#&gt;  #   L0.05 &lt;dbl&gt;, L0.1 &lt;dbl&gt;, L0.15 &lt;dbl&gt;, L0.2 &lt;dbl&gt;, L0.25 &lt;dbl&gt;,
+#&gt;  #   L0.3 &lt;dbl&gt;, U0.05 &lt;dbl&gt;, U0.1 &lt;dbl&gt;, U0.15 &lt;dbl&gt;, U0.2 &lt;dbl&gt;,
+#&gt;  #   U0.25 &lt;dbl&gt;, U0.3 &lt;dbl&gt;
+```
+
+
+---
+
+## Make data tidy
+
+
+```r
+cleaned_data &lt;- raw_data %&gt;% 
+  separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), 
+           sep = "\\|\\|") %&gt;% 
+  mutate_at(vars(name:systematic_name), funs(stringr::str_trim)) %&gt;% 
+  select(-number, -GID, -YORF, -GWEIGHT) %&gt;% 
+* tidyr::gather(sample, expression, G0.05:U0.3)
+head(cleaned_data)
+```
+
+```
+#&gt;  # A tibble: 6 x 6
+#&gt;    name  BP               MF               systematic_name sample expression
+#&gt;    &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;           &lt;chr&gt;       &lt;dbl&gt;
+#&gt;  1 SFB2  ER to Golgi tra… molecular funct… YNL049C         G0.05       -0.24
+#&gt;  2 ""    biological proc… molecular funct… YNL095C         G0.05        0.28
+#&gt;  3 QRI7  proteolysis and… metalloendopept… YDL104C         G0.05       -0.02
+#&gt;  4 CFT2  mRNA polyadenyl… RNA binding      YLR115W         G0.05       -0.33
+#&gt;  5 SSO2  vesicle fusion*  t-SNARE activity YMR183C         G0.05        0.05
+#&gt;  6 PSP2  biological proc… molecular funct… YML017W         G0.05       -0.69
+```
+
+
+---
+
+## Split columns
+
+
+```r
+cleaned_data &lt;- raw_data %&gt;% 
+  separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), 
+           sep = "\\|\\|") %&gt;% 
+  mutate_at(vars(name:systematic_name), funs(stringr::str_trim)) %&gt;% 
+  select(-number, -GID, -YORF, -GWEIGHT) %&gt;% 
+  tidyr::gather(sample, expression, G0.05:U0.3) %&gt;% 
+* separate(sample, c("nutrient", "rate"), sep=1, convert = TRUE)
+head(cleaned_data)
+```
+
+```
+#&gt;  # A tibble: 6 x 7
+#&gt;    name  BP           MF           systematic_name nutrient  rate expression
+#&gt;    &lt;chr&gt; &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;           &lt;chr&gt;    &lt;dbl&gt;      &lt;dbl&gt;
+#&gt;  1 SFB2  ER to Golgi… molecular f… YNL049C         G         0.05      -0.24
+#&gt;  2 ""    biological … molecular f… YNL095C         G         0.05       0.28
+#&gt;  3 QRI7  proteolysis… metalloendo… YDL104C         G         0.05      -0.02
+#&gt;  4 CFT2  mRNA polyad… RNA binding  YLR115W         G         0.05      -0.33
+#&gt;  5 SSO2  vesicle fus… t-SNARE act… YMR183C         G         0.05       0.05
+#&gt;  6 PSP2  biological … molecular f… YML017W         G         0.05      -0.69
+```
+
+
+---
+
+## Get rid of rows with missing expression or name
+
+
+```r
+cleaned_data &lt;- raw_data %&gt;% 
+  separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), 
+           sep = "\\|\\|") %&gt;% 
+  mutate_at(vars(name:systematic_name), funs(stringr::str_trim)) %&gt;% 
+  select(-number, -GID, -YORF, -GWEIGHT) %&gt;% 
+  tidyr::gather(sample, expression, G0.05:U0.3) %&gt;% 
+  separate(sample, c("nutrient", "rate"), sep=1, convert = TRUE) %&gt;% 
+* filter(!is.na(expression), systematic_name != '')
+head(cleaned_data)
+```
+
+```
+#&gt;  # A tibble: 6 x 7
+#&gt;    name  BP           MF           systematic_name nutrient  rate expression
+#&gt;    &lt;chr&gt; &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;           &lt;chr&gt;    &lt;dbl&gt;      &lt;dbl&gt;
+#&gt;  1 SFB2  ER to Golgi… molecular f… YNL049C         G         0.05      -0.24
+#&gt;  2 ""    biological … molecular f… YNL095C         G         0.05       0.28
+#&gt;  3 QRI7  proteolysis… metalloendo… YDL104C         G         0.05      -0.02
+#&gt;  4 CFT2  mRNA polyad… RNA binding  YLR115W         G         0.05      -0.33
+#&gt;  5 SSO2  vesicle fus… t-SNARE act… YMR183C         G         0.05       0.05
+#&gt;  6 PSP2  biological … molecular f… YML017W         G         0.05      -0.69
+```
+
+
+---
+
+## Visualize
+
+
+
+```r
+cleaned_data %&gt;%
+  filter(BP == "leucine biosynthesis") %&gt;%
+* ggplot(aes(rate, expression, color = nutrient)) +
+* geom_point() +
+* geom_smooth(method = "lm", se = FALSE) +
+* facet_wrap(~name + systematic_name, nrow=1) +
+* theme(legend.position='right')
+```
+![](Rintro_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+
+---
+class: middle, center
+
+# Modeling and the broom package
+
+---
+
+# Representing model relationships
+
+In R, there is a particularly convenient way to express models, where you have
+
+- one dependent variable
+- one or more independent variables, with possible transformations and interactions
+
+```
+y ~ x1 + x2 + x1:x2 + I(x3^2) + x4*x5
+```
+
+--
+
+`y` depends on ...
+--
+
+- `x1` and `x2` linearly
+--
+
+- the interaction of `x1` and `x2` (represented as `x1:x2`)
+--
+
+- the square of `x3` (the `I()` notation ensures that the `^` symbol is interpreted correctly)
+--
+
+- `x4`, `x5` and their interaction (same as `x4 + x5 + x4:x5`)
+
+---
+
+# Representing model relationships
+
+```
+y ~ x1 + x2 + x1:x2 + I(x3^2) + x4*x5
+```
+
+This interpretation holds for the vast majority of statistical models in R
+
+- For decision trees and random forests and neural networks, don't add interactions or transformations, since the model will try to figure those out on their own
+
+---
+
+# Our first model
+
+
+```r
+library(survival)
+data(pbc)
+myLinearModel &lt;- lm(chol ~ bili, data = pbc)
+```
+
+Note that everything in R is an **object**, so you can store a model in a variable name.
+
+This statement runs the model and stored the fitted model in `myLinearModel`
+
+R does not interpret the model, evaluate the adequacy or appropriateness of the model, or comment on whether looking at the relationship between cholesterol and bilirubin makes any kind of sense.
+
+---
+
+# Our first model
+
+
+```r
+myLinearModel
+```
+
+```
+#&gt;  
+#&gt;  Call:
+#&gt;  lm(formula = chol ~ bili, data = pbc)
+#&gt;  
+#&gt;  Coefficients:
+#&gt;  (Intercept)         bili  
+#&gt;       303.20        20.24
+```
+
+&gt; Not very informative, is it?
+
+---
+
+# Our first model
+
+
+```r
+summary(myLinearModel)
+```
+
+```
+#&gt;  
+#&gt;  Call:
+#&gt;  lm(formula = chol ~ bili, data = pbc)
+#&gt;  
+#&gt;  Residuals:
+#&gt;      Min      1Q  Median      3Q     Max 
+#&gt;  -565.39  -89.90  -35.36   44.92 1285.33 
+#&gt;  
+#&gt;  Coefficients:
+#&gt;              Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt;  (Intercept)  303.204     15.601  19.435  &lt; 2e-16 ***
+#&gt;  bili          20.240      2.785   7.267 3.63e-12 ***
+#&gt;  ---
+#&gt;  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#&gt;  
+#&gt;  Residual standard error: 213.2 on 282 degrees of freedom
+#&gt;    (134 observations deleted due to missingness)
+#&gt;  Multiple R-squared:  0.1577,	Adjusted R-squared:  0.1547 
+#&gt;  F-statistic:  52.8 on 1 and 282 DF,  p-value: 3.628e-12
+```
+
+&gt; A little better
+
+???
+
+Talk about the different metrics in this slide
+
+
+---
+
+# Our first model
+
+
+```r
+broom::tidy(myLinearModel)
+```
+
+```
+#&gt;  # A tibble: 2 x 5
+#&gt;    term        estimate std.error statistic  p.value
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+#&gt;  1 (Intercept)    303.      15.6      19.4  5.65e-54
+#&gt;  2 bili            20.2      2.79      7.27 3.63e-12
+```
+
+
+```r
+broom::glance(myLinearModel)
+```
+
+```
+#&gt;  # A tibble: 1 x 11
+#&gt;    r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
+#&gt;        &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1     0.158         0.155  213.      52.8 3.63e-12     2 -1925. 3856. 3867.
+#&gt;  # … with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;
+```
+
+---
+
+# Our first model
+
+We do need some sense as to how well this model fit the data
+
+.pull-left[
+
+```r
+# install.packages('ggfortify')
+library(ggfortify)
+autoplot(myLinearModel)
+```
+]
+.pull-right[
+![](Rintro_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
+]
+
+
+---
+
+## Displaying model results
+
+Let's start with this model:
+
+
+```r
+myModel &lt;- lm(log10(enterococci) ~ rainfall + temperature + season_name + factor(year), data = beaches)
+broom::tidy(myModel)
+```
+
+```
+#&gt;  # A tibble: 11 x 5
+#&gt;     term              estimate std.error statistic  p.value
+#&gt;     &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+#&gt;   1 (Intercept)        1.23      0.208       5.92  8.39e- 9
+#&gt;   2 rainfall           0.0284    0.00296     9.58  2.72e-19
+#&gt;   3 temperature       -0.00830   0.00769    -1.08  2.81e- 1
+#&gt;   4 season_nameSpring -0.325     0.0840     -3.87  1.31e- 4
+#&gt;   5 season_nameSummer  0.0862    0.0909      0.948 3.44e- 1
+#&gt;   6 season_nameWinter -0.332     0.0889     -3.74  2.22e- 4
+#&gt;   7 factor(year)2014   0.0498    0.102       0.486 6.27e- 1
+#&gt;   8 factor(year)2015   0.0807    0.100       0.804 4.22e- 1
+#&gt;   9 factor(year)2016   0.0815    0.0975      0.836 4.04e- 1
+#&gt;  10 factor(year)2017  -0.0676    0.0972     -0.696 4.87e- 1
+#&gt;  11 factor(year)2018   0.0440    0.107       0.411 6.81e- 1
+```
+
+---
+
+# Displaying model results
+
+Let's start with this model:
+
+
+```r
+plt_data &lt;- broom::tidy(myModel)
+*plt_data &lt;- plt_data %&gt;% filter(term != '(Intercept)') %&gt;%
+* mutate(term = str_replace(term, 'season_name',''))
+plt_data
+```
+
+```
+#&gt;  # A tibble: 10 x 5
+#&gt;     term             estimate std.error statistic  p.value
+#&gt;     &lt;chr&gt;               &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+#&gt;   1 rainfall          0.0284    0.00296     9.58  2.72e-19
+#&gt;   2 temperature      -0.00830   0.00769    -1.08  2.81e- 1
+#&gt;   3 Spring           -0.325     0.0840     -3.87  1.31e- 4
+#&gt;   4 Summer            0.0862    0.0909      0.948 3.44e- 1
+#&gt;   5 Winter           -0.332     0.0889     -3.74  2.22e- 4
+#&gt;   6 factor(year)2014  0.0498    0.102       0.486 6.27e- 1
+#&gt;   7 factor(year)2015  0.0807    0.100       0.804 4.22e- 1
+#&gt;   8 factor(year)2016  0.0815    0.0975      0.836 4.04e- 1
+#&gt;   9 factor(year)2017 -0.0676    0.0972     -0.696 4.87e- 1
+#&gt;  10 factor(year)2018  0.0440    0.107       0.411 6.81e- 1
+```
+
+---
+
+# Displaying model results
+
+Let's start with this model:
+
+
+```r
+plt_data &lt;- broom::tidy(myModel)
+plt_data &lt;- plt_data %&gt;% filter(term != '(Intercept)') %&gt;% 
+  mutate(term = str_replace(term, 'season_name','')) %&gt;% 
+* mutate(term = str_replace(term, 'factor\\(year\\)','')) # Brackets are "escaped" using \\
+plt_data
+```
+
+```
+#&gt;  # A tibble: 10 x 5
+#&gt;     term        estimate std.error statistic  p.value
+#&gt;     &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+#&gt;   1 rainfall     0.0284    0.00296     9.58  2.72e-19
+#&gt;   2 temperature -0.00830   0.00769    -1.08  2.81e- 1
+#&gt;   3 Spring      -0.325     0.0840     -3.87  1.31e- 4
+#&gt;   4 Summer       0.0862    0.0909      0.948 3.44e- 1
+#&gt;   5 Winter      -0.332     0.0889     -3.74  2.22e- 4
+#&gt;   6 2014         0.0498    0.102       0.486 6.27e- 1
+#&gt;   7 2015         0.0807    0.100       0.804 4.22e- 1
+#&gt;   8 2016         0.0815    0.0975      0.836 4.04e- 1
+#&gt;   9 2017        -0.0676    0.0972     -0.696 4.87e- 1
+#&gt;  10 2018         0.0440    0.107       0.411 6.81e- 1
+```
+
+---
+
+# Displaying model results
+
+Let's start with this model:
+
+.pull-left[
+
+```r
+plt_data &lt;- broom::tidy(myModel)
+plt_data %&gt;% filter(term != '(Intercept)') %&gt;% 
+  mutate(term = str_replace(term, 'season_name','')) %&gt;% 
+  mutate(term = str_replace(term, 'factor\\(year\\)','')) %&gt;% # Brackets need to be "escaped" using \\
+  ggplot(aes(x = term, y = estimate, 
+             ymin = estimate - 2 * std.error, 
+             ymax = estimate + 2 * std.error))+
+    geom_pointrange()
+```
+]
+.pull-right[
+![](Rintro_files/figure-html/unnamed-chunk-44-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+# Displaying model results
+
+Let's start with this model:
+
+.pull-left[
+
+```r
+plt_data &lt;- broom::tidy(myModel)
+plt_data %&gt;% filter(term != '(Intercept)') %&gt;% 
+  mutate(term = str_replace(term, 'season_name','')) %&gt;% 
+  mutate(term = str_replace(term, 'factor\\(year\\)','')) %&gt;% # Brackets need to be "escaped" using \\
+  ggplot(aes(x = term, y = estimate, 
+             ymin = estimate - 2 * std.error, 
+             ymax = estimate + 2 * std.error))+
+    geom_pointrange() + 
+    geom_hline(yintercept = 0, linetype=2) + 
+    theme_bw() + 
+    coord_flip()
+```
+]
+.pull-right[
+![](Rintro_files/figure-html/unnamed-chunk-45-1.png)&lt;!-- --&gt;
+
+]
+---
+
+# Displaying model results
+
+Let's start with this model:
+
+.pull-left[
+
+```r
+plt_data &lt;- broom::tidy(myModel)
+plt_data %&gt;% filter(term != '(Intercept)') %&gt;% 
+  mutate(term = str_replace(term, 'season_name','')) %&gt;% 
+  mutate(term = str_replace(term, 'factor\\(year\\)','')) %&gt;% # Brackets need to be "escaped" using \\
+  ggplot(aes(x = term, y = estimate, 
+             ymin = estimate - 2 * std.error, 
+             ymax = estimate + 2 * std.error))+
+    geom_pointrange() + 
+    geom_hline(yintercept = 0, linetype=2) + 
+    theme_bw() + 
+    coord_flip()
+
+ggsave('results.png') # ggsave knows format from file
+```
+
+You can also save the graph from the RStudio Plots pane, but coding it using `ggsave` is more reproducible
+
+If you need to get a high-definition TIFF, your best bet is to save your graph as a PDF and then convert it using Acrobat or other scripts (ask me if interested). The TIFF printer in R only creates 72 DPI TIFF files
+]
+.pull-right[
+![](Rintro_files/figure-html/unnamed-chunk-47-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Showing group differences ("Figure 1")
+
+The package `ggpubr`, which extends `ggplot2`, makes this very easy. It provides the function `stat_compare_means`
+
+---
+
+## Showing group differences ("Figure 1")
+
+.pull-left[
+
+```r
+library(ggpubr)
+ggplot(
+  data=beaches, 
+  mapping= aes(x = season_name, y = log10(enterococci), color = season_name)) +
+  geom_boxplot()+geom_jitter()
+```
+]
+.pull-right[
+![](Rintro_files/figure-html/unnamed-chunk-48-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Showing group differences ("Figure 1")
+
+.pull-left[
+
+```r
+library(ggpubr)
+plt &lt;- ggplot(
+  data=beaches, 
+  mapping= aes(x = season_name, y = log10(enterococci), color = season_name)) +
+  geom_boxplot() + 
+  geom_jitter(width=0.1)
+my_comparisons &lt;- list(c('Autumn','Spring'),
+                       c('Spring','Summer'),
+                       c('Summer','Winter'),
+                       c('Spring','Winter'))
+*plt + stat_compare_means()
+```
+]
+.pull-right[
+![](Rintro_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Showing group differences ("Figure 1")
+
+.pull-left[
+
+```r
+library(ggpubr)
+plt &lt;- ggplot(
+  data=beaches, 
+  mapping= aes(x = season_name, y = log10(enterococci), color = season_name)) +
+  geom_boxplot() + 
+  geom_jitter(width=0.1)
+my_comparisons &lt;- list(c('Autumn','Spring'),
+                       c('Spring','Summer'),
+                       c('Summer','Winter'),
+                       c('Spring','Winter'))
+plt + stat_compare_means() +
+* stat_compare_means(comparisons = my_comparisons)
+```
+]
+.pull-right[
+![](Rintro_files/figure-html/unnamed-chunk-50-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Showing group differences ("Figure 1")
+
+.pull-left[
+
+```r
+library(ggpubr)
+plt &lt;- ggplot(
+  data=beaches, 
+  mapping= aes(x = season_name, y = log10(enterococci), color = season_name)) +
+  geom_boxplot() + 
+  geom_jitter(width=0.1)
+my_comparisons &lt;- list(c('Autumn','Spring'),
+                       c('Spring','Summer'),
+                       c('Summer','Winter'),
+                       c('Spring','Winter'))
+plt + stat_compare_means(label.y = 6) + 
+  stat_compare_means(comparisons = my_comparisons) +
+* labs(x = 'season_name', y = 'log10(enterococci)gth', color='season_name') +
+* theme_bw()+
+* theme(axis.title= element_text(size=14),
+*       axis.text = element_text(size=12),
+*       text = element_text(size=12))
+```
+]
+.pull-right[
+![](Rintro_files/figure-html/unnamed-chunk-51-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Manipulating data for plotting
+
+We would like to get density plots of all the variables
+
+.pull-left[
+
+```r
+dat_spine &lt;- rio::import('data/Dataset_spine.csv', check.names=T)
+head(dat_spine)
+```
+
+```
+#&gt;    Pelvic.incidence Pelvic.tilt Lumbar.lordosis.angle Sacral.slope
+#&gt;  1         63.02782   22.552586              39.60912     40.47523
+#&gt;  2         39.05695   10.060991              25.01538     28.99596
+#&gt;  3         68.83202   22.218482              50.09219     46.61354
+#&gt;  4         69.29701   24.652878              44.31124     44.64413
+#&gt;  5         49.71286    9.652075              28.31741     40.06078
+#&gt;  6         40.25020   13.921907              25.12495     26.32829
+#&gt;    Pelvic.radius Degree.spondylolisthesis Pelvic.slope Direct.tilt
+#&gt;  1      98.67292                -0.254400    0.7445035     12.5661
+#&gt;  2     114.40543                 4.564259    0.4151857     12.8874
+#&gt;  3     105.98514                -3.530317    0.4748892     26.8343
+#&gt;  4     101.86850                11.211523    0.3693453     23.5603
+#&gt;  5     108.16872                 7.918501    0.5433605     35.4940
+#&gt;  6     130.32787                 2.230652    0.7899929     29.3230
+#&gt;    Thoracic.slope Cervical.tilt Sacrum.angle Scoliosis.slope
+#&gt;  1        14.5386      15.30468   -28.658501         43.5123
+#&gt;  2        17.5323      16.78486   -25.530607         16.1102
+#&gt;  3        17.4861      16.65897   -29.031888         19.2221
+#&gt;  4        12.7074      11.42447   -30.470246         18.8329
+#&gt;  5        15.9546       8.87237   -16.378376         24.9171
+#&gt;  6        12.0036      10.40462    -1.512209          9.6548
+#&gt;    Class.attribute
+#&gt;  1        Abnormal
+#&gt;  2        Abnormal
+#&gt;  3        Abnormal
+#&gt;  4        Abnormal
+#&gt;  5        Abnormal
+#&gt;  6        Abnormal
+```
+]
+.pull-right[
+Facets only work by grouping on a variable. Here we have data in several columns
+]
+
+---
+
+## Manipulating data for plotting
+
+We would like to get density plots of all the variables. 
+
+.pull-left[
+
+```r
+dat_spine %&gt;% 
+  tidyr::gather(variable, value, everything())
+```
+
+```
+#&gt;              variable        value
+#&gt;  1   Pelvic.incidence   63.0278175
+#&gt;  2   Pelvic.incidence  39.05695098
+#&gt;  3   Pelvic.incidence  68.83202098
+#&gt;  4   Pelvic.incidence  69.29700807
+#&gt;  5   Pelvic.incidence  49.71285934
+#&gt;  6   Pelvic.incidence  40.25019968
+#&gt;  7   Pelvic.incidence  53.43292815
+#&gt;  8   Pelvic.incidence  45.36675362
+#&gt;  9   Pelvic.incidence  43.79019026
+#&gt;  10  Pelvic.incidence  36.68635286
+#&gt;  11  Pelvic.incidence  49.70660953
+#&gt;  12  Pelvic.incidence  31.23238734
+#&gt;  13  Pelvic.incidence  48.91555137
+#&gt;  14  Pelvic.incidence   53.5721702
+#&gt;  15  Pelvic.incidence  57.30022656
+#&gt;  16  Pelvic.incidence  44.31890674
+#&gt;  17  Pelvic.incidence  63.83498162
+#&gt;  18  Pelvic.incidence  31.27601184
+#&gt;  19  Pelvic.incidence  38.69791243
+#&gt;  20  Pelvic.incidence  41.72996308
+#&gt;  21  Pelvic.incidence  43.92283983
+#&gt;  22  Pelvic.incidence  54.91944259
+#&gt;  23  Pelvic.incidence  63.07361096
+#&gt;  24  Pelvic.incidence  45.54078988
+#&gt;  25  Pelvic.incidence  36.12568347
+#&gt;  26  Pelvic.incidence  54.12492019
+#&gt;  27  Pelvic.incidence  26.14792141
+#&gt;  28  Pelvic.incidence  43.58096394
+#&gt;  29  Pelvic.incidence   44.5510115
+#&gt;  30  Pelvic.incidence  66.87921138
+#&gt;  31  Pelvic.incidence  50.81926781
+#&gt;  32  Pelvic.incidence  46.39026008
+#&gt;  33  Pelvic.incidence  44.93667457
+#&gt;  34  Pelvic.incidence  38.66325708
+#&gt;  35  Pelvic.incidence  59.59554032
+#&gt;  36  Pelvic.incidence  31.48421834
+#&gt;  37  Pelvic.incidence  32.09098679
+#&gt;  38  Pelvic.incidence  35.70345781
+#&gt;  39  Pelvic.incidence  55.84328595
+#&gt;  40  Pelvic.incidence  52.41938511
+#&gt;  41  Pelvic.incidence  35.49244617
+#&gt;  42  Pelvic.incidence  46.44207842
+#&gt;  43  Pelvic.incidence  53.85479842
+#&gt;  44  Pelvic.incidence  66.28539377
+#&gt;  45  Pelvic.incidence  56.03021778
+#&gt;  46  Pelvic.incidence  50.91244034
+#&gt;  47  Pelvic.incidence    48.332638
+#&gt;  48  Pelvic.incidence  41.35250407
+#&gt;  49  Pelvic.incidence  40.55735663
+#&gt;  50  Pelvic.incidence  41.76773173
+#&gt;  51  Pelvic.incidence  55.28585178
+#&gt;  52  Pelvic.incidence  74.43359316
+#&gt;  53  Pelvic.incidence  50.20966979
+#&gt;  54  Pelvic.incidence  30.14993632
+#&gt;  55  Pelvic.incidence  41.17167989
+#&gt;  56  Pelvic.incidence  47.65772963
+#&gt;  57  Pelvic.incidence  43.34960621
+#&gt;  58  Pelvic.incidence  46.85578065
+#&gt;  59  Pelvic.incidence  43.20318499
+#&gt;  60  Pelvic.incidence  48.10923638
+#&gt;  61  Pelvic.incidence  74.37767772
+#&gt;  62  Pelvic.incidence  89.68056731
+#&gt;  63  Pelvic.incidence    44.529051
+#&gt;  64  Pelvic.incidence  77.69057712
+#&gt;  65  Pelvic.incidence   76.1472121
+#&gt;  66  Pelvic.incidence  83.93300857
+#&gt;  67  Pelvic.incidence  78.49173027
+#&gt;  68  Pelvic.incidence  75.64973136
+#&gt;  69  Pelvic.incidence  72.07627839
+#&gt;  70  Pelvic.incidence  58.59952852
+#&gt;  71  Pelvic.incidence  72.56070163
+#&gt;  72  Pelvic.incidence  86.90079431
+#&gt;  73  Pelvic.incidence  84.97413208
+#&gt;  74  Pelvic.incidence    55.512212
+#&gt;  75  Pelvic.incidence   72.2223343
+#&gt;  76  Pelvic.incidence  70.22145219
+#&gt;  77  Pelvic.incidence  86.75360946
+#&gt;  78  Pelvic.incidence  58.78254775
+#&gt;  79  Pelvic.incidence  67.41253785
+#&gt;  80  Pelvic.incidence  47.74467877
+#&gt;  81  Pelvic.incidence  77.10657122
+#&gt;  82  Pelvic.incidence  74.00554124
+#&gt;  83  Pelvic.incidence  88.62390839
+#&gt;  84  Pelvic.incidence  81.10410039
+#&gt;  85  Pelvic.incidence  76.32600187
+#&gt;  86  Pelvic.incidence  45.44374959
+#&gt;  87  Pelvic.incidence  59.78526526
+#&gt;  88  Pelvic.incidence  44.91414916
+#&gt;  89  Pelvic.incidence  56.60577127
+#&gt;  90  Pelvic.incidence  71.18681115
+#&gt;  91  Pelvic.incidence  81.65603206
+#&gt;  92  Pelvic.incidence  70.95272771
+#&gt;  93  Pelvic.incidence  85.35231529
+#&gt;  94  Pelvic.incidence  58.10193455
+#&gt;  95  Pelvic.incidence  94.17482232
+#&gt;  96  Pelvic.incidence  57.52235608
+#&gt;  97  Pelvic.incidence  96.65731511
+#&gt;  98  Pelvic.incidence  74.72074622
+#&gt;  99  Pelvic.incidence  77.65511874
+#&gt;  100 Pelvic.incidence  58.52162283
+#&gt;  101 Pelvic.incidence   84.5856071
+#&gt;  102 Pelvic.incidence  79.93857026
+#&gt;  103 Pelvic.incidence  70.39930842
+#&gt;  104 Pelvic.incidence  49.78212054
+#&gt;  105 Pelvic.incidence  77.40933294
+#&gt;  106 Pelvic.incidence  65.00796426
+#&gt;  107 Pelvic.incidence  65.01377322
+#&gt;  108 Pelvic.incidence  78.42595126
+#&gt;  109 Pelvic.incidence  63.17298709
+#&gt;  110 Pelvic.incidence  68.61300092
+#&gt;  111 Pelvic.incidence  63.90063261
+#&gt;  112 Pelvic.incidence  84.99895554
+#&gt;  113 Pelvic.incidence  42.02138603
+#&gt;  114 Pelvic.incidence  69.75666532
+#&gt;  115 Pelvic.incidence  80.98807441
+#&gt;  116 Pelvic.incidence  129.8340406
+#&gt;  117 Pelvic.incidence  70.48410444
+#&gt;  118 Pelvic.incidence  86.04127982
+#&gt;  119 Pelvic.incidence  65.53600255
+#&gt;  120 Pelvic.incidence   60.7538935
+#&gt;  121 Pelvic.incidence  54.74177518
+#&gt;  122 Pelvic.incidence  83.87994081
+#&gt;  123 Pelvic.incidence  80.07491418
+#&gt;  124 Pelvic.incidence  65.66534698
+#&gt;  125 Pelvic.incidence  74.71722805
+#&gt;  126 Pelvic.incidence  48.06062649
+#&gt;  127 Pelvic.incidence  70.67689818
+#&gt;  128 Pelvic.incidence  80.43342782
+#&gt;  129 Pelvic.incidence  90.51396072
+#&gt;  130 Pelvic.incidence  77.23689752
+#&gt;  131 Pelvic.incidence  50.06678595
+#&gt;  132 Pelvic.incidence  69.78100617
+#&gt;  133 Pelvic.incidence  69.62628302
+#&gt;  134 Pelvic.incidence  81.75441933
+#&gt;  135 Pelvic.incidence  52.20469309
+#&gt;  136 Pelvic.incidence  77.12134424
+#&gt;  137 Pelvic.incidence   88.0244989
+#&gt;  138 Pelvic.incidence  83.39660609
+#&gt;  139 Pelvic.incidence  72.05403412
+#&gt;  140 Pelvic.incidence  85.09550254
+#&gt;  141 Pelvic.incidence  69.56348614
+#&gt;  142 Pelvic.incidence   89.5049473
+#&gt;  143 Pelvic.incidence  85.29017283
+#&gt;  144 Pelvic.incidence  60.62621697
+#&gt;  145 Pelvic.incidence  60.04417717
+#&gt;  146 Pelvic.incidence  85.64378664
+#&gt;  147 Pelvic.incidence  85.58171024
+#&gt;  148 Pelvic.incidence  55.08076562
+#&gt;  149 Pelvic.incidence  65.75567895
+#&gt;  150 Pelvic.incidence  79.24967118
+#&gt;  151 Pelvic.incidence  81.11260488
+#&gt;  152 Pelvic.incidence   48.0306238
+#&gt;  153 Pelvic.incidence  63.40448058
+#&gt;  154 Pelvic.incidence  57.28694488
+#&gt;  155 Pelvic.incidence  41.18776972
+#&gt;  156 Pelvic.incidence  66.80479632
+#&gt;  157 Pelvic.incidence   79.4769781
+#&gt;  158 Pelvic.incidence  44.21646446
+#&gt;  159 Pelvic.incidence  57.03509717
+#&gt;  160 Pelvic.incidence  64.27481758
+#&gt;  161 Pelvic.incidence  92.02630795
+#&gt;  162 Pelvic.incidence  67.26314926
+#&gt;  163 Pelvic.incidence  118.1446548
+#&gt;  164 Pelvic.incidence  115.9232606
+#&gt;  165 Pelvic.incidence  53.94165809
+#&gt;  166 Pelvic.incidence   83.7031774
+#&gt;  167 Pelvic.incidence  56.99140382
+#&gt;  168 Pelvic.incidence  72.34359434
+#&gt;  169 Pelvic.incidence  95.38259648
+#&gt;  170 Pelvic.incidence  44.25347645
+#&gt;  171 Pelvic.incidence  64.80954139
+#&gt;  172 Pelvic.incidence  78.40125389
+#&gt;  173 Pelvic.incidence  56.66829282
+#&gt;  174 Pelvic.incidence  50.82502875
+#&gt;  175 Pelvic.incidence  61.41173702
+#&gt;  176 Pelvic.incidence  56.56382381
+#&gt;  177 Pelvic.incidence  67.02766447
+#&gt;  178 Pelvic.incidence  80.81777144
+#&gt;  179 Pelvic.incidence  80.65431956
+#&gt;  180 Pelvic.incidence  68.72190982
+#&gt;  181 Pelvic.incidence  37.90391014
+#&gt;  182 Pelvic.incidence  64.62400798
+#&gt;  183 Pelvic.incidence  75.43774787
+#&gt;  184 Pelvic.incidence  71.00194076
+#&gt;  185 Pelvic.incidence  81.05661087
+#&gt;  186 Pelvic.incidence  91.46874146
+#&gt;  187 Pelvic.incidence  81.08232025
+#&gt;  188 Pelvic.incidence    60.419932
+#&gt;  189 Pelvic.incidence  85.68094951
+#&gt;  190 Pelvic.incidence   82.4065243
+#&gt;  191 Pelvic.incidence   43.7182623
+#&gt;  192 Pelvic.incidence    86.472905
+#&gt;  193 Pelvic.incidence  74.46908181
+#&gt;  194 Pelvic.incidence  70.25043628
+#&gt;  195 Pelvic.incidence  72.64385013
+#&gt;  196 Pelvic.incidence  71.24176388
+#&gt;  197 Pelvic.incidence   63.7723908
+#&gt;  198 Pelvic.incidence  58.82837872
+#&gt;  199 Pelvic.incidence  74.85448008
+#&gt;  200 Pelvic.incidence  75.29847847
+#&gt;  201 Pelvic.incidence  63.36433898
+#&gt;  202 Pelvic.incidence  67.51305267
+#&gt;  203 Pelvic.incidence  76.31402766
+#&gt;  204 Pelvic.incidence  73.63596236
+#&gt;  205 Pelvic.incidence  56.53505139
+#&gt;  206 Pelvic.incidence  80.11157156
+#&gt;  207 Pelvic.incidence  95.48022873
+#&gt;  208 Pelvic.incidence  74.09473084
+#&gt;  209 Pelvic.incidence  87.67908663
+#&gt;  210 Pelvic.incidence  48.25991962
+#&gt;  211 Pelvic.incidence  38.50527283
+#&gt;  212 Pelvic.incidence  54.92085752
+#&gt;  213 Pelvic.incidence  44.36249017
+#&gt;  214 Pelvic.incidence   48.3189305
+#&gt;  215 Pelvic.incidence  45.70178875
+#&gt;  216 Pelvic.incidence  30.74193812
+#&gt;  217 Pelvic.incidence  50.91310144
+#&gt;  218 Pelvic.incidence  38.12658854
+#&gt;  219 Pelvic.incidence  51.62467183
+#&gt;  220 Pelvic.incidence  64.31186727
+#&gt;  221 Pelvic.incidence  44.48927476
+#&gt;  222 Pelvic.incidence   54.9509702
+#&gt;  223 Pelvic.incidence  56.10377352
+#&gt;  224 Pelvic.incidence   69.3988184
+#&gt;  225 Pelvic.incidence  89.83467631
+#&gt;  226 Pelvic.incidence  59.72614016
+#&gt;  227 Pelvic.incidence  63.95952166
+#&gt;  228 Pelvic.incidence  61.54059876
+#&gt;  229 Pelvic.incidence  38.04655072
+#&gt;  230 Pelvic.incidence  43.43645061
+#&gt;  231 Pelvic.incidence  65.61180231
+#&gt;  232 Pelvic.incidence  53.91105429
+#&gt;  233 Pelvic.incidence  43.11795103
+#&gt;  234 Pelvic.incidence   40.6832291
+#&gt;  235 Pelvic.incidence   37.7319919
+#&gt;  236 Pelvic.incidence  63.92947003
+#&gt;  237 Pelvic.incidence  61.82162717
+#&gt;  238 Pelvic.incidence  62.14080535
+#&gt;  239 Pelvic.incidence  69.00491277
+#&gt;  240 Pelvic.incidence  56.44702568
+#&gt;  241 Pelvic.incidence   41.6469159
+#&gt;  242 Pelvic.incidence  51.52935759
+#&gt;  243 Pelvic.incidence  39.08726449
+#&gt;  244 Pelvic.incidence  34.64992241
+#&gt;  245 Pelvic.incidence  63.02630005
+#&gt;  246 Pelvic.incidence  47.80555887
+#&gt;  247 Pelvic.incidence  46.63786363
+#&gt;  248 Pelvic.incidence  49.82813487
+#&gt;  249 Pelvic.incidence  47.31964755
+#&gt;  250 Pelvic.incidence  50.75329025
+#&gt;  251 Pelvic.incidence  36.15782981
+#&gt;  252 Pelvic.incidence  40.74699612
+#&gt;  253 Pelvic.incidence  42.91804052
+#&gt;  254 Pelvic.incidence  63.79242525
+#&gt;  255 Pelvic.incidence  72.95564397
+#&gt;  256 Pelvic.incidence  67.53818154
+#&gt;  257 Pelvic.incidence  54.75251965
+#&gt;  258 Pelvic.incidence  50.16007802
+#&gt;  259 Pelvic.incidence  40.34929637
+#&gt;  260 Pelvic.incidence  63.61919213
+#&gt;  261 Pelvic.incidence  54.14240778
+#&gt;  262 Pelvic.incidence  74.97602148
+#&gt;  263 Pelvic.incidence  42.51727249
+#&gt;  264 Pelvic.incidence  33.78884314
+#&gt;  265 Pelvic.incidence   54.5036853
+#&gt;  266 Pelvic.incidence  48.17074627
+#&gt;  267 Pelvic.incidence  46.37408781
+#&gt;  268 Pelvic.incidence  52.86221391
+#&gt;  269 Pelvic.incidence   57.1458515
+#&gt;  270 Pelvic.incidence  37.14014978
+#&gt;  271 Pelvic.incidence  51.31177106
+#&gt;  272 Pelvic.incidence  42.51561014
+#&gt;  273 Pelvic.incidence  39.35870531
+#&gt;  274 Pelvic.incidence   35.8775708
+#&gt;  275 Pelvic.incidence   43.1919153
+#&gt;  276 Pelvic.incidence  67.28971201
+#&gt;  277 Pelvic.incidence  51.32546366
+#&gt;  278 Pelvic.incidence   65.7563482
+#&gt;  279 Pelvic.incidence  40.41336566
+#&gt;  280 Pelvic.incidence  48.80190855
+#&gt;  281 Pelvic.incidence  50.08615264
+#&gt;  282 Pelvic.incidence  64.26150724
+#&gt;  283 Pelvic.incidence  53.68337998
+#&gt;  284 Pelvic.incidence  48.99595771
+#&gt;  285 Pelvic.incidence  59.16761171
+#&gt;  286 Pelvic.incidence  67.80469442
+#&gt;  287 Pelvic.incidence  61.73487533
+#&gt;  288 Pelvic.incidence  33.04168754
+#&gt;  289 Pelvic.incidence  74.56501543
+#&gt;  290 Pelvic.incidence  44.43070103
+#&gt;  291 Pelvic.incidence  36.42248549
+#&gt;  292 Pelvic.incidence  51.07983294
+#&gt;  293 Pelvic.incidence  34.75673809
+#&gt;  294 Pelvic.incidence  48.90290434
+#&gt;  295 Pelvic.incidence  46.23639915
+#&gt;  296 Pelvic.incidence  46.42636614
+#&gt;  297 Pelvic.incidence  39.65690201
+#&gt;  298 Pelvic.incidence  45.57548229
+#&gt;  299 Pelvic.incidence  66.50717865
+#&gt;  300 Pelvic.incidence  82.90535054
+#&gt;  301 Pelvic.incidence  50.67667667
+#&gt;  302 Pelvic.incidence  89.01487529
+#&gt;  303 Pelvic.incidence  54.60031622
+#&gt;  304 Pelvic.incidence  34.38229939
+#&gt;  305 Pelvic.incidence  45.07545026
+#&gt;  306 Pelvic.incidence  47.90356517
+#&gt;  307 Pelvic.incidence  53.93674778
+#&gt;  308 Pelvic.incidence  61.44659663
+#&gt;  309 Pelvic.incidence  45.25279209
+#&gt;  310 Pelvic.incidence  33.84164075
+#&gt;  311      Pelvic.tilt  22.55258597
+#&gt;  312      Pelvic.tilt  10.06099147
+#&gt;  313      Pelvic.tilt  22.21848205
+#&gt;  314      Pelvic.tilt  24.65287791
+#&gt;  315      Pelvic.tilt  9.652074879
+#&gt;  316      Pelvic.tilt  13.92190658
+#&gt;  317      Pelvic.tilt  15.86433612
+#&gt;  318      Pelvic.tilt  10.75561143
+#&gt;  319      Pelvic.tilt   13.5337531
+#&gt;  320      Pelvic.tilt  5.010884121
+#&gt;  321      Pelvic.tilt  13.04097405
+#&gt;  322      Pelvic.tilt  17.71581923
+#&gt;  323      Pelvic.tilt  19.96455616
+#&gt;  324      Pelvic.tilt  20.46082824
+#&gt;  325      Pelvic.tilt   24.1888846
+#&gt;  326      Pelvic.tilt  12.53799164
+#&gt;  327      Pelvic.tilt  20.36250706
+#&gt;  328      Pelvic.tilt   3.14466948
+#&gt;  329      Pelvic.tilt  13.44474904
+#&gt;  330      Pelvic.tilt  12.25407408
+#&gt;  331      Pelvic.tilt  14.17795853
+#&gt;  332      Pelvic.tilt  21.06233245
+#&gt;  333      Pelvic.tilt  24.41380271
+#&gt;  334      Pelvic.tilt  13.06959759
+#&gt;  335      Pelvic.tilt  22.75875277
+#&gt;  336      Pelvic.tilt  26.65048856
+#&gt;  337      Pelvic.tilt  10.75945357
+#&gt;  338      Pelvic.tilt   16.5088837
+#&gt;  339      Pelvic.tilt  21.93114655
+#&gt;  340      Pelvic.tilt  24.89199889
+#&gt;  341      Pelvic.tilt  15.40221253
+#&gt;  342      Pelvic.tilt  11.07904664
+#&gt;  343      Pelvic.tilt  17.44383762
+#&gt;  344      Pelvic.tilt  12.98644139
+#&gt;  345      Pelvic.tilt  31.99824445
+#&gt;  346      Pelvic.tilt   7.82622134
+#&gt;  347      Pelvic.tilt  6.989378081
+#&gt;  348      Pelvic.tilt  19.44325311
+#&gt;  349      Pelvic.tilt  28.84744756
+#&gt;  350      Pelvic.tilt  19.01156052
+#&gt;  351      Pelvic.tilt   11.7016723
+#&gt;  352      Pelvic.tilt   8.39503589
+#&gt;  353      Pelvic.tilt  19.23064334
+#&gt;  354      Pelvic.tilt  26.32784484
+#&gt;  355      Pelvic.tilt   16.2979149
+#&gt;  356      Pelvic.tilt  23.01516931
+#&gt;  357      Pelvic.tilt  22.22778399
+#&gt;  358      Pelvic.tilt  16.57736351
+#&gt;  359      Pelvic.tilt  17.97778407
+#&gt;  360      Pelvic.tilt  17.89940172
+#&gt;  361      Pelvic.tilt  20.44011836
+#&gt;  362      Pelvic.tilt  41.55733141
+#&gt;  363      Pelvic.tilt  29.76012218
+#&gt;  364      Pelvic.tilt  11.91744524
+#&gt;  365      Pelvic.tilt  17.32120599
+#&gt;  366      Pelvic.tilt  13.27738491
+#&gt;  367      Pelvic.tilt  7.467468964
+#&gt;  368      Pelvic.tilt  15.35151393
+#&gt;  369      Pelvic.tilt  19.66314572
+#&gt;  370      Pelvic.tilt  14.93072472
+#&gt;  371      Pelvic.tilt  32.05310438
+#&gt;  372      Pelvic.tilt  32.70443487
+#&gt;  373      Pelvic.tilt  9.433234213
+#&gt;  374      Pelvic.tilt  21.38064464
+#&gt;  375      Pelvic.tilt  21.93618556
+#&gt;  376      Pelvic.tilt  41.28630543
+#&gt;  377      Pelvic.tilt   22.1817978
+#&gt;  378      Pelvic.tilt  19.33979889
+#&gt;  379      Pelvic.tilt  18.94617604
+#&gt;  380      Pelvic.tilt -0.261499046
+#&gt;  381      Pelvic.tilt  17.38519079
+#&gt;  382      Pelvic.tilt   32.9281677
+#&gt;  383      Pelvic.tilt  33.02117462
+#&gt;  384      Pelvic.tilt  20.09515673
+#&gt;  385      Pelvic.tilt  23.07771056
+#&gt;  386      Pelvic.tilt  39.82272448
+#&gt;  387      Pelvic.tilt  36.04301632
+#&gt;  388      Pelvic.tilt  7.667044186
+#&gt;  389      Pelvic.tilt  17.44279712
+#&gt;  390      Pelvic.tilt  12.08935067
+#&gt;  391      Pelvic.tilt  30.46999418
+#&gt;  392      Pelvic.tilt  21.12240192
+#&gt;  393      Pelvic.tilt  29.08945331
+#&gt;  394      Pelvic.tilt  24.79416792
+#&gt;  395      Pelvic.tilt  42.39620445
+#&gt;  396      Pelvic.tilt  9.906071798
+#&gt;  397      Pelvic.tilt  17.87932332
+#&gt;  398      Pelvic.tilt  10.21899563
+#&gt;  399      Pelvic.tilt  16.80020017
+#&gt;  400      Pelvic.tilt  23.89620111
+#&gt;  401      Pelvic.tilt  28.74886935
+#&gt;  402      Pelvic.tilt  20.15993121
+#&gt;  403      Pelvic.tilt  15.84491006
+#&gt;  404      Pelvic.tilt  14.83763914
+#&gt;  405      Pelvic.tilt  15.38076983
+#&gt;  406      Pelvic.tilt  33.64707522
+#&gt;  407      Pelvic.tilt  19.46158117
+#&gt;  408      Pelvic.tilt  19.75694203
+#&gt;  409      Pelvic.tilt   22.4329501
+#&gt;  410      Pelvic.tilt  13.92228609
+#&gt;  411      Pelvic.tilt  30.36168482
+#&gt;  412      Pelvic.tilt   18.7740711
+#&gt;  413      Pelvic.tilt  13.46998624
+#&gt;  414      Pelvic.tilt   6.46680486
+#&gt;  415      Pelvic.tilt  29.39654543
+#&gt;  416      Pelvic.tilt  27.60260762
+#&gt;  417      Pelvic.tilt  9.838262375
+#&gt;  418      Pelvic.tilt  33.42595126
+#&gt;  419      Pelvic.tilt  6.330910974
+#&gt;  420      Pelvic.tilt   15.0822353
+#&gt;  421      Pelvic.tilt   13.7062037
+#&gt;  422      Pelvic.tilt  29.61009772
+#&gt;  423      Pelvic.tilt -6.554948347
+#&gt;  424      Pelvic.tilt  19.27929659
+#&gt;  425      Pelvic.tilt  36.84317181
+#&gt;  426      Pelvic.tilt  8.404475005
+#&gt;  427      Pelvic.tilt  12.48948765
+#&gt;  428      Pelvic.tilt  38.75066978
+#&gt;  429      Pelvic.tilt  24.15748726
+#&gt;  430      Pelvic.tilt   15.7538935
+#&gt;  431      Pelvic.tilt  12.09507205
+#&gt;  432      Pelvic.tilt  23.07742686
+#&gt;  433      Pelvic.tilt  48.06953097
+#&gt;  434      Pelvic.tilt  10.54067533
+#&gt;  435      Pelvic.tilt  14.32167879
+#&gt;  436      Pelvic.tilt  5.687032126
+#&gt;  437      Pelvic.tilt  21.70440224
+#&gt;  438      Pelvic.tilt    16.998479
+#&gt;  439      Pelvic.tilt  28.27250132
+#&gt;  440      Pelvic.tilt  16.73762214
+#&gt;  441      Pelvic.tilt  9.120340183
+#&gt;  442      Pelvic.tilt  13.77746531
+#&gt;  443      Pelvic.tilt  21.12275138
+#&gt;  444      Pelvic.tilt  20.12346562
+#&gt;  445      Pelvic.tilt  17.21267289
+#&gt;  446      Pelvic.tilt   30.3498745
+#&gt;  447      Pelvic.tilt  39.84466878
+#&gt;  448      Pelvic.tilt  34.31098931
+#&gt;  449      Pelvic.tilt  24.70073725
+#&gt;  450      Pelvic.tilt  21.06989651
+#&gt;  451      Pelvic.tilt   15.4011391
+#&gt;  452      Pelvic.tilt  48.90365265
+#&gt;  453      Pelvic.tilt  18.27888963
+#&gt;  454      Pelvic.tilt   20.5959577
+#&gt;  455      Pelvic.tilt  14.30965614
+#&gt;  456      Pelvic.tilt  42.68919513
+#&gt;  457      Pelvic.tilt  30.45703858
+#&gt;  458      Pelvic.tilt -3.759929872
+#&gt;  459      Pelvic.tilt  9.832874231
+#&gt;  460      Pelvic.tilt  23.94482471
+#&gt;  461      Pelvic.tilt  20.69044356
+#&gt;  462      Pelvic.tilt  3.969814743
+#&gt;  463      Pelvic.tilt  14.11532726
+#&gt;  464      Pelvic.tilt   15.1493501
+#&gt;  465      Pelvic.tilt  5.792973871
+#&gt;  466      Pelvic.tilt  14.55160171
+#&gt;  467      Pelvic.tilt  26.73226755
+#&gt;  468      Pelvic.tilt  1.507074501
+#&gt;  469      Pelvic.tilt   0.34572799
+#&gt;  470      Pelvic.tilt  12.50864276
+#&gt;  471      Pelvic.tilt  35.39267395
+#&gt;  472      Pelvic.tilt  7.194661096
+#&gt;  473      Pelvic.tilt  38.44950127
+#&gt;  474      Pelvic.tilt  37.51543601
+#&gt;  475      Pelvic.tilt  9.306594428
+#&gt;  476      Pelvic.tilt  20.26822858
+#&gt;  477      Pelvic.tilt   6.87408897
+#&gt;  478      Pelvic.tilt  16.42078962
+#&gt;  479      Pelvic.tilt  24.82263131
+#&gt;  480      Pelvic.tilt  1.101086714
+#&gt;  481      Pelvic.tilt  15.17407796
+#&gt;  482      Pelvic.tilt  14.04225971
+#&gt;  483      Pelvic.tilt  13.45820343
+#&gt;  484      Pelvic.tilt  9.064729049
+#&gt;  485      Pelvic.tilt  25.38436364
+#&gt;  486      Pelvic.tilt  8.961261611
+#&gt;  487      Pelvic.tilt  13.28150221
+#&gt;  488      Pelvic.tilt  19.23898066
+#&gt;  489      Pelvic.tilt  26.34437939
+#&gt;  490      Pelvic.tilt   49.4318636
+#&gt;  491      Pelvic.tilt   4.47909896
+#&gt;  492      Pelvic.tilt  15.22530262
+#&gt;  493      Pelvic.tilt  31.53945399
+#&gt;  494      Pelvic.tilt  37.51577195
+#&gt;  495      Pelvic.tilt  20.80149217
+#&gt;  496      Pelvic.tilt  24.50817744
+#&gt;  497      Pelvic.tilt  21.25584028
+#&gt;  498      Pelvic.tilt  5.265665422
+#&gt;  499      Pelvic.tilt  38.65003527
+#&gt;  500      Pelvic.tilt  29.27642195
+#&gt;   [ reached 'max' / getOption("max.print") -- omitted 3530 rows ]
+```
+]
+.pull-right[
+The `gather` function turns this wide dataset to a long dataset, stacking all the variables on top of each other
+]
+
+---
+
+## Manipulating data for plotting
+
+We would like to get density plots of all the variables. 
+
+.pull-left[
+
+```r
+dat_spine %&gt;% 
+  select(Pelvic.incidence:Sacral.slope) %&gt;% 
+  tidyr::gather(variable, value) %&gt;% 
+  ggplot(aes(x = value)) + 
+  geom_density()+
+  facet_wrap(~variable)
+```
+
+![](Rintro_files/figure-html/unnamed-chunk-54-1.png)&lt;!-- --&gt;
+]
+.pull-right[
+This is one of my most used tricks for getting facetted plots from wide data
+]
+
+---
+
+## Re-ordering factors
+
+
+```r
+beaches %&gt;% 
+  ggplot(aes(x = season_name, y = temperature))+
+  geom_boxplot()
+```
+
+![](Rintro_files/figure-html/e1-1.png)&lt;!-- --&gt;
+
+---
+
+## Re-ordering factors
+
+
+```r
+beaches %&gt;% 
+* mutate(season_name = fct_relevel(season_name, 'Autumn','Winter','Spring','Summer')) %&gt;%
+  ggplot(aes(x = season_name, y = temperature))+
+  geom_boxplot()
+```
+
+![](Rintro_files/figure-html/e2-1.png)&lt;!-- --&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLanguage": "R",
+"countIncrementalSlides": false,
+"highlightStyle": "docco",
+"highlightLines": true,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
