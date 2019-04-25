@@ -12,3 +12,4 @@ slides/lectures/data/*
 */*_cache/*
 notes/_bookdown_files/*
 .drake/*
+docs/slides/lectures/*_cache/*

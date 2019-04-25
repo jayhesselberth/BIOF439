@@ -78,4 +78,4 @@ Presentations](https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html){
 
 - [ggplot2 reference](https://ggplot2.tidyverse.org/){target=_blank}: The definitive guide to ggplot2. Check out the pages for the different functions for great examples
 - [ggplot2 cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf){target=_blank}
-- [Cheatsheets](https://www.r-graph-gallery.com/cheatsheet/){target=_blank} from the [R-Graph Gallery](https://www.r-graph-gallery.com/){target-_blank}
+- [Cheatsheets](https://www.r-graph-gallery.com/cheatsheet/){target=_blank} from the [R-Graph Gallery](https://www.r-graph-gallery.com/){target=_blank}
