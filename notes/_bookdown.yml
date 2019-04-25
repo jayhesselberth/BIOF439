@@ -1,0 +1,10 @@
+book_filename: BIOF_439
+delete_merged_file: yes
+language:
+  ui:
+    chapter_name: 'Chapter '
+new_session: yes
+output_dir: ../docs/notes
+rmd_files:
+  html: index.Rmd
+  latex: index1.Rmd

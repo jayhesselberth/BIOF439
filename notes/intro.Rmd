@@ -1,0 +1,18 @@
+Introduction
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = '#> ')
+```
+
+
+
+
+## Introduction
+
+This is a test of this system
+
+```{r}
+hist(rnorm(1000))
+```
+
