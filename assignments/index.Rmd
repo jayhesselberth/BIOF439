@@ -20,3 +20,5 @@ See the [instructions](instructions.html) for how to do this
 Week 1: [Homework 1](HW/HW1.html)
 
 Week 2: [Homework 2](HW/HW2.html)
+
+Week 3: [Homework 3](HW/HW3.html) (Download [Rmd](HW/HW3.Rmd) here and upload to RStudio Cloud in the ggplot project)

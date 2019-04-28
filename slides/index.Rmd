@@ -40,7 +40,7 @@ blah <- blah %>% tidyr::gather(variable, value, -base) %>%
   spread(variable, value) %>% 
   rename(Lecture=base)
 kable(blah) %>%
-  kable_styling(bootstrap_options='striped')
+  kable_styling(bootstrap_options='striped', full_width = T)
 setwd(here::here())
 ```
 
