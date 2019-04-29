@@ -3,7 +3,6 @@ title: "Homework 3"
 author: "BIOF 439, Spring 2019"
 date: "Due Tuesday, April 30"
 output:
-  pdf_document: default
   html_document: default
 ---
 
@@ -105,7 +104,6 @@ mpg1 <- mpg %>%
   gather(______, _______, cty, hwy)
 ```
 
-e. The variable you created to store whether data came from highway or city is not really 
 
 __Question 3:__ Let's do some descriptive graphs
 
