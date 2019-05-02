@@ -44,10 +44,10 @@ hw_plan <- drake_plan(
 
 
 notes_plan <- drake_plan(
-  create_notes = rmarkdown::render_site(input = knitr_in('notes/index.Rmd'),
-                                        output_format = 'bookdown::gitbook')#,
-  # create_notes_pdf = rmarkdown::render_site(knitr_in(here('notes')),
-  #                                           output_format = 'bookdown::pdf_book')
+  create_notes = rmarkdown::render_site(input = file_in('notes'),
+                                        output_format = 'bookdown::gitbook'),
+  create_notes_pdf = rmarkdown::render_site(knitr_in(here('notes')),
+                                            output_format = 'bookdown::pdf_book')
 )
 
 top_plan <- drake_plan(
@@ -56,6 +56,5 @@ top_plan <- drake_plan(
   )
 )
 
-config_slides <- drake_config(slides_plan, verbose = 2)
-config_hw <- drake_config(hw_plan, verbose = 2)
+drake_config(slides_plan, verbose = 2)
 

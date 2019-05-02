@@ -1,5 +1,5 @@
-book_filename: BIOF_439
-delete_merged_file: yes
+book_filename: BIOF_439.Rmd
+delete_merged_file: no
 language:
   ui:
     chapter_name: 'Chapter '
@@ -9,10 +9,6 @@ rmd_files:
   html:
   - index.Rmd
   - 00-introduction.Rmd
-  - 02-ggplot.Rmd
-  - 03-Rintro.Rmd
   latex:
   - index1.Rmd
   - 00-introduction.Rmd
-  - 02-ggplot.Rmd
-  - 03-Rintro.Rmd

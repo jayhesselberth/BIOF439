@@ -1,5 +1,5 @@
 bookdown::gitbook:
-  css: ../style.css
+  css: style.css
   split_by: section
   config:
     toolbar:
@@ -15,9 +15,9 @@ bookdown::gitbook:
 bookdown::pdf_book:
   toc: no
   includes:
-    in_header: latex/preamble.tex
-    include-before: latex/before_body.tex
-    include-after: latex/after_body.tex
+#    in_header: latex/preamble.tex
+#    include-before: latex/before_body.tex
+#    include-after: latex/after_body.tex
   latex_engine: xelatex
   citation_package: natbib
   keep_tex: yes

@@ -1,0 +1,77 @@
+# An introduction to BIOF 439
+
+
+
+
+
+
+
+### Objectives of this course
+
++ Understand principles of good data visualization
++ Know what might make a visualization poor or ineffective
++ Get you going using R __for visualization__
+  + Various packages
++ Creating static and dynamic visualizations using R
++ Using the web as a presentation medium
+
+
+### Course resources
+
+#### Website [http://www.araastat.com/BIOF439](http://www.araastat.com/BIOF439)
+
+#### Slack [https://biof439dataviz.slack.com](https://biof439dataviz.slack.com)
+
+#### RStudio Cloud [https://rstudio.cloud](https://rstudio.cloud)
+
+
+## Homework policies
+
+- Homework assignments will be posted on the website as well as on RStudio Cloud Friday by 9 am
+- Homework assignments submissions will be based on a R Markdown file and the corresponding HTML file. These will reside in the  RStudio Cloud project for that assignment. We'll be able to see and check them there. __Do not e-mail me anything__
+- Homework assignments are due back to me by the following Tuesday at midnight. The instructional team will check the timestamp of the file. 
+- You may be late on at most 1 homework out of the 6 homeworks that will be assigned.
+- Homeworks will count for 50% of your grade.
+
+#### Collaboration
+
+
+
+
+## Final Project
+
+- A R Markdown document or presentation
+- Use your own data
+- Use R package(s) to visualize your data sets in at least 3 ways, to show what your data looks like and what your analytic results look like
+- Each student will be randomly assigned to 3 peers
+  - Critiques based on quality and effectiveness of visualizations
+- All final projects will be posted on the website, so we can learn from each other
+- I fully expect some of you to blow me away!!
+
+This will count for 20% of your grade
+
+
+## Class participation
+
+- Ask questions
+- Comment on the strengths and weaknesses of visualizations when we work on them
+
+This will count for 30% of your grade
+
+
+## Exemplar data
+
+I don't work in bioinformatics anymore, or your particular disciplines. So:
+
+
+
+## Contact info
+
+#### Email: adasgupta@araastat.com (don't use my NED email)
+
+#### Slack
+
+
+## Code repository
+
+
