@@ -8,3 +8,4 @@
       highlightStyle: docco
       highlightLines: true
       slideNumberFormat: "%current%"
+    md_extension: +link_attributes
