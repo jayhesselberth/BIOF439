@@ -13,3 +13,4 @@ slides/lectures/data/*
 notes/_bookdown_files/*
 .drake/*
 docs/slides/lectures/*_cache/*
+*.tex

@@ -30,3 +30,6 @@ output:
     theme: cosmo
     highlight: textmate
     css: ./style.css
+  github_document:
+    html_preview: false
+
