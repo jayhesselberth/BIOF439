@@ -3,7 +3,7 @@ title: "Homework instructions"
 output: html_document
 ---
 
-These instructions are based on the RStudio Cloud experience
+These instructions are based on the RStudio Cloud experience.
 
 
 ## Using R Markdown

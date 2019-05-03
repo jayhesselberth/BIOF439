@@ -16,13 +16,12 @@
 + Using the web as a presentation medium
 
 
+
 ### Course resources
 
-#### Website [http://www.araastat.com/BIOF439](http://www.araastat.com/BIOF439)
-
-#### Slack [https://biof439dataviz.slack.com](https://biof439dataviz.slack.com)
-
-#### RStudio Cloud [https://rstudio.cloud](https://rstudio.cloud)
++ Website [http://www.araastat.com/BIOF439](http://www.araastat.com/BIOF439)
++ Slack [https://biof439dataviz.slack.com](https://biof439dataviz.slack.com)
++ RStudio Cloud [https://rstudio.cloud](https://rstudio.cloud)
 
 
 ## Homework policies
@@ -35,7 +34,7 @@
 
 #### Collaboration
 
-
+I encourage colloboration and team learning, but homeworks should be one's own work
 
 
 ## Final Project

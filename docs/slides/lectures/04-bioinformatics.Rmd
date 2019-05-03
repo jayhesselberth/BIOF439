@@ -34,7 +34,7 @@ This area is too broad and interests too varied to cover this with any sort of b
 
 ## A very simple example
 
-```{r}
+```{r 04-bioinformatics-1}
 fix_names <- function(d) d %>% set_names(make.names(names(.)))
 clinical <- rio::import('data/BreastCancer_Clinical.xlsx') %>% fix_names()
 proteome <- rio::import('data/BreastCancer_Expression.xlsx') %>% fix_names()
@@ -49,7 +49,7 @@ head(final_data)
 
 ## A very simple example
 
-```{r}
+```{r 04-bioinformatics-2}
 results <- final_data %>% 
     summarise_at(vars(starts_with('NP')), #<<
                  ~wilcox.test(. ~ ER.Status)$p.value)#<<
@@ -67,7 +67,7 @@ This isn't in the right format for me to plot
 ## A very simple example
 
 .pull-left[
-```{r}
+```{r 04-bioinformatics-3}
 results %>% tidyr::gather(protein, pvalue)
 ```
 ]
@@ -90,7 +90,7 @@ results %>% tidyr::gather(protein, pvalue) %>%
 ```
 ]
 .pull-right[
-```{r, ref.label='a1', echo=F, eval = T}
+```{r 04-bioinformatics-4, ref.label='a1', echo=F, eval = T}
 
 ```
 
@@ -111,7 +111,7 @@ results %>% tidyr::gather(protein, pvalue) %>%
 ```
 ]
 .pull-right[
-```{r, ref.label='a2', echo=F, eval = T}
+```{r 04-bioinformatics-5, ref.label='a2', echo=F, eval = T}
 
 ```
 
@@ -133,7 +133,7 @@ results %>% tidyr::gather(protein, pvalue) %>%
 ```
 ]
 .pull-right[
-```{r, ref.label='a3', echo=F, eval = T}
+```{r 04-bioinformatics-6, ref.label='a3', echo=F, eval = T}
 
 ```
 
@@ -164,7 +164,7 @@ results %>% tidyr::gather(protein, pval) %>%
 ```
 ]
 .pull-right[
-```{r, ref.label='a4', echo=F, eval=T, fig.height=4}
+```{r 04-bioinformatics-7, ref.label='a4', echo=F, eval=T, fig.height=4}
 
 ```
 
@@ -185,7 +185,7 @@ manhattan(gwasResults)
 ```
 ]
 .pull-right[
-```{r, ref.label='b1', eval=T, echo=F, fig.height=6}
+```{r 04-bioinformatics-8, ref.label='b1', eval=T, echo=F, fig.height=6}
 
 ```
 ]
@@ -203,7 +203,7 @@ manhattan(gwasResults,
 ```
 ]
 .pull-right[
-```{r, ref.label='b2', eval=T, echo=F}
+```{r 04-bioinformatics-9, ref.label='b2', eval=T, echo=F}
 
 ```
 ]
@@ -224,7 +224,7 @@ head(gwasResults)
 ```
 ]
 .pull-right[
-```{r, ref.label='c1', eval=T, echo=F}
+```{r 04-bioinformatics-10, ref.label='c1', eval=T, echo=F}
 
 ```
 ]
@@ -246,7 +246,7 @@ head(plt_x_position)
 
 ]
 .pull-right[
-```{r, ref.label='c2', eval=T, echo=F}
+```{r 04-bioinformatics-11, ref.label='c2', eval=T, echo=F}
 
 ```
 
@@ -270,7 +270,7 @@ tail(plt_dat)
 
 ]
 .pull-right[
-```{r, ref.label='c3', eval=T, echo =F}
+```{r 04-bioinformatics-12, ref.label='c3', eval=T, echo =F}
 
 ```
 ]
@@ -291,7 +291,7 @@ axisdf
 
 ]
 .pull-right[
-```{r, ref.label='c4', eval=T, echo =F}
+```{r 04-bioinformatics-13, ref.label='c4', eval=T, echo =F}
 
 ```
 
@@ -312,7 +312,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-```{r, ref.label='c5', eval=T, echo =F}
+```{r 04-bioinformatics-14, ref.label='c5', eval=T, echo =F}
 
 ```
 
@@ -334,7 +334,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-```{r, ref.label='c6', eval=T, echo =F}
+```{r 04-bioinformatics-15, ref.label='c6', eval=T, echo =F}
 
 ```
 
@@ -358,7 +358,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-```{r, ref.label='c7', eval=T, echo =F}
+```{r 04-bioinformatics-16, ref.label='c7', eval=T, echo =F}
 
 ```
 
@@ -387,7 +387,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-```{r, ref.label='c8', eval=T, echo =F}
+```{r 04-bioinformatics-17, ref.label='c8', eval=T, echo =F}
 
 ```
 
@@ -418,7 +418,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-```{r, ref.label='c9', eval=T, echo =F}
+```{r 04-bioinformatics-18, ref.label='c9', eval=T, echo =F}
 
 ```
 
@@ -452,7 +452,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-```{r, ref.label='c10', eval=T, echo =F}
+```{r 04-bioinformatics-19, ref.label='c10', eval=T, echo =F}
 
 ```
 ]
@@ -490,7 +490,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-```{r, ref.label='c11', eval=T, echo =F}
+```{r 04-bioinformatics-20, ref.label='c11', eval=T, echo =F}
 
 ```
 ]
@@ -513,7 +513,7 @@ plt_manhattan +
 
 ]
 .pull-right[
-```{r, ref.label='c12', eval=T, echo =F}
+```{r 04-bioinformatics-21, ref.label='c12', eval=T, echo =F}
 
 ```
 ]
@@ -537,7 +537,7 @@ CMplot(gwasResults, plot.type = 'c',
 
 ]
 .pull-right[
-```{r, ref.label='d1', eval=T, echo=F, message=F}
+```{r 04-bioinformatics-22, ref.label='d1', eval=T, echo=F, message=F}
 
 ```
 
@@ -565,15 +565,17 @@ There are several ways of doing heatmaps in R:
 
 ## Some example data
 
-```{r}
+```{r 04-bioinformatics-23}
 library(Biobase)
-data(sample.ExpressionSet)
-exdat <-  sample.ExpressionSet
+#data(sample.ExpressionSet)
+exdat <-  readRDS('data/exprset.rds')
 library(limma)
 design1 <- model.matrix(~type, data=pData(exdat))
 lm1 <- lmFit(exprs(exdat), design1)
 lm1 <- eBayes(lm1) # compute linear model for each probeset
-geneID <- rownames(topTable(lm1, coef=2, num=100, adjust='none',p.value=0.05))
+geneID <- rownames(topTable(lm1, coef = 2, number = 100, 
+                            adjust.method = 'none',
+                            p.value = 0.05))
 exdat2 <- exdat[geneID,] # Keep features with p-values < 0.05
 
 head(exdat2)
@@ -594,7 +596,7 @@ plot(reg1)
 
 ]
 .pull-right[
-```{r, ref.label='e1', eval=T, echo=F}
+```{r 04-bioinformatics-24, ref.label='e1', eval=T, echo=F}
 
 ```
 ]
@@ -617,7 +619,7 @@ plot(reg2)
 ```
 ]
 .pull-right[
-```{r, ref.label='e2', eval=T, echo=F}
+```{r 04-bioinformatics-25, ref.label='e2', eval=T, echo=F}
 
 ```
 ]
@@ -637,7 +639,7 @@ plot(ann1)
 ```
 ]
 .pull-right[
-```{r, ref.label='e3', echo=F, eval=T}
+```{r 04-bioinformatics-26, ref.label='e3', echo=F, eval=T}
 
 ```
 
@@ -661,7 +663,7 @@ plot(ann2)
 ```
 ]
 .pull-right[
-```{r, ref.label='e4', eval=T, echo=F}
+```{r 04-bioinformatics-27, ref.label='e4', eval=T, echo=F}
 
 ```
 
@@ -676,7 +678,7 @@ class:middle, center
 
 ## Example data
 
-```{r}
+```{r 04-bioinformatics-28}
 library(Seurat)
 # pbmc.data <- Read10X(data.dir='data/hg19/')
 # pbmc <- CreateSeuratObject(counts = pbmc.data, project='pbmc3k', min.cells=3, min.features=200)
@@ -692,7 +694,7 @@ slotNames(pbmc)
 
 We'll calculate mitochondrial QC metrics (percentage counts originating from mitochondrial genes)
 
-```{r}
+```{r 04-bioinformatics-29}
 pbmc[['percent.mt']] <- PercentageFeatureSet(pbmc, pattern = '^MT-')
 head(pbmc@meta.data) #<<
 ```
@@ -722,7 +724,7 @@ ggplot(plot_data, aes(orig.ident, value)) +
 
 ]
 .pull-right[
-```{r, ref.label='f1', eval=T, echo=F}
+```{r 04-bioinformatics-30, ref.label='f1', eval=T, echo=F}
 
 ```
 
@@ -744,7 +746,7 @@ CombinePlots(plots = list(plot1, plot2))
 ```
 ]
 .pull-right[
-```{r, ref.label='g1', eval=T, echo=F}
+```{r 04-bioinformatics-31, ref.label='g1', eval=T, echo=F}
 
 ```
 
@@ -786,7 +788,7 @@ ggpubr::ggarrange(plt1, plt2, nrow = 1, ncol=2)
 ```
 ]
 .pull-right[
-```{r, ref.label='g2', eval=T, echo=F}
+```{r 04-bioinformatics-32, ref.label='g2', eval=T, echo=F}
 
 ```
 
@@ -821,7 +823,7 @@ plot1
 
 ]
 .pull-right[
-```{r, ref.label='g3', eval=T, echo=F}
+```{r 04-bioinformatics-33, ref.label='g3', eval=T, echo=F}
 
 ```
 
@@ -860,7 +862,7 @@ plt11
 
 ]
 .pull-right[
-```{r, ref.label='g4', eval=T, echo=F}
+```{r 04-bioinformatics-34, ref.label='g4', eval=T, echo=F}
 
 ```
 
@@ -881,7 +883,7 @@ plt12
 
 ]
 .pull-right[
-```{r, ref.label='g5', eval=T, echo=F}
+```{r 04-bioinformatics-35, ref.label='g5', eval=T, echo=F}
 
 ```
 ]

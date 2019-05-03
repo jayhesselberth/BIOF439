@@ -20,4 +20,4 @@ bookdown::pdf_book:
 #    include-after: latex/after_body.tex
   latex_engine: xelatex
   citation_package: natbib
-  keep_tex: yes
+  keep_tex: no

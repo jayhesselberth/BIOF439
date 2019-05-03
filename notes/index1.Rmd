@@ -6,6 +6,8 @@ author: "Abhijit Dasgupta, PhD"
 date: "Last updated: `r format(Sys.Date(), '%B %d, %Y')`"
 knit: bookdown::render_book
 site: bookdown::bookdown_site
+output_format: bookdown::pdf_book
+output_dir: ../docs/notes
 documentclass: book
   #  papersize: letterpaper
   #  classoption: twosided
@@ -18,7 +20,7 @@ includes:
 compact-title: yes
 fontsize: "12pt"
 classoption: "openany"
-papersize: "letterpaper"
+papersize: "letter"
 mainfont: "Charter"
 monofont: "Source Code Pro"
 geometry: "margin=0.75in, letterpaper"

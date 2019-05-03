@@ -826,7 +826,6 @@ This interpretation holds for the vast majority of statistical models in R
 
 ```{r Rintro-34, echo=T}
 library(survival)
-data(pbc)
 myLinearModel <- lm(chol ~ bili, data = pbc)
 ```
 

@@ -150,7 +150,7 @@ results %&gt;% tidyr::gather(protein, pvalue) %&gt;%
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-4-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -170,7 +170,7 @@ results %&gt;% tidyr::gather(protein, pvalue) %&gt;%
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-5-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -191,7 +191,7 @@ results %&gt;% tidyr::gather(protein, pvalue) %&gt;%
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-6-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -221,7 +221,7 @@ results %&gt;% tidyr::gather(protein, pval) %&gt;%
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-7-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -241,7 +241,7 @@ manhattan(gwasResults)
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-8-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -258,7 +258,7 @@ manhattan(gwasResults,
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-9-1.png)&lt;!-- --&gt;
 ]
 
 ???
@@ -407,7 +407,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-14-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -428,7 +428,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-15-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -451,7 +451,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-16-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -479,7 +479,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-17-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -509,7 +509,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-18-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -542,7 +542,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-19-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -579,7 +579,7 @@ ggplot(plt_dat,
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-20-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -601,7 +601,7 @@ plt_manhattan +
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-21-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -624,7 +624,7 @@ CMplot(gwasResults, plot.type = 'c',
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-22-1.png)&lt;!-- --&gt;
 
 ```
 #&gt;  [1] "Circular_Manhattan Plotting P..."
@@ -657,13 +657,15 @@ There are several ways of doing heatmaps in R:
 
 ```r
 library(Biobase)
-data(sample.ExpressionSet)
-exdat &lt;-  sample.ExpressionSet
+#data(sample.ExpressionSet)
+exdat &lt;-  readRDS('data/exprset.rds')
 library(limma)
 design1 &lt;- model.matrix(~type, data=pData(exdat))
 lm1 &lt;- lmFit(exprs(exdat), design1)
 lm1 &lt;- eBayes(lm1) # compute linear model for each probeset
-geneID &lt;- rownames(topTable(lm1, coef=2, num=100, adjust='none',p.value=0.05))
+geneID &lt;- rownames(topTable(lm1, coef = 2, number = 100, 
+                            adjust.method = 'none',
+                            p.value = 0.05))
 exdat2 &lt;- exdat[geneID,] # Keep features with p-values &lt; 0.05
 
 head(exdat2)
@@ -699,7 +701,7 @@ plot(reg1)
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-24-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -721,7 +723,7 @@ plot(reg2)
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-25-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -740,7 +742,7 @@ plot(ann1)
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-26-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -763,7 +765,7 @@ plot(ann2)
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-27-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -857,7 +859,7 @@ ggplot(plot_data, aes(orig.ident, value)) +
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-30-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -878,7 +880,7 @@ CombinePlots(plots = list(plot1, plot2))
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-31-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -918,7 +920,7 @@ ggpubr::ggarrange(plt1, plt2, nrow = 1, ncol=2)
 ```
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-32-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -951,7 +953,7 @@ plot1
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-33-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -989,7 +991,7 @@ plt11
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-34-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -1009,7 +1011,7 @@ plt12
 
 ]
 .pull-right[
-![](04-bioinformatics_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+![](04-bioinformatics_files/figure-html/04-bioinformatics-35-1.png)&lt;!-- --&gt;
 ]
 ---
 

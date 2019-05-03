@@ -2,13 +2,10 @@ library(drake)
 library(fs)
 library(here)
 suppressPackageStartupMessages(library(tidyverse))
+library(bookdown)
 
-rmd2pdf <- function(f){
-  outdir <- here::here('docs','slides','lectures')
-  fname <- fs::path_file(f)
-  pdfname <- stringr::str_replace(fname, 'Rmd','pdf')
-  pagedown::chrome_print(f, output = fs::path(outdir, pdfname))
-}
+old_notes_time <- readRDS('notes/mod_times.rds')
+curr_notes_time <- fs::dir_info('notes', glob = '*.Rmd') %>% select(path,change_time)
 
 slides_rmdfiles <- dir_ls('slides/lectures/', glob = '*.Rmd')
 slides_outdir <- here::here('docs','slides','lectures')
@@ -27,7 +24,7 @@ full_plan <- drake_plan(
     transform = map(rmdf=!!slides_rmdfiles)
   ),
   create_slides_pdf = target(
-    rmd2pdf(knitr_in(rmdf)),
+    coursedown::slide2pdf(knitr_in(rmdf)),
     transform = map(rmdf = !!slides_rmdfiles)
   ),
   make_slide_index = target(
@@ -42,12 +39,19 @@ full_plan <- drake_plan(
     rmarkdown::render_site(input = knitr_in(here::here('assignments'))),
     trigger = trigger(depend = all(file_exists(!!hw_outrmd)))
   ),
-  create_notes_html = rmarkdown::render(input = knitr_in('notes/index.Rmd'),
-                                        output_format = "bookdown::gitbook"),
+  create_notes_html = target(
+    coursedown::make_book(knitr_in('notes/index.Rmd'),"bookdown::gitbook"),
+    trigger = trigger(condition = any(curr_notes_time$change_time > old_notes_time$change_time))
+  ),
+  create_notes_pdf = target(
+    coursedown::make_book(knitr_in('notes/index1.Rmd'),'bookdown::pdf_book'),
+    trigger = trigger(condition = any(curr_notes_time$change_time > old_notes_time$change_time))
+  ),
   create_top = target(
     rmarkdown::render_site(input = knitr_in(rmdf)),
     transform = map(rmdf = !!top_rmdfiles)
   )
 )
+
 
 drake_config(full_plan)
