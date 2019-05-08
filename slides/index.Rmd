@@ -88,3 +88,7 @@ In this lecture we'll spend most of our time learning various aspects of R, and 
 In this lecture we'll explore some visualizations commonly used in bioinformatics
 
 [Slides](lectures/Lecture4_bioinformatics.html){target=_blank} ([Rmd](lectures/Lecture4_bioinformatics.Rmd))
+
+## Lecture 5
+
+[Slides](lectures/00-Lecture5.html)
