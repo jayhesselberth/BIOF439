@@ -2,7 +2,7 @@
 title: "A quick tour of R"
 author: Abhijit Dasgupta, PhD
 date: Spring 2019
-
+abstract: In this lecture we’ll spend most of our time learning various aspects of R, and then how that can help with graphics.
 ---
 
 ```{r setup, include=FALSE}

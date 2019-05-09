@@ -26,6 +26,10 @@ parse_title <- function(f){
   if(is.na(f)) return(NA)
   rmarkdown::yaml_front_matter(f)$title
 }
+parse_abstract <- function(f){
+  if(is.na(f)) return(NA)
+  rmarkdown::yaml_front_matter(f)$abstract
+}
 setwd(here::here('docs','slides'))
 htmls <- dir_ls('lectures',regex = '\\d{2}.*html')
 pdfs <- dir_ls('lectures', regex = '\\d{2}.*pdf')
@@ -54,7 +58,6 @@ kable(blah) %>%
   kable_styling(bootstrap_options='striped', full_width = T)
 setwd(here::here())
 ```
-
 
 -----
 ## Lecture One (April 3, 2019)
