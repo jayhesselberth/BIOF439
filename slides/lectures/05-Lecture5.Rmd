@@ -6,7 +6,7 @@ date: Spring 2019
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, comment = '#> ', message = F, cache=T)
+knitr::opts_chunk$set(echo = TRUE, comment = '#> ', message = F, warning = F, cache=F)
 library(tidyverse)
 theme_set(theme_bw())
 ```
@@ -241,7 +241,8 @@ plt #<<
 .pull-left[
 Clean up the graphic
 ```{r a9, eval = F, echo = T}
-plt +
+(plt_corrupt <- 
+   plt +
   scale_x_continuous(name = 'Corruption Perceptions Index',
                      breaks = 1:10) +
   scale_y_continuous(name="Human Development Index",
@@ -257,6 +258,7 @@ plt +
   theme_bw()+
   theme(legend.position='top',
         legend.direction='horizontal')
+)
 ```
 ]
 .pull-right[
@@ -498,8 +500,8 @@ ggplot(data = world) +
 .pull-left[
 ```{r f1, eval = F, echo = T}
 library(maps)
-states <- st_as_sf(map('state', plot = F, fill = T)) %>% 
-  cbind(st_coordinates(st_centroid(states))) %>% 
+states <- st_as_sf(maps::map('state', plot = F, fill = T)) %>% 
+  cbind(st_coordinates(st_centroid(.))) %>% 
   mutate(ID = str_to_title(ID))
 
 ggplot(data = world)+
@@ -543,3 +545,428 @@ ggplot(data = world)+
 
 ---
 
+## Looking at the Florida elections
+
+.pull-left[
+```{r g1, eval = F, echo = T}
+source('data/florida.R')
+head(florida_election)
+florida_election <- florida_election %>% 
+  mutate_at(vars(ends_with('perc')), 
+            ~as.numeric(str_remove(., '%')))
+
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "g1"}
+```
+]
+
+---
+
+## Looking at the Florida election
+
+.pull-left[
+Now we need the map information
+```{r g2, eval = F, echo = T}
+library(maps)
+counties <- st_as_sf(maps::map('county', plot = F, fill = T))
+head(counties)
+counties <- counties %>% filter(str_detect(ID, 'florida'))
+counties <- counties %>% separate(ID, c('State','County'), sep = ',') %>% 
+  mutate_at(vars(State:County), str_to_title)
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "g2"}
+```
+]
+
+---
+
+## Looking at the Florida election
+
+.pull-left[
+The nice thing about the `sf` package is that it renders all the data into a data frame, so adding to it, or merging new data becomes easy. 
+
+We will now merge the election data with the map data
+
+```{r g3, eval = F, echo = T}
+election_by_county <- counties %>% left_join(florida_election)
+head(election_by_county)
+
+```
+]
+.pull-right[
+
+```{r, eval = T, echo = F, ref.label = "g3"}
+```
+]
+
+---
+
+## Looking at the Florida election
+
+.pull-left[
+Now we're ready to plot
+
+```{r g4, eval = F, echo = T}
+ggplot(election_by_county) + 
+  geom_sf(aes(fill = Gore_perc)) + 
+  scale_fill_viridis_c(option = 'plasma') + 
+  labs(caption = 'Source: Wikipedia')
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "g4"}
+```
+]
+
+---
+
+## Looking at the Florida election
+
+.pull-left[
+
+We can clean this up a bit, and add surrounding states
+
+```{r g5, eval = F, echo = T}
+(plt_map <- ggplot(data = world)+
+  geom_sf() + 
+  geom_sf(data = states, fill = NA) + 
+  geom_sf(data = election_by_county, aes(fill=Gore_perc)) + 
+  geom_label(data = states %>% filter(ID != 'Florida'), aes(X, Y, label = ID), #<<
+            size = 5) +
+  coord_sf(xlim = c(-88, -78), ylim = c(24.5, 33), 
+           expand = F) +
+  labs(x = '', y = '', fill = 'Percentage for Gore') + 
+  scale_fill_viridis_c(option = 'plasma'))
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "g5"}
+```
+]
+
+---
+class: middle,center
+
+# Genomic data
+
+---
+
+## Visualizing a proteomic network
+
+.pull-left[
+We read a dataset that contains the network relationships between different proteins
+```{r h1, eval = F, echo = T}
+library(ggnetwork)
+datf <- rio::import('data/string_graph.txt')
+head(datf)
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "h1"}
+```
+]
+
+---
+
+## Visualizing a proteomic network
+
+.pull-left[
+The `igraph` package allows the creation of network graphs. 
+
+However, here, we're only using it for data ingestion
+```{r h2, eval = F, echo = T}
+grs <- igraph::graph_from_data_frame(datf[,c('node1','node2')], 
+                                     directed = F)
+grs
+```
+
+We see that this object holds the different connections. 
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "h2"}
+```
+]
+
+---
+
+## Visualizing a proteomic network
+
+.pull-left[
+We can then transform this data into `ggplot`-friendly data, to use `ggplot` for the plotting
+
+
+```{r h3, eval = F, echo = T}
+ggdf <- ggnetwork(grs, layout = 'fruchtermanreingold')
+
+ggplot(ggdf, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(color = "black", #<<
+             curvature = 0.1, size = 0.95, alpha = 0.8)+ #<<
+  geom_nodes(aes(x = x, y = y), #<<
+             size = 3, #<<
+             alpha = 0.5, #<<
+             color = "orange") + #<<
+  geom_nodelabel_repel(aes(label = vertex.names), #<<
+                     size=4, color="#8856a7") +#<<
+  theme_blank() + theme(legend.position = "none")
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "h3"}
+```
+]
+
+---
+class: middle, center
+
+# Composing different genomic data into tracks
+
+---
+
+## The `ggbio` package
+
+The `ggbio` package has several functions that allow graphical representations of different genomic entities.
+
+.pull-left[
+
+An ideogram
+
+```{r j1, eval = F, echo = T}
+library(ggbio)
+p.ideo <- Ideogram(genome = 'hg19')
+p.ideo
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "j1"}
+```
+]
+
+---
+
+## The `ggbio` package
+
+.pull-left[
+
+Visualizing the gene model
+
+```{r j2, eval = F, echo = T}
+library(Homo.sapiens)
+data(genesymbol, package='biovizBase')
+wh <- genesymbol[c('BRCA1','NBR1')]
+wh <- range(wh, ignore.strand=T)
+p.txdb <- autoplot(Homo.sapiens, which = wh)
+p.txdb
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "j2"}
+```
+]
+
+---
+
+## The `ggbio` package
+
+.pull-left[
+
+Putting it into tracks
+
+```{r j3, eval = F, echo = T}
+library(GenomicRanges)
+gr17 <- GRanges("chr17", IRanges(41234415, 41234569))
+tks <-  tracks(p.ideo, gene = p.txdb) + xlim(gr17)
+tks + theme_tracks_sunset()
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "j3"}
+```
+]
+
+---
+class: middle, center
+
+# Interactive maps
+
+---
+
+## Using plotly
+
+.pull-left[
+```{r k1, eval = F, echo = T}
+library(plotly)
+
+ggplotly(plt_map)
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "k1"}
+```
+]
+
+---
+
+## Using real maps
+
+.pull-left[
+```{r k2, eval = F, echo = T}
+library(leaflet)
+
+m <- leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=174.768, lat=-36.852, popup="The birthplace of R")
+m 
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "k2"}
+```
+]
+
+---
+class: center, middle
+
+# Heatmaps
+
+
+---
+
+## Recall our heatmap
+
+.pull-left[
+```{r l1, eval = F, echo = T}
+library(Biobase)
+#data(sample.ExpressionSet)
+exdat <-  readRDS('data/exprset.rds')
+library(limma)
+design1 <- model.matrix(~type, data=pData(exdat))
+lm1 <- lmFit(exprs(exdat), design1)
+lm1 <- eBayes(lm1) # compute linear model for each probeset
+geneID <- rownames(topTable(lm1, coef = 2, number = 100, 
+                            adjust.method = 'none',
+                            p.value = 0.05))
+exdat2 <- exdat[geneID,] # Keep features with p-values < 0.05
+
+library(Heatplus)
+reg1 <- regHeatmap(exprs(exdat2), legend=2, col=heat.colors, 
+                   breaks=-3:3)
+plot(reg1)
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "l1"}
+```
+]
+
+---
+
+## Using `heatmaply`
+
+.pull-left[
+```{r l2, eval = F, echo = T}
+library(heatmaply)
+heatmaply(exprs(exdat2))
+
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "l2"}
+```
+]
+
+---
+
+## Using heatmaply
+
+.pull-left[
+You can also easily use the correlation metric
+
+```{r l3, eval = F, echo = T}
+heatmaply(exprs(exdat2), distfun = 'pearson')
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "l3"}
+```
+]
+
+---
+
+## Using `d3heatmap`
+
+.pull-left[
+```{r l4, eval = F, echo = T}
+library(d3heatmap)
+d3heatmap(exprs(exdat2))
+
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "l4"}
+```
+]
+
+---
+class: middle, center
+
+# Manhattan plots
+
+---
+
+```{r}
+library(qqman) #<<
+manhattan(gwasResults)
+```
+
+---
+
+```{r}
+library(manhattanly)
+manhattanly(gwasResults)
+```
+
+---
+
+## Interactions using plotly
+
+- Plot.ly is a web service that produces interactive graphics from data
+- They made their backend open-source
+- In R, you can interact with plot.ly using the package `plotly`.
+
+---
+
+## Interactions using plotly
+
+- Plotly makes it very easy to create interactive plots based on ggplot
+
+.pull-left[
+```{r m1, eval = F, echo = T}
+plt_corrupt
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "m1"}
+```
+]
+
+---
+
+## Interactions using plotly
+
+- Plotly makes it very easy to create interactive plots based on ggplot
+
+.pull-left[
+```{r m2, eval = F, echo = T}
+library(plotly)
+
+ggplotly(plt_corrupt)
+```
+]
+.pull-right[
+```{r, eval = T, echo = F, ref.label = "m2"}
+```
+]
