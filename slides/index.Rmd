@@ -101,3 +101,6 @@ In this lecture we'll explore some visualizations commonly used in bioinformatic
 We will go through a `flexdashboard` example found [here](lectures/flexdashboard_essentials.Rmd1), with the final product found [here](lectures/flexdashboard_essentials.html)
 
 
+## Final project
+
+Please create a project in RStudio Cloud and share with me. Let me know what the final product is (HTML/PPT/Word), and I'll figure out how to put it together for the presentations on the last day.
