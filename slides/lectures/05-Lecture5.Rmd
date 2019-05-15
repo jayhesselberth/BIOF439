@@ -53,7 +53,7 @@ ggplot(econ_data,
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "a1"}
+```{r 05-Lecture5-1, eval = T, echo = F, ref.label = "a1"}
 ```
 ]
 
@@ -72,7 +72,7 @@ ggplot(econ_data,
 #### Add a trend line
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "a2", message=F}
+```{r 05-Lecture5-2, eval = T, echo = F, ref.label = "a2", message=F}
 ```
 ]
 
@@ -91,7 +91,7 @@ ggplot(econ_data,
 #### Reverse order so points are above line
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "a3"}
+```{r 05-Lecture5-3, eval = T, echo = F, ref.label = "a3"}
 ```
 ]
 
@@ -111,7 +111,7 @@ ggplot(econ_data,
 #### Different shape for points
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "a4"}
+```{r 05-Lecture5-4, eval = T, echo = F, ref.label = "a4"}
 ```
 ]
 
@@ -138,7 +138,7 @@ ggplot(econ_data,
 #### Label countries
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "a5"}
+```{r 05-Lecture5-5, eval = T, echo = F, ref.label = "a5"}
 ```
 ]
 
@@ -167,7 +167,7 @@ ggplot(econ_data,
 #### Better, but labels are overlayed on points
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "a6"}
+```{r 05-Lecture5-6, eval = T, echo = F, ref.label = "a6"}
 ```
 ]
 
@@ -197,7 +197,7 @@ pointsToLabel <- c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan",
 
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "a7"}
+```{r 05-Lecture5-7, eval = T, echo = F, ref.label = "a7"}
 ```
 ]
 
@@ -230,7 +230,7 @@ plt #<<
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "a8"}
+```{r 05-Lecture5-8, eval = T, echo = F, ref.label = "a8"}
 ```
 ]
 
@@ -262,7 +262,7 @@ Clean up the graphic
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "a9"}
+```{r 05-Lecture5-9, eval = T, echo = F, ref.label = "a9"}
 ```
 ]
 
@@ -287,7 +287,7 @@ ggplot(iris,
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "b1"}
+```{r 05-Lecture5-10, eval = T, echo = F, ref.label = "b1"}
 ```
 ]
 
@@ -296,7 +296,7 @@ ggplot(iris,
 ## Adding group means
 
 .pull-left[
-```{r, eval = T, echo = T}
+```{r 05-Lecture5-11, eval = T, echo = T}
 means <- iris %>% group_by(Species) %>% 
   summarize_at(vars(starts_with('Sepal')),
                mean)
@@ -316,11 +316,11 @@ ggplot(iris,
 ```
 
 
-```{r, eval = T, echo = T}
+```{r 05-Lecture5-12, eval = T, echo = T}
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "b2"}
+```{r 05-Lecture5-13, eval = T, echo = F, ref.label = "b2"}
 ```
 ]
 ---
@@ -343,7 +343,7 @@ ggplot(mpg,
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "c1"}
+```{r 05-Lecture5-14, eval = T, echo = F, ref.label = "c1"}
 ```
 ]
 
@@ -373,7 +373,7 @@ ggplot(mpg,
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "c2"}
+```{r 05-Lecture5-15, eval = T, echo = F, ref.label = "c2"}
 ```
 ]
 
@@ -391,7 +391,7 @@ mpg %>%
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "d1"}
+```{r 05-Lecture5-16, eval = T, echo = F, ref.label = "d1"}
 ```
 ]
 
@@ -420,7 +420,7 @@ mpg %>%
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "d2"}
+```{r 05-Lecture5-17, eval = T, echo = F, ref.label = "d2"}
 ```
 ]
 
@@ -451,7 +451,7 @@ ggplot(data = world) +
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "e1"}
+```{r 05-Lecture5-18, eval = T, echo = F, ref.label = "e1"}
 ```
 ]
 
@@ -469,7 +469,7 @@ ggplot(data = world) +
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "e2"}
+```{r 05-Lecture5-19, eval = T, echo = F, ref.label = "e2"}
 ```
 ]
 
@@ -489,7 +489,7 @@ ggplot(data = world) +
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "e3"}
+```{r 05-Lecture5-20, eval = T, echo = F, ref.label = "e3"}
 ```
 ]
 
@@ -514,7 +514,7 @@ ggplot(data = world)+
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "f1", warning=F}
+```{r 05-Lecture5-21, eval = T, echo = F, ref.label = "f1", warning=F}
 ```
 ]
 
@@ -539,7 +539,7 @@ ggplot(data = world)+
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "f2", warning=F}
+```{r 05-Lecture5-22, eval = T, echo = F, ref.label = "f2", warning=F}
 ```
 ]
 
@@ -558,7 +558,7 @@ florida_election <- florida_election %>%
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "g1"}
+```{r 05-Lecture5-23, eval = T, echo = F, ref.label = "g1"}
 ```
 ]
 
@@ -578,7 +578,7 @@ counties <- counties %>% separate(ID, c('State','County'), sep = ',') %>%
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "g2"}
+```{r 05-Lecture5-24, eval = T, echo = F, ref.label = "g2"}
 ```
 ]
 
@@ -599,7 +599,7 @@ head(election_by_county)
 ]
 .pull-right[
 
-```{r, eval = T, echo = F, ref.label = "g3"}
+```{r 05-Lecture5-25, eval = T, echo = F, ref.label = "g3"}
 ```
 ]
 
@@ -618,7 +618,7 @@ ggplot(election_by_county) +
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "g4"}
+```{r 05-Lecture5-26, eval = T, echo = F, ref.label = "g4"}
 ```
 ]
 
@@ -644,7 +644,7 @@ We can clean this up a bit, and add surrounding states
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "g5"}
+```{r 05-Lecture5-27, eval = T, echo = F, ref.label = "g5"}
 ```
 ]
 
@@ -666,7 +666,7 @@ head(datf)
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "h1"}
+```{r 05-Lecture5-28, eval = T, echo = F, ref.label = "h1"}
 ```
 ]
 
@@ -687,7 +687,7 @@ grs
 We see that this object holds the different connections. 
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "h2"}
+```{r 05-Lecture5-29, eval = T, echo = F, ref.label = "h2"}
 ```
 ]
 
@@ -715,7 +715,7 @@ ggplot(ggdf, aes(x = x, y = y, xend = xend, yend = yend)) +
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "h3"}
+```{r 05-Lecture5-30, eval = T, echo = F, ref.label = "h3"}
 ```
 ]
 
@@ -741,7 +741,7 @@ p.ideo
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "j1"}
+```{r 05-Lecture5-31, eval = T, echo = F, ref.label = "j1"}
 ```
 ]
 
@@ -763,7 +763,7 @@ p.txdb
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "j2"}
+```{r 05-Lecture5-32, eval = T, echo = F, ref.label = "j2"}
 ```
 ]
 
@@ -783,7 +783,7 @@ tks + theme_tracks_sunset()
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "j3"}
+```{r 05-Lecture5-33, eval = T, echo = F, ref.label = "j3"}
 ```
 ]
 
@@ -804,7 +804,7 @@ ggplotly(plt_map)
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "k1"}
+```{r 05-Lecture5-34, eval = T, echo = F, ref.label = "k1"}
 ```
 ]
 
@@ -823,7 +823,7 @@ m
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "k2"}
+```{r 05-Lecture5-35, eval = T, echo = F, ref.label = "k2"}
 ```
 ]
 
@@ -858,7 +858,7 @@ plot(reg1)
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "l1"}
+```{r 05-Lecture5-36, eval = T, echo = F, ref.label = "l1"}
 ```
 ]
 
@@ -874,7 +874,7 @@ heatmaply(exprs(exdat2))
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "l2"}
+```{r 05-Lecture5-37, eval = T, echo = F, ref.label = "l2"}
 ```
 ]
 
@@ -890,7 +890,7 @@ heatmaply(exprs(exdat2), distfun = 'pearson')
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "l3"}
+```{r 05-Lecture5-38, eval = T, echo = F, ref.label = "l3"}
 ```
 ]
 
@@ -906,7 +906,7 @@ d3heatmap(exprs(exdat2))
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "l4"}
+```{r 05-Lecture5-39, eval = T, echo = F, ref.label = "l4"}
 ```
 ]
 
@@ -917,14 +917,14 @@ class: middle, center
 
 ---
 
-```{r}
+```{r 05-Lecture5-40}
 library(qqman) #<<
 manhattan(gwasResults)
 ```
 
 ---
 
-```{r}
+```{r 05-Lecture5-41}
 library(manhattanly)
 manhattanly(gwasResults)
 ```
@@ -949,7 +949,7 @@ plt_corrupt
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "m1"}
+```{r 05-Lecture5-42, eval = T, echo = F, ref.label = "m1"}
 ```
 ]
 
@@ -967,6 +967,6 @@ ggplotly(plt_corrupt)
 ```
 ]
 .pull-right[
-```{r, eval = T, echo = F, ref.label = "m2"}
+```{r 05-Lecture5-43, eval = T, echo = F, ref.label = "m2"}
 ```
 ]

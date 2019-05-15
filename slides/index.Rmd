@@ -95,3 +95,9 @@ In this lecture we'll explore some visualizations commonly used in bioinformatic
 ## Lecture 5
 
 [Slides](lectures/00-Lecture5.html)
+
+## Lecture 6
+
+We will go through a `flexdashboard` example found [here](lectures/flexdashboard_essentials.Rmd1), with the final product found [here](lectures/flexdashboard_essentials.html)
+
+
