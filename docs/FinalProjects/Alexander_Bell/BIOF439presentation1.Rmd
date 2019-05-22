@@ -1,0 +1,92 @@
+---
+title: "BIOF439 Final Project"
+author: Alex Bell
+date: May 21, 2019
+output: slidy_presentation
+---
+
+## My graphs
+
+-I used a health spending dataset from kaggle
+
+-Geom_point of smoking/age/cost
+
+-Geom_pont facet_wrap of same graphs by regions
+
+-Geom_jitter of Obesity and Smoking
+
+## Packages and data
+
+```{r, include = TRUE, echo=TRUE, message=F, warning = F}
+if(!require('tidyverse')) install.packages('tidyverse', repos = "http://cran.us.r-project.org")
+library('tidyverse')
+insurance <- read.csv("insurance.csv")
+```
+
+## Plot age/cost/smoking status
+
+```{r, echo = TRUE}
+
+plot_point_smokers <- ggplot(insurance, aes(x = age, y = charges, color = smoker)) + 
+  geom_point() + 
+  labs(y="Insurance Bill", x = "Age", color = "", title = "Insurance Bills by 
+Age and Smoking Status") + 
+  scale_y_continuous(labels=scales::dollar) + 
+  scale_color_discrete(breaks=c("no", "yes"), labels=c("Non-Smoker", "Smoker"))
+```
+---
+
+```{r}
+plot(plot_point_smokers)
+```
+
+## Plot facets by region
+
+```{r}
+insurance$facet <- factor(insurance$region, levels=c("northwest", "northeast", "southwest",
+"southeast"))
+levels(insurance$facet) <-c("North-West", "North-East", "South-West", "South-East")
+
+
+plot_facet_region <- ggplot(insurance, aes(x=age, y = charges, color = smoker)) +
+  geom_point() + 
+  facet_wrap(~facet, ncol=2) + 
+  labs(y="Insurance Bill", x = "Age", color = "", title = "Insurance Bills by Region") +
+  scale_y_continuous(labels=scales::dollar) +
+  scale_color_discrete(breaks=c("no", "yes"), labels=c("Non-Smoker", "Smoker"))
+```
+
+---
+
+```{r}
+plot(plot_facet_region)
+```
+
+## Intersection of obesity and smoking
+
+```{r}
+insurance$obese <- "no"
+insurance$obese[insurance$bmi >29.5] <- "yes"
+insurance$super_spender <- "No"
+insurance$super_spender[insurance$charges > 40000] <- "Yes"
+
+plot_super_users <- ggplot(insurance) + 
+  geom_jitter(aes(x = obese, y = super_spender, color= smoker)) + 
+  labs(y="", x = "", color = "", title = "Super-Users are Obese Smokers") + 
+  scale_color_discrete(breaks=c("no", "yes"), labels=c("Non-Smoker", "Smoker")) +
+  scale_x_discrete(breaks=c("no", "yes"), 
+  labels=c("Not
+Obese", "Obese")) + 
+  scale_y_discrete(breaks=c("No", "Yes"), labels=c("Less than $40,000",
+                                                   "Greater than $40,000"))
+```
+
+---
+
+```{r}
+plot(plot_super_users)
+```
+
+---
+
+Thank you

@@ -1,0 +1,153 @@
+---
+title: "R Project"
+author: "Lauren"
+date: "5/21/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Final project
+
+- Look at the relationship between playoff overtime goals and play off win percentage for NHL teams 
+
+
+##Library list
+```{r library, include=F}
+if(!require(tidyverse)) install.packages("tidyverse")
+if(!require(plotly)) install.packages("plotly")
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+library(plyr)
+library(plotly)
+```
+
+##Data import/set up
+```{r data, eval=T}
+nhl_rec <- read_xls("nhl_r.xls", sheet = 1)
+nhl_rec_team <- as_tibble(nhl_rec)
+nhl_ot <- read_xls("nhl_r.xls", sheet = 2)
+nhl_ot_team <- count(nhl_ot, "Team")
+names(nhl_rec)[1] = 'TeamID'
+nhl_data1 <- nhl_rec %>% left_join(nhl_ot_team, by = c('TeamID'='Team'))
+nhl_data1[is.na(nhl_data1)] <- 0
+head(nhl_data1)
+nhl_data2 <- nhl_rec %>% left_join(nhl_ot, by = c("TeamID" = "Team"))
+  nhl_data2$Date <- as.Date(nhl_data2$Date, format = "%Y-%m-%d")
+head(nhl_data2)
+```
+
+##Rough win% and OT goal freq plot
+- Graph of total playoff OT goals and overall win percentage 
+- this graph fails to take into account that some teams have been in the league for far longer than others
+```{r plot1, eval=T}
+mod1 <- lm(freq ~ Pct., data = nhl_data1)
+r2 <- broom::glance(mod1) %>% pull(r.squared) %>% 
+  round(., 2)
+
+plt1 <- ggplot(data = nhl_data1, aes(x = freq, y = Pct.)) + # Check your variable names
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  labs( title = "Total OT goals and Win Percentage",
+        subtitle = "All time playoff OT goals and playoff win percentage",
+        x = "Total OT Goals",
+        y = "Win %") + 
+  annotate('text',
+           x = 60, y = 0.07,
+           label=glue::glue("R^2 == {r}",r=r2),
+           size=6,
+           parse=T) +
+  theme_minimal()
+plt1
+```
+
+##OT goal freq following 1991 
+- many of the big changes to the composition of the NHL were made prior to 1991, so I decided to start looking into the goals scored only following 1991
+- still not the best way to do it
+```{r plot2, eval = T}
+library(lubridate)
+
+nhl <- nhl_data2 %>% filter(Date >= ("1991-01-01")) %>% count("TeamID")
+names(nhl)[2] = "OTg_post_1991"
+nhl
+
+plt2 <- ggplot(data = nhl, mapping = aes(x = reorder(TeamID, OTg_post_1991), y = OTg_post_1991)) +
+  geom_bar(stat = "Identity") +
+  labs( x = "Team", 
+        y = "OT goal count",
+        title = "OT Goal Count by Team",
+        subtitle = "Goals 1991 - Present") + 
+  theme_minimal()+
+  theme(panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank()) +
+  coord_flip()
+  
+plt2
+```
+
+## Calculating goals per game average
+- instead of looking into certain dates I decided to calculate the average number of goals per game, this would better account for teams who have scored more playoff OT goals due to more playoff appearances 
+```{r plt3, eval = T}
+
+nhl_data3 <- cbind(nhl_data1, nhl_data1$W+nhl_data1$L)
+names(nhl_data3)[7] = 'Total games'
+
+nhl_data4 <- cbind(nhl_data3, nhl_data3$freq/nhl_data3$`Total games`)
+names(nhl_data4)[8] = "Gpg"
+
+nhl_data5 <- nhl_data4 %>% 
+  mutate_if(is.numeric, round, digits = 2)
+
+head(nhl_data5)
+
+```
+
+## Putting it together
+```{r plt4, eval = T}
+mod2 <- lm(Gpg ~ Pct., data = nhl_data5)
+r2_ <- broom::glance(mod2) %>% pull(r.squared) %>% 
+  round(., 2)
+
+nhl_theme <- theme_minimal() +
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        strip.text = element_text(size = 12),
+        axis.ticks = element_blank())
+
+plt4 <- ggplot(nhl_data5, aes(x = Gpg, y = Pct.)) +
+  geom_point(color = "blue") +
+  geom_smooth(method = lm, se = FALSE, color = "red")  + 
+  annotate('text',
+           x = 0.5, y = 0.07,
+           label=glue::glue("R^2 == {r}", r=r2_),
+           size=6,
+           parse=T) +  
+      labs(x = "OT Goals Per Game",
+      y = "Win Percentage",
+      title = "Playoff OT Goals per Game and Win Percentage") +
+  nhl_theme
+      
+plt4
+
+```
+
+## Making it interactive 
+- I also wanted to compare the functionality of using ggplotly and plotly to plot the same data 
+```{r plt5, eval = T}
+library(plotly)
+ggplotly(plt4)
+
+fit <- lm(Pct. ~ Gpg , data = nhl_data5)
+plt5 <- plot_ly(data = nhl_data5, x = nhl_data5$Gpg, y = nhl_data5$Pct., type = "scatter", 
+        mode = "markers", text = nhl_data5$TeamID) %>% 
+  add_lines(x = ~Gpg, y = fitted(fit)) %>% 
+  layout(title = "OT Goals per Game vs Win Percentage", showlegend = F, 
+         xaxis = list(title = "Goals per Game", showgrid = F),
+         yaxis = list(title = "Win %", showgrid = F))
+ plt5
+```

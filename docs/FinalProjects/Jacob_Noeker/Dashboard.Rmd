@@ -1,0 +1,294 @@
+---
+title: "Data Viz Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    source_code: embed
+    
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(plotly)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+Original Data {vertical_layout=scroll data-icon="fa-archive"}
+===================================== 
+
+Row {data-height=10000}
+------------------------------------------------------------------------------
+
+### A look at the data
+
+```{r raw data}
+EchoC_data <- read_excel("Pfeifer Echo Edit for R.xlsx", sheet = "Echo_for_R")
+head(EchoC_data)
+summary(EchoC_data)
+names(EchoC_data)
+
+```
+
+Column {data-height=10000}
+------------------------------------------------------------------------------
+
+### Running some statistics
+
+```{r stats}
+
+stats_1<-lapply(EchoC_data[,4:24], function(x) t.test(x ~ EchoC_data$Genotype, var.equal = TRUE))
+stats_1
+
+```
+
+
+Visualizations {data-orientation=columns data-icon="fa-chart-bar"}
+===================================== 
+Row {.tabset data-height=400}
+------------------------------------------------------------------------------
+
+### Early violin plots 
+
+```{r Early Data}
+LV_Sys_Vol_Sept <- ggplot(EchoC_data, aes(x = Genotype, y = LV_Vol_s)) + geom_violin() + theme_bw() + 
+  ylab("Left Ventricular Systolic Volume (uL)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant"), label = c("Wild Type", "Mutant")) +
+  ggtitle("September 2018 Systolic Volume Variation") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3) + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue")
+LV_Sys_Vol_Sept
+
+LV_Diameter_Sept <- ggplot(EchoC_data, aes(x = Genotype, y = Dia_s)) + geom_violin() + theme_bw() + 
+  ylab("Left Ventricular Diameter (mm)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant"), label = c("Wild Type", "Mutant")) +
+  ggtitle("September 2018 Diameter Variation During Systole") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3) + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue")
+LV_Diameter_Sept
+```
+
+Row {.tabset data-height=400}
+------------------------------------------------------------------------------
+
+### Poster violin plots 
+
+```{r poster graphs}
+
+jn_theme <- function(){
+  theme_bw() +
+    theme(axis.text = element_text(size = 14, color = "Black"),
+          axis.title = element_text(size = 16),
+          panel.grid.minor = element_blank(),
+          strip.text = element_text(size=14),
+          strip.background = element_blank(),
+          plot.title = element_text(size = 20, hjust = 0.5),
+          panel.grid.major.x = element_blank())
+}
+
+
+LV_Sys_Vol_15 <- ggplot(data = EchoC_data[EchoC_data$Group == "September",], aes(x = Genotype, y = LV_Vol_s)) + 
+  geom_violin(scale = "area", adjust = 1, aes(color = Genotype), show.legend = FALSE) + 
+  scale_color_manual(values = c("Wild_Type"="Black", "Mutant"="Red")) +
+  geom_point(size = 0.5, height = 0, width = 0.05) + #can use geom_jitter to introduce a small amount of random variation to the location of each point to handle overplott
+  ylab("Left Ventricular Systolic Volume (uL)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant")) + 
+  stat_summary(fun.y = mean, geom = "point", shape = 5, size  = 3, color = "#9A2617") + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue") +
+  jn_theme() +
+  theme(axis.title.x = element_blank())
+LV_Sys_Vol_15
+
+#Dont need this for poster
+LV_Diam_systole_15 <- ggplot(data = EchoC_data[EchoC_data$Group == "September",], aes(x = Genotype, y = Dia_s)) + 
+  geom_violin(scale = "area", adjust = 1, aes(color = Genotype), show.legend = FALSE) + 
+  scale_color_manual(values = c("Wild_Type"="Black", "Mutant"="Red")) +
+  geom_point(size = 0.5, height = 0, width = 0.05) + #can use geom_jitter to introduce a small amount of random variation to the location of each point to handle overplott
+  ylab("Left Ventricular Diameter (mm)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant")) + 
+  stat_summary(fun.y = mean, geom = "point", shape = 5, size  = 3, color = "#9A2617") + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue") +
+  jn_theme() +
+  theme(axis.title.x = element_blank())
+LV_Diam_systole_15
+
+
+LVAW_dia_15 <- ggplot(data = EchoC_data[EchoC_data$Group == "September",], aes(x = Genotype, y = LVAW_d)) + 
+  geom_violin(scale = "area", adjust = 1, aes(color = Genotype), show.legend = FALSE) + 
+  scale_color_manual(values = c("Wild_Type"="Black", "Mutant"="Red")) +
+  geom_point(size = 0.5, height = 0, width = 0.05) + #can use geom_jitter to introduce a small amount of random variation to the location of each point to handle overplott
+  ylab("Left Ventricular Anterior Wall Diameter (mm)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant")) + 
+  stat_summary(fun.y = mean, geom = "point", shape = 5, size  = 3, color = "#9A2617") + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue") +
+  jn_theme() +
+  theme(axis.title.x = element_blank())
+LVAW_dia_15
+
+Ejection_fraction_15 <- ggplot(data = EchoC_data[EchoC_data$Group == "September",], aes(x = Genotype, y = EF)) + 
+  geom_violin(scale = "area", adjust = 1, aes(color = Genotype), show.legend = FALSE) + 
+  scale_color_manual(values = c("Wild_Type"="Black", "Mutant"="Red")) +
+  geom_point(size = 0.5, height = 0, width = 0.05) + #can use geom_jitter to introduce a small amount of random variation to the location of each point to handle overplott
+  ylab("Ejection Fraction (%)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant")) + 
+  stat_summary(fun.y = mean, geom = "point", shape = 5, size  = 3, color = "#9A2617") + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue") +
+  jn_theme() +
+  theme(axis.title.x = element_blank())
+Ejection_fraction_15
+
+
+LVOT_Mean_grad_15 <- ggplot(data = EchoC_data[EchoC_data$Group == "September",], aes(x = Genotype, y = LVOT_mean_grad)) + 
+  geom_violin(scale = "area", adjust = 1, aes(color = Genotype), show.legend = FALSE) + 
+  scale_color_manual(values = c("Wild_Type"="Black", "Mutant"="Red")) +
+  geom_point(size = 0.5, height = 0, width = 0.05) + #can use geom_jitter to introduce a small amount of random variation to the location of each point to handle overplott
+  ylab("Mean Gradient (mmHg)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant")) + 
+  stat_summary(fun.y = mean, geom = "point", shape = 5, size  = 3, color = "#9A2617") + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue") +
+  jn_theme() +
+  theme(axis.title.x = element_blank())
+LVOT_Mean_grad_15
+
+Aorta_sys_15<- ggplot(data = EchoC_data[EchoC_data$Group == "September",], aes(x = Genotype, y = Aor_sys)) + 
+  geom_violin(scale = "area", adjust = 1, aes(color = Genotype), show.legend = FALSE) + 
+  scale_color_manual(values = c("Wild_Type"="Black", "Mutant"="Red")) +
+  geom_point(size = 0.5, height = 0, width = 0.05) + #can use geom_jitter to introduce a small amount of random variation to the location of each point to handle overplott
+  ylab("Aorta Diameter (mm)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant")) + 
+  stat_summary(fun.y = mean, geom = "point", shape = 5, size  = 3, color = "#9A2617") + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue") +
+  jn_theme() +
+  theme(axis.title.x = element_blank())
+Aorta_sys_15
+```
+
+
+Row {.tabset data-height=400}
+------------------------------------------------------------------------------
+
+### Tidied paired violin plots 
+```{r plots}
+
+jn_theme <- function(){
+  theme_bw() +
+    theme(axis.text = element_text(size = 14, color = "Black"),
+          axis.title = element_text(size = 16),
+          panel.grid.minor = element_blank(),
+          strip.text = element_text(size=14),
+          strip.background = element_blank(),
+          plot.title = element_text(size = 20, hjust = 0.5),
+          panel.grid.major.x = element_blank())
+}
+
+
+LV_EF <- ggplot(EchoC_data, aes(x = Genotype, y = EF, fill = Group)) + 
+  geom_violin(scale = "area", adjust = 1) + 
+  scale_fill_manual(values=c("#999999", "#D4AF37", "#56B4E9")) +
+  theme_bw() + 
+  geom_point(position=position_dodge(width = 0.9), aes(group = Group), size = .5, height = 0, width = 0.05, show.legend = FALSE) + #can use geom_jitter to introduce a small amount of random variation to the location of each point to handle overplott
+  ylab("Ejection Fraction %") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant")) + 
+  ggtitle("Ejection Fraction Variation") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3, color = "red", position = position_dodge(width = 0.9), show.legend = FALSE) + 
+  stat_summary(fun.y=median,  geom = "point", shape = 3, size = 3, color = "blue", position = position_dodge(width = 0.9), show.legend = FALSE) +
+  jn_theme()
+LV_EF
+
+
+LVOT_Mean_grad <- ggplot(EchoC_data, aes(x = Genotype, y = LVOT_mean_grad, fill = Group)) + 
+  geom_violin(scale = "area", adjust = 1) + 
+  scale_fill_manual(values=c("#999999", "#D4AF37", "#56B4E9")) +
+  theme_bw() + 
+  geom_point(position=position_dodge(width = 0.9), aes(group = Group), size = .5, height = 0, width = 0.05, show.legend = FALSE) + 
+  ylab("Left Ventricular Outflow Tract Mean Gradient") + #UNITS???
+  scale_x_discrete(limits = c("Wild_Type", "Mutant")) + 
+  ggtitle("Left Ventricular Outflow Tract Mean Gradient Variation") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3, color = "red", position = position_dodge(width = 0.9), show.legend = FALSE) + 
+  stat_summary(fun.y=median,  geom = "point", shape = 3, size = 3, color = "blue", position = position_dodge(width = 0.9), show.legend = FALSE) +
+  jn_theme()
+LVOT_Mean_grad
+
+
+Aorta_sys <- ggplot(EchoC_data, aes(x = Genotype, y = Aor_sys, fill = Group)) + 
+  geom_violin(scale = "area", adjust = 1) + 
+  scale_fill_manual(values=c("#999999", "#D4AF37", "#56B4E9")) +
+  theme_bw() + 
+  geom_point(position=position_dodge(width = 0.9), aes(group = Group), size = .5, height = 0, width = 0.05, show.legend = FALSE) + 
+  ylab("Aorta Diameter (mm)") + #UNITS???
+  scale_x_discrete(limits = c("Wild_Type", "Mutant")) + 
+  ggtitle("Variations in Aortic Diameter in Systole") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun.y = mean, geom="point", shape = 18, size  = 3, color = "red", position = position_dodge(width = 0.9), show.legend = FALSE) + 
+  stat_summary(fun.y=median,  geom = "point", shape = 3, size = 3, color = "blue", position = position_dodge(width = 0.9), show.legend = FALSE) +
+  jn_theme()
+Aorta_sys
+
+```
+
+
+
+
+
+Interactive Plots {data-orientation=columns data-icon="fa-eye"}
+===================================== 
+
+Column {data-width=500}
+------------------------------------------------------------------------------
+
+### Using plotly
+
+```{r interactive}
+
+jn_theme <- function(){
+  theme_bw() +
+    theme(axis.text = element_text(size = 14, color = "Black"),
+          axis.title = element_text(size = 16),
+          panel.grid.minor = element_blank(),
+          strip.text = element_text(size=14),
+          strip.background = element_blank(),
+          plot.title = element_text(size = 20, hjust = 0.5),
+          panel.grid.major.x = element_blank())
+}
+
+
+LV_Sys_Vol <- ggplot(EchoC_data, aes(x = Genotype, y = LV_Vol_s, fill = Group, label = ID)) + 
+  geom_violin() + 
+  xlim(0, 20) +
+  scale_fill_manual(values=c("#999999", "#D4AF37", "#56B4E9")) +
+  geom_point(position=position_dodge(width = .9), aes(group = Group), size = .5, height = 0, width = 0.05, show.legend = FALSE) + #can use geom_jitter to introduce a small amount of random variation to the location of each point to handle overplott
+  ylab("Left Ventricular Systolic Volume (μL)") + 
+  scale_x_discrete(limits = c("Wild_Type", "Mutant")) + 
+  ggtitle("Systolic Volume Variation") + 
+  stat_summary(fun.y = mean, geom = "point", shape = 18, size  = 3, color = "red", position = position_dodge(width = 0.9), show.legend = FALSE) + 
+  stat_summary(fun.y = median,  geom = "point", shape = 3, size = 3, color = "blue", position = position_dodge(width = 0.9), show.legend = FALSE) +
+  jn_theme()
+
+LV_Sys_Vol
+
+
+
+
+#Messing around:
+library(plotly)
+ggplotly(LV_Sys_Vol, tooltip = c("ID", "LV_Vol_s"))%>%layout(violinmode = 'group', violingap = 1, violingroupgap = 1)
+
+```
+
+
+About {data-orientation=rows data-icon="fa-comment-alt"}
+===================================== 
+
+Row {data-height=1000}
+------------------------------------------------------------------------------
+
+Dashboard made by Jacob Noeker:
+
+* Made for Data Visualization in R
+* Thank you to Abhijit Dasgupta
+

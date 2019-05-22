@@ -1,0 +1,81 @@
+---
+title: "Final Project"
+author: "Julia Ringel"
+date: "5/15/2019"
+output: html_document
+---
+
+
+## BioF439
+
+### Final Project
+
+As a program analyst for NIBIB, I get asked to create reports that detail how many grants NIBIB is funding, who is managing different portfolios, and what general trends are being seen over time. This report and dashboard could be used by program staff to determine the number/budget for different grant mechanisms NIBIB has funded and the number/budget for the different program directors over the past 5 years. 
+
+
+```{r, eval=T}
+
+library(tidyverse)
+library(rio)
+library(ggplot2)
+library(plotly)
+
+nibib <- import('EB_2014-2018_v2.xlsx')
+
+colnames(nibib)[17] <- "PO.name"
+colnames(nibib)[47] <- "TC.IC" 
+
+my_theme <- theme_bw
+
+gg1 <- ggplot(
+  data=nibib,
+  mapping = aes(
+     x= FY,
+     fill = Activity)) +
+         geom_histogram()  +
+  my_theme() +
+  labs(x = 'Fiscal Year', y = 'Number of Grants', fill = 'Grant Mechanism',
+       title = 'NIBIB Awarded Grants', subtitle = 'FY 2014-2018', caption = 'Source: NIH RePORT')
+
+
+gg2 <- ggplot(
+  data = nibib,
+  mapping = aes(
+    x = FY,
+    fill = PO.name)) +
+  geom_histogram() +
+  my_theme() +
+  labs(x = 'Fiscal Year', y = 'Number of Grants', fill = 'PO Name',
+       title = 'NIBIB Awarded Grants', subtitle = 'FY 2014-2018', caption = 'Source: NIH RePORT')
+
+
+
+gg3 <- ggplot(
+  data=nibib,
+  aes(x = FY, y = TC.IC/1000000, fill = Activity)) +
+  geom_bar(stat="identity") +
+  my_theme() +
+  labs(x = 'Fiscal Year', y = 'Total Costs (Millions of Dollars)', fill = 'Grant Mechanism',
+       title = 'NIBIB Awarded Grants', subtitle = 'FY 2014-2018', caption = 'Source: NIH RePORT')
+
+  
+
+gg4 <- ggplot(
+  data=nibib,
+  aes(x = FY, y = TC.IC/1000000, fill = PO.name)) +
+  geom_bar(stat="identity") +
+  my_theme() +
+  labs(x = 'Fiscal Year', y = 'Total Costs (Millions of Dollars)', fill = 'PO Name',
+       title = 'NIBIB Awarded Grants', subtitle = 'FY 2014-2018', caption = 'Source: NIH RePORT')
+
+plot(gg1)
+plot(gg2)
+plot(gg3)
+plot(gg4)
+ggplotly(gg1)
+ggplotly(gg2)
+ggplotly(gg3)
+ggplotly(gg4)
+```
+
+

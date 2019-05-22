@@ -1,0 +1,76 @@
+---
+title: "Final presentation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width=6, fig.height=6, echo = TRUE)
+```
+
+
+```{r}
+setwd("~/Desktop/")
+seq.data <- read.table("Seq_data_comparison.txt", header = T, stringsAsFactors = F)
+head(seq.data)
+```
+
+```{r}
+library(ggplot2)
+library(ggrepel)
+library(ggpubr)
+library(tidyverse)
+
+my_theme <- function(){
+  theme_classic() + 
+    theme(axis.title = element_text(size = 14),
+          axis.text = element_text(size = 12),
+          strip.text = element_text(size = 12),
+          title =element_text(size=14, face='bold'),
+          legend.text=element_text(size=12))}
+  
+plot.data <- seq.data %>% mutate(mean.a = rowMeans(seq.data[,1:82])) %>% mutate(mean.b = rowMeans(seq.data[,83:88])) 
+rownames(plot.data) <- rownames(seq.data)
+
+ggplot(data=plot.data, aes(x= mean.a, y=mean.b)) +
+  geom_point() +
+  my_theme() +
+  labs(x="Method a", y="Method b", title = "Comparison of sequencing method \nsensitivity")
+```
+
+```{r}
+plot.data.1 <- plot.data %>% mutate(log.mean.a=log2(mean.a+1)) %>% mutate(log.mean.b=log2(mean.b+1))
+rownames(plot.data.1) <- rownames(plot.data)
+
+plot <- ggplot(data=plot.data.1, aes(x= log.mean.a, y=log.mean.b)) +
+  geom_point() +
+  my_theme() +
+  labs(x="Method a", y="Method b", title = "Comparison of sequencing method \nsensitivity") +
+  stat_cor(method = "pearson", col="red", label.x = 0, label.y = 17, size=6)
+
+plot
+```
+
+```{r}
+plot.data.2 <- plot.data.1[rownames(plot.data.1) %in% c("Krt79","Krt5","Krt14","Krt1","Krt6a","Krt16","Krt15"),]
+
+plot + geom_point(data=plot.data.2,aes(x= log.mean.a, y=log.mean.b), color="purple", size=4) +
+  geom_label_repel(data=plot.data.2, aes(x=log.mean.a, y=log.mean.b, label=rownames(plot.data.2)), color="purple", size=6)
+
+```
+
+```{r}
+selected.data <- as.data.frame(t(log2(seq.data[rownames(seq.data) %in% c("Krt14","Krt15","Krt5","Krt1"),]+1)))
+selected.data$method <- rownames(selected.data)
+selected.data$method <- gsub("\\..*","",selected.data$method)
+head(selected.data)
+plot.selected.data <- selected.data %>% gather(gene, expression, Krt1:Krt5)
+head(plot.selected.data)
+
+ggplot(data=plot.selected.data, aes(x= method, y=expression, color=gene))+
+  geom_violin()+
+  geom_jitter(width = 0.25)+
+  facet_wrap(~gene)+
+  my_theme() +
+  theme(legend.position = "none")
+```
+

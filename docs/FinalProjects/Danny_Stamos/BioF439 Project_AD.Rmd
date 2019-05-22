@@ -1,0 +1,212 @@
+---
+title: "Danny Stamos 5/22/19 BioF439"
+author: "Danny Stamos"
+date: "5/21/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+You can also embed plots, for example:
+
+```{r NFL, echo=TRUE}
+library(readxl)
+X2007_sportsref_download <- read_excel("2007_sportsref_download.xltx")
+X2008_sportsref_download <- read_excel("2008_sportsref_download.xltx")
+X2009_sportsref_download <- read_excel("2009_sportsref_download.xltx")
+X2010_sportsref_download <- read_excel("2010_sportsref_download.xltx")
+X2011_sportsref_download <- read_excel("2011_sportsref_download.xltx")
+X2012_sportsref_download <- read_excel("2012_sportsref_download.xltx")
+X2013_sportsref_download <- read_excel("2013_sportsref_download.xltx")
+X2014_sportsref_download <- read_excel("2014_sportsref_download.xltx")
+X2015_sportsref_download <- read_excel("2015_sportsref_download.xltx")
+
+X2007_sportsref_download$Year <- 2007
+X2008_sportsref_download$Year <- 2008
+X2009_sportsref_download$Year <- 2009
+X2010_sportsref_download$Year <- 2010
+X2011_sportsref_download$Year <- 2011
+X2012_sportsref_download$Year <- 2012
+X2013_sportsref_download$Year <- 2013
+X2014_sportsref_download$Year <- 2014
+X2015_sportsref_download$Year <- 2015 #After uploading each excel file I added new column to each dataset that included the draft year of the player
+
+
+#AD fnames <- dir('.', pattern = 'xltx')
+#AD if(!require(purrr)) install.packages('purrr')
+#AD library(purrr)
+#AD sportsref <- map(fnames, read_excel)
+#AD years <- str_match(fnames, '\\d{4}') # Match with a four-digit number
+#AD names(sportsref) <- years
+#AD Combined_NFLDraft <- bind_rows(sportsref, .id = 'Year') %>% 
+#AD   mutate(Year = as.numeric(Year))
+
+```
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+
+Combined_NFLDraft <- rbind(X2007_sportsref_download, X2008_sportsref_download, X2009_sportsref_download, X2010_sportsref_download, X2011_sportsref_download, X2012_sportsref_download, X2013_sportsref_download, X2014_sportsref_download, X2015_sportsref_download)
+# Combining 2007 to 2015 Data sets into one data set
+
+Combined_NFLDraft_2 <- transform(Combined_NFLDraft, To = as.numeric(To)) # Changing To to numeric so career length can be calculated 
+
+#AD Doesn't look like you need this. Looks like To is already numeric
+
+
+Combined_NFLDraft_3 <- Combined_NFLDraft_2 %>% mutate(Career_Length = To - Year) #Calculating Career Length
+
+
+
+Michigan_Drafted_Players <-
+  Combined_NFLDraft_3 %>%
+  filter(College.Univ == 'Michigan') #For fun
+
+Combined_NFLDraft_4 <- 
+  Combined_NFLDraft_3 %>%
+  mutate(G = coalesce(G, 0),
+         Career_Length = coalesce(Career_Length, 0)) # Turning NAs in Games played and Career Length to 0 
+
+#AD Didn't know about coalesce. I'd actually go with tidyr::replace_na, if only 
+#AD to not have to remember and find out what coalesce did next time. 
+#AD 
+#AD Combined_NFLDraft_4 <- Combined_NFLDraft_3 %>% mutate(G = replace_na(G,0), 
+#AD    Career_Length = replace_na(Career_Length, 0))
+
+
+Combined_NFLDraft_4 %>% 
+  group_by(Year) %>% 
+  summarise_at(vars(Career_Length, G), mean) # Calbulating the average career length and games played by draft year
+
+Combined_NFLDraft_5 <-
+  Combined_NFLDraft_4 %>%
+  mutate(Career_Length = as.character(Career_Length)) # Changing Career_Length to a character variable so I can do a bar graph
+
+#AD You could just change it to a factor rather than a character. 
+
+
+Combined_NFLDraft_4 %>% 
+  group_by(Tm) %>% 
+  summarise_at(vars(Career_Length, G, PB), mean)# %>%
+ # view() #checking to see if it worked
+
+Combined_NFLDraft_6 <- 
+  Combined_NFLDraft_4 %>%
+  mutate(DrAV = coalesce(DrAV, 0),
+         CarAV = coalesce(CarAV,0)) #Changing DrAV and CarAV to 0 for non-Numeric career_length table
+
+Combined_NFLDraft_7 <- 
+  Combined_NFLDraft_5 %>%
+  mutate(DrAV = coalesce(DrAV, 0),
+         CarAV = coalesce(CarAV,0)) #Changing DrAV and CarAV to 0 for Numeric career_length table
+
+Combined_NFLDraft_6 %>%
+  group_by(Tm) %>%
+  summarise_at(vars(Career_Length, DrAV, CarAV), mean)# %>%
+#  view() #checking and playing around
+
+Combined_NFLDraft_6 %>%
+  group_by(Tm) %>%
+  summarise_at(vars(Career_Length, DrAV, CarAV), sum)# %>%
+  #view() # checking and playing around
+
+Table_AverageNFL_Career_Length_DrAV_CarAV <-
+  Combined_NFLDraft_6 %>%
+  summarise_at(vars(Career_Length, DrAV, CarAV), mean) # calculating Career, DrAV, CarAV by NFL
+ 
+Table_AverageTeam_Career_Length_DrAV_CarAV <-
+  Combined_NFLDraft_6 %>%
+  group_by(Tm) %>%
+  summarise_at(vars(Career_Length, DrAV, CarAV), mean) # calculating Career, DrAV, CarAV by team
+
+Table_AverageTeam_Career_Length_DrAV_CarAV %>%
+  ggplot(mapping = aes(x = fct_reorder(Tm, DrAV), y = DrAV), fill = DrAV) +
+  geom_bar(stat = 'Identity') +
+  scale_color_gradient(low = 'white', high = 'red') + 
+  coord_flip() #Close need to install forcats for fct_reorder
+
+Table_AverageTeam_Career_Length_DrAV_CarAV %>%
+  ggplot(mapping = aes(x = fct_reorder(Tm, DrAV), y = DrAV, fill = DrAV)) +
+  geom_bar(stat = 'Identity') + 
+  scale_fill_gradient(low = 'white', high = 'blue') + 
+  coord_flip() +
+  theme_dark() #Closer and making it look pretty 
+
+
+Practice_Plot <- 
+Table_AverageTeam_Career_Length_DrAV_CarAV %>%
+  ggplot(mapping = aes(x = fct_reorder(Tm, DrAV), y = DrAV, fill = DrAV)) +
+  geom_bar(stat = 'Identity') + 
+  scale_fill_gradient(low = 'white', high = 'blue') + 
+  coord_flip() +
+  theme_dark()
+
+
+NFL_Average_Table <- matrix(c('NFL', 3.742471, 10.93016, 14.30816), ncol = 4)
+colnames(NFL_Average_Table) <- c('Tm', 'Career_Length', 'DrAV', 'CarAV') # combining NFL averages with Tm averages 
+
+NFL_Average_Table <- as.data.frame((NFL_Average_Table))
+
+NFL_Average_Table[] <- lapply(NFL_Average_Table, as.character)
+NFL_Average_Table$Career_Length <- as.numeric(NFL_Average_Table$Career_Length) 
+# mutate(NFL_Average_Table, )
+
+NFL_Average_Table %>%
+  mutate('Career_Length' = as.numeric('Career_Length'))
+
+
+
+yolo_table <- rbind(NFL_Average_Table, Table_AverageTeam_Career_Length_DrAV_CarAV)
+
+yolo_table <- transform(yolo_table, DrAV = as.numeric(DrAV))
+yolo_table <- transform(yolo_table, CarAV = as.numeric(CarAV))
+
+
+yolo_table_1 <- 
+yolo_table %>%
+  mutate(Career_Length = as.numeric(Career_Length),
+         DrAV = as.numeric(DrAV),
+         CarAV = as.numeric(CarAV)) #changing the DrAV and CarAV data to a numeric
+
+almost_image <- yolo_table_1 %>%
+  ggplot(mapping = aes(x = fct_reorder(Tm, DrAV), y = DrAV, fill = DrAV)) +
+  geom_bar(stat = 'Identity') + 
+  scale_fill_gradient(low = 'white', high = 'blue') +
+  labs(x = 'NFL Team', 
+       y = 'Average Value Per Draft Pick',
+       title = 'Which Teams are drafting better than average?',
+       fill = 'Draft Value') + 
+  coord_flip() +
+  theme_dark()
+
+  
+yolo_table_1$Tm <- as.character(yolo_table_1$Tm)
+yolo_table_1$Tm[yolo_table_1$Tm == 'NFL'] <- 'AVG' #Last second edit to change NFL to AVG
+
+almost_image <- yolo_table_1 %>%
+  ggplot(mapping = aes(x = fct_reorder(Tm, DrAV), y = DrAV, fill = DrAV)) +
+  geom_bar(stat = 'Identity') + 
+  scale_fill_gradient(low = 'white', high = 'blue') +
+  labs(x = 'NFL Team', 
+       y = 'Average Value Per Draft Pick',
+       title = 'Which Teams are drafting better than average?',
+       fill = 'Draft Value') + 
+  coord_flip() +
+  theme_dark()
+
+final_image <-
+  almost_image + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) #getting rid of grids
+
+final_image +
+  ggsave('052219_BioF439_Final_Project.png')
+
+final_image
+```
+
+

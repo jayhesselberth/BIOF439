@@ -1,0 +1,659 @@
+---
+title: "R visualization class project"
+author: "Neha Gupta"
+date: "5/19/2019"
+output: html_document
+  ##word_document
+---
+
+I am a postdoctoral fellow at NICHD, NIH. In our labs, we study regulation of gene expression. 
+
+My focus: Translation initiation and mRNA degradation
+
+Interested in understanding the roles of Pat1 and Dhh1 in translational control in yeast.
+
+Performed RNA-seq and ribosome footprint profiling of WT, pat1 deletion, and pat1dhh1 double deletion strains. (dhh1 deletion experiemtns were recently published from our lab). Biological triplicates.
+
+Bioinformatics analysis - removing rRNA sequences, aligning sequences to genomes, counting read alignments, etc.
+
+__Step 1:__ Checking correlation between biological replicates (Raw read counts). Combined all counts from all samples in 1 file. 
+
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+allcount <- read_csv("raw_count_all.csv") #reading combined raw read count file
+head(allcount)
+```
+
+__Changing column names__
+The column names are too long with extra text.
+mRNA = RNA-seq samples
+ribo = ribo-seq samples
+pd = pat1dhh1
+
+```{r}
+raw_count <- allcount %>%
+  set_names(str_replace_all(names(.), '_counts.txt', '')) %>%
+  set_names(str_replace(names(.), '_rna', '')) %>%
+  set_names(str_replace(names(.), '_fp','')) %>%
+  set_names(str_replace(names(.), "_1", "_repA")) %>%
+  set_names(str_replace(names(.), "_2", "_repB")) %>%
+  set_names(str_replace(names(.), "_3", "_repC"))
+
+
+colnames(raw_count)
+
+```
+
+ __Replicate analysis__
+ 
+ First, I did correlation analysis between replicates. Usually, in our lab, we do 2 biological replicates, but I am working with three biological replicates. I am still doing pair-wise correlation, but on a look out for a better statistical test to analyze three replicates together.
+ 
+
+```{r warning=FALSE, message=FALSE}
+
+library(ggpubr)
+```
+
+This is replicate 1 and 2 analysis of ribo-seq samples of pat1 deletion.
+
+```{r fig.height= 4, fig.width= 4, fig.align='center'}
+ggplot(raw_count, aes(x = ribo_pat_repA , y = ribo_pat_repB)) +
+  geom_point(color = "darkgrey") + stat_cor(aes(label = paste(..rr.label..))) + #no p-value label
+  scale_y_log10(labels = scales::number_format(big.mark = '')) + #bigmark get rids of space between numbers
+  scale_x_log10(labels = scales::number_format(big.mark = '')) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title = element_text(size = 14), plot.title = element_text(size = 14, face = "bold.italic"),
+    axis.text = element_text(size = 12)) +
+  coord_cartesian(clip = 'off') +
+  labs(x = "Replicate 1", y = "Replicate 2",
+  title = expression("pat1"*Delta),
+  subtitle = "Ribosome density")
+
+
+```
+
+
+
+There are about 185 missing values from stat_Cor. log of 0 will give infinite value, thats why? But stat_cor is before log transformation of axes, shouldn't it take precedence?
+
+```{r}
+anyNA(raw_count)
+dim(raw_count)
+raw_count1 <- raw_count %>% 
+  select(ribo_pat_repA, ribo_pat_repB) %>% 
+  filter(ribo_pat_repA > 0, ribo_pat_repB > 0)
+dim(raw_count1)
+```
+
+OK, so those missing values are due to counts = 0. Testing correlation 
+
+```{r}
+cor.test(raw_count$ribo_pat_repA, raw_count$ribo_pat_repB, method = "pearson")
+```
+
+Now, make a graph with 0 counts removed. The warning is gone.
+
+```{r fig.height= 4, fig.width= 4, fig.align='center'}
+ggplot(raw_count1, aes(x = ribo_pat_repA , y = ribo_pat_repB)) +
+  geom_point(color = "darkgrey") + stat_cor(aes(label = paste(..rr.label..))) +
+  scale_y_log10(labels = scales::number_format(big.mark = '')) +
+  scale_x_log10(labels = scales::number_format(big.mark = '')) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title = element_text(size = 14), plot.title = element_text(size = 14, face = "italic"),
+    axis.text = element_text(size = 12)) +
+  coord_cartesian(clip = 'off') +
+  labs(x = "Replicate 1", y = "Replicate 2",
+  title = expression("pat1"*Delta),
+  subtitle = "Ribosome density")
+
+#ggsave("pat1_ribo_repAB.pdf", height = 4, width = 4)
+
+```
+
+Similarly, do for the RNA-seq samples
+
+```{r fig.height= 4, fig.width= 4, fig.align='center'}
+ggplot(raw_count, aes(x = mRNA_pat_repA , y = mRNA_pat_repB)) +
+  geom_point(color = "darkgrey") + stat_cor(aes(label = paste(..rr.label..))) +
+  scale_y_log10(labels = scales::number_format(big.mark = '')) +
+  scale_x_log10(labels = scales::number_format(big.mark = '')) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title = element_text(size = 14), plot.title = element_text(size = 14),
+    axis.text = element_text(size = 12)) +
+  coord_cartesian(clip = 'off') +
+  labs(x = "Replicate 1", y = "Replicate 2",
+  title = expression("pat1"*Delta),
+  subtitle = "mRNA density")
+
+
+```
+
+
+Did the same analysis for all replicates of WT and mutants, found a correlation of 0.98-0.99. 
+
+Proceed with DeSeq2 analysis (Bioconductors), and started looking for differential expression. We have a script in the lab for Deseq2 analysis. Changed minimum read counts for RNA-seq to 128 and ribo-seq to 32. The script generates 6 files and the information needs to be combined for subsequent analysis.
+
+First, I merged 6 or so files together for each pair.
+
+```{r eval = FALSE}
+#pat_norm_count <- read.delim("./pat1_WT/pat1_vs_WT_Normalized_counts.txt", header = TRUE, sep = "\t")
+#pat_mRNA <- read.delim("./pat1_WT/pat1_mRNA_change_vs_WT.txt", header = TRUE, sep = "\t")
+#pat_ribo <- read.delim("./pat1_WT/pat1_Ribo_change_vs_WT.txt", header = TRUE, sep = "\t")
+
+#pat_patTE <- read.delim("./pat1_WT/pat1_TE_with_WT.txt", header = TRUE, sep = "\t")
+
+#pat_WTTE <- read.delim("./pat1_WT/WT_TE_with_pat1.txt", header = TRUE, sep = "\t")
+
+#pat_TEchange <- read.delim("./pat1_WT/TE_change_pat1_vs_WT.txt", header = TRUE, sep = "\t")
+
+#First, looking at the normalized read count file.
+
+
+#head(pat_norm_count)
+#colnames(pat_norm_count)
+#colSums(pat_norm_count)
+
+
+#Changing column names:
+
+
+#pat_norm_count_1 <- pat_norm_count %>%
+  #set_names(str_replace_all(names(.), '_counts.txt', '')) %>%
+  #set_names(str_replace(names(.), '_rna', '')) %>%
+  #set_names(str_replace(names(.), '_fp','')) %>%
+  #set_names(str_replace(names(.), "_1", "_repA")) %>%
+  #set_names(str_replace(names(.), "_2", "_repB")) %>%
+  #set_names(str_replace(names(.), "_3", "_repC"))
+#colnames(pat_norm_count_1)
+
+#The number of rows are equal, and same gene are represented in the same order so can using cbind.
+
+
+#str(pat_mRNA)
+#str(pat_norm_count_1)
+#str looks good
+
+#anyNA(pat_mRNA)
+#anyNA(pat_norm_count_1)
+# No missing values
+
+#new_pat1 <- cbind(pat_mRNA, pat_norm_count_1)
+#head(new_pat1)
+```
+
+
+Similarly, I combined all 6 files, changed the column names, removed duplicate or unnecessary column to create a table for all files together. Saved it as a txt and csv file.
+
+
+```{r}
+pat_combined <- read_csv("pat1_combined_data.csv")
+head(pat_combined)
+```
+
+Now, I need to calculate the means for the mRNA and ribo-reads.
+
+```{r}
+pat1_combined <- pat_combined %>% 
+  select(-'TEchange_p-val', -'WTTE_p-val', -WTTE_gene_ID, -'patTE_p-val', -patTE_gene_ID, -'ribo_p-val', -ribo_gene_ID, -'mRNA_p-val', -mRNA_gene_ID) %>% 
+  mutate(mRNA_WT_mean = rowMeans(select(.,c("mRNA_WT_repA", "mRNA_WT_repB", "mRNA_WT_repC")))) %>% 
+  mutate(mRNA_pat1_mean = rowMeans(select(.,c("mRNA_pat_repA", "mRNA_pat_repB", "mRNA_pat_repC")))) %>% 
+  mutate(ribo_WT_mean = rowMeans(select(.,c("ribo_WT_repA", "ribo_WT_repB", "ribo_WT_repC")))) %>%
+  mutate(ribo_pat1_mean = rowMeans(select(.,c("ribo_pat_repA", "ribo_pat_repB", "ribo_pat_repC"))))
+
+head(pat1_combined)
+
+
+```
+
+
+__mRNA changes in pat1 deletion vs WT__
+
+Now, lets look at mRNA changes. First, collect the required columns otherwise the plot gets too big as seen with TE changes.
+
+
+```{r}
+mRNA_pat <- pat1_combined %>% 
+  select(mRNA_log2FC, mRNA_FDR, mRNA_WT_mean, mRNA_pat1_mean)
+head(mRNA_pat)
+```
+
+Next, I filtered the data with FDR < 0.05 and fold-change of 1.5 or 2 or greater. I used this information on the graph.
+
+```{r}
+mpat_filtered_up2 <- mRNA_pat %>% 
+  filter(mRNA_log2FC > 1) %>% 
+  filter(mRNA_FDR < 0.05)
+dim(mpat_filtered_up2)
+mpat_filtered_up1 <- mRNA_pat %>% 
+  filter(mRNA_log2FC > 0.58) %>% 
+  filter(mRNA_FDR < 0.05)
+dim(mpat_filtered_up1)
+mpat_filtered_down2 <- mRNA_pat %>% 
+  filter(mRNA_log2FC < -1) %>% 
+  filter(mRNA_FDR < 0.05)
+dim(mpat_filtered_down2)
+mpat_filtered_down1 <- mRNA_pat %>% 
+  filter(mRNA_log2FC < -0.58) %>% 
+  filter(mRNA_FDR < 0.05)
+dim(mpat_filtered_down1)
+```
+
+Visualization of the data.
+
+```{r fig.align='center'}
+
+cols1 <- c("Nochange" = "grey", "Up2" = "red", "Down2" = "blue", "Up1" = "orange", "Down1" = "skyblue")
+mRNA_p <- ggplot(data = mRNA_pat, aes(x = mRNA_WT_mean, y = mRNA_pat1_mean)) +
+  geom_point(aes(color = "Nochange")) +
+  scale_y_log10(limits = c(10,1000000), labels = scales::number_format(big.mark = ''), breaks = c(10,1000,100000)) +
+  scale_x_log10(labels = scales::number_format(big.mark = ''), breaks = c(10,1000,100000)) + 
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title = element_text(size = 14), plot.title = element_text(size = 14),
+    axis.text = element_text(size = 12)) +
+  geom_point(data = mRNA_pat %>% filter(mRNA_log2FC > 0.58 & mRNA_FDR <= 0.05), aes(color = "Up1")) +
+  geom_point(data = mRNA_pat %>% filter(mRNA_log2FC < -0.58 & mRNA_FDR <= 0.05), aes(color = "Down1")) +
+  geom_point(data = mRNA_pat %>% filter(mRNA_log2FC > 1 & mRNA_FDR <= 0.05), aes(color = "Up2")) +
+  geom_point(data = mRNA_pat %>% filter(mRNA_log2FC < -1 & mRNA_FDR <= 0.05), aes(color = "Down2")) +
+scale_color_manual(name = expression(Delta*"mRNA (n=5084)"), values = cols1,
+                     labels = c("Down >1.5-fold (n=608)", "Down >2-fold (n=87)", "-1.5 to 1.5-fold", "Up >1.5-fold (n=756)", "Up >2-fold (n=364) "))
+
+             
+mRNA_p + labs(x = "mRNA density-WT", y = expression("mRNA density-pat1"*Delta),
+  title = "Changes in mRNA density",
+  subtitle = "FDR < 0.05")   
+
+
+
+```
+
+Here, I am looking at TE changes. TE (translational efficiency) is ribo counts/mRNA count, and change is TE = TE mutant/TE WT.
+
+Again calculating the number of genes upregulated or downregulated in pat1 mutant strain.
+
+
+```{r}
+pat_filtered_up2 <- pat1_combined %>% 
+  filter(TEchange_log2FC > 1) %>% 
+  filter(TEchange_FDR < 0.05)
+dim(pat_filtered_up2)
+pat_filtered_up1 <- pat1_combined %>% 
+  filter(TEchange_log2FC > 0.58) %>% 
+  filter(TEchange_FDR < 0.05)
+dim(pat_filtered_up1)
+pat_filtered_down2 <- pat1_combined %>% 
+  filter(TEchange_log2FC < -1) %>% 
+  filter(TEchange_FDR < 0.05)
+dim(pat_filtered_down2)
+pat_filtered_down1 <- pat1_combined %>% 
+  filter(TEchange_log2FC < -0.58) %>% 
+  filter(TEchange_FDR < 0.05)
+dim(pat_filtered_down1)
+```
+
+
+
+```{r fig.align='center'}
+
+cols1 <- c("Nochange" = "grey", "Up2" = "red", "Down2" = "blue", "Up1" = "orange", "Down1" = "skyblue")
+p <- ggplot(data = pat1_combined, aes(x = WTTE_log2FC, y = patTE_log2FC)) +
+  geom_point (aes(color = "Nochange")) +
+  scale_x_continuous(limits = c(-7,5), breaks = c(-6,-4,-2,0,2,4,6), expand = c(0,0)) +
+  scale_y_continuous(limits = c(-7,5), breaks = c(-6,-4,-2,0,2,4,6), expand = c(0,0)) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title = element_text(size = 14), plot.title = element_text(size = 14),
+    axis.text = element_text(size = 12)) +
+  geom_point(data = pat1_combined %>% filter(TEchange_log2FC > 0.58 & TEchange_FDR <= 0.05), aes(color = "Up1")) +
+  geom_point(data = pat1_combined %>% filter(TEchange_log2FC < -0.58 & TEchange_FDR <= 0.05), aes(color = "Down1")) +
+  geom_point(data = pat1_combined %>% filter(TEchange_log2FC > 1 & TEchange_FDR <= 0.05), aes(color = "Up2")) +
+  geom_point(data = pat1_combined %>% filter(TEchange_log2FC < -1 & TEchange_FDR <= 0.05), aes(color = "Down2")) +
+scale_color_manual(name = expression(Delta*"TE (n=5084)"), values = cols1,
+                     labels = c("Down >1.5-fold (n=33)", "Down >2-fold (n=6)", "-1.5 to 1.5-fold", "Up >1.5-fold (n=123)", "Up >2-fold (n=60) "))
+
+             
+p + labs(x = expression("WT TE"(log[2])), y = expression(Delta*"pat1 TE"(log[2])),
+  title = "Changes in TE",
+  subtitle = "FDR < 0.05")    
+
+             
+```
+
+For summary statistics, sometimes only the FDR cutoff is used, since fold-change can be arbitarary. 
+Since, there aren't "many" genes that undergo changes according to fold-change cutoff, I wanted to take a look at relationship between FC and FDR. This is like an upside version of volcano plot.
+
+```{r fig.align='center'}
+FDR_TE <- pat1_combined %>%
+  select(TEchange_log2FC, TEchange_FDR) 
+FDR_TE2 <- FDR_TE %>%
+  filter(TEchange_FDR <0.05) %>% 
+  filter(TEchange_log2FC > 0)
+  #filter(TEchange_log2FC < 0) 
+
+dim(FDR_TE2)
+ #0.1= 473 up 0.05 = 377
+#0.1 = 559 down 0.05 = 401
+  ggplot(FDR_TE, aes(TEchange_log2FC, TEchange_FDR)) +
+    geom_point(color="grey") +
+    theme_bw() +
+    geom_point(data = FDR_TE %>% filter (TEchange_FDR < 0.1), color = "blue") +
+    geom_point(data = FDR_TE %>% filter (TEchange_FDR < 0.05), color = "red") +
+   labs(y = expression(Delta*"TE FDR"), x = expression(Delta*"TE" (log[2])))   
+
+
+  
+
+
+```
+
+I am looking at the relationship of genes that are up- or down-regulated in Pat1 deletion strain with dhh1 and pat1dhh1 deletion strains. Are they also affected in these strains?
+
+```{r message=FALSE}
+
+pat <- read_csv("pat1_combined_data.csv")
+dhh <- read_csv("dhh1_combined_data.csv")
+pd <- read_csv("pat1dhh1_combined_data.csv")
+```
+
+Since all three files have the same/similar column names, I am changing to distinguish them. Here, only analysis with mRNA samples is shown. Similar analysis is done with TE change data.
+
+
+```{r}
+#head(pat)
+pat1 <- pat %>% 
+  select(TEchange_gene_ID, mRNA_log2FC, mRNA_FDR) 
+
+names(pat1)[1] <- "pat_gene_ID"
+names(pat1)[2] <- "pat_mRNA_FC"
+names(pat1)[3] <- "pat_mRNA_FDR"
+
+head(pat1)
+
+  
+```
+
+
+```{r}
+
+#head(dhh)
+dhh1 <- dhh %>% 
+  select(TEchange_gene_ID, mRNA_log2FC, mRNA_FDR) 
+
+names(dhh1)[1] <- "dhh_gene_ID"
+names(dhh1)[2] <- "dhh_mRNA_FC"
+names(dhh1)[3] <- "dhh_mRNA_FDR"
+
+head(dhh1)
+```
+
+```{r}
+#head(pd)
+pd1 <- pd %>% 
+  select(TEchange_gene_ID, mRNA_log2FC, mRNA_FDR) 
+
+names(pd1)[1] <- "pd_gene_ID"
+names(pd1)[2] <- "pd_mRNA_FC"
+names(pd1)[3] <- "pd_mRNA_FDR"
+
+head(pd1)
+#str(pd1)
+```
+
+
+Ideally, there shouldn't be any NA or 0 in the dataset.
+```{r}
+
+anyNA(pat1)
+anyNA(dhh1)
+anyNA(pd1)
+```
+
+Since, in this dataset, I am looking at the pat1 regulated genes, I am combining genes that are present in pat1. The other dataset have overlapping but distinct set of genes.
+
+```{r}
+comb1 <- left_join(pat1, pd1, by=c("pat_gene_ID"="pd_gene_ID"))
+
+head(comb1)
+```
+
+```{r}
+combined <- left_join(comb1, dhh1, by=c("pat_gene_ID"="dhh_gene_ID"))
+
+head(combined)
+dim(combined)
+```
+
+
+```{r}
+mRNA <- combined %>% 
+  filter(pat_mRNA_FDR < 0.05 & pat_mRNA_FC > 0)
+dim(mRNA)
+
+
+```
+
+```{r}
+mRNA_2 <- mRNA %>%
+  select(pat_gene_ID, pat_mRNA_FC, dhh_mRNA_FC, pd_mRNA_FC) %>%
+  set_names(str_replace(names(.), "_mRNA_FC", "1")) %>% 
+  set_names(str_replace(names(.), "pd1", "pat1dhh1")) %>% 
+  
+
+  gather(sample, change, -pat_gene_ID)
+  
+head(mRNA_2)
+
+anyNA(mRNA_2)
+
+mRNA_3 <- mRNA_2 %>% drop_na()
+
+anyNA(mRNA_3)
+dim(mRNA_3)
+```
+
+```{r fig.height=4, fig.width=5, fig.align='center', warning=T}
+
+my_comparisons <- list(c('pat1','dhh1'),
+c('dhh1','pat1dhh1'),
+c('pat1','pat1dhh1'))
+
+symnum.arg <- list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), symbols = c("***", "**", "*", "ns"))
+
+ggplot(mRNA_3, aes(x= sample, y=change, fill = sample)) +
+  stat_boxplot(geom ='errorbar', width = 0.4) +
+  geom_boxplot(notch = TRUE, outlier.color = "grey") +
+  stat_compare_means(data = mRNA_3, method = "wilcox.test" , comparisons = my_comparisons, label.y = c(2,2.5,3), tip.length = 0.01, symnum.args = symnum.arg, inherit.aes = FALSE) +
+  coord_cartesian(ylim = c(-1,3)) + # it acts as zooming into the plot, doesn't change the underlying data for stat_compare_mean
+  #scale_y_continuous(limits = c(-1,3)) + #this acually scales the data, throwing statistics off
+  scale_x_discrete(limits = c("pat1", "dhh1", "pat1dhh1")) +
+  theme_bw() +
+  theme(panel.grid.minor = element_blank(), axis.title = element_text(size = 14), plot.title = element_text(size = 14), panel.grid.major.x = element_blank(),
+    axis.text = element_text(size = 12), axis.text.x = element_text(face = "italic")) +
+  geom_hline(yintercept = 0, color = "black", linetype = "dashed" ) +
+  labs(x = "", y = expression(Delta*"mRNA"(log[2])),
+  title = "Changes in mRNA density vs WT - Upregulated",
+  subtitle = "FDR < 0.05") 
+
+  
+```
+
+
+```{r fig.height=4, fig.width=5, fig.align='center', warning=T}
+
+mRNA_4 <- combined %>% 
+  filter(pat_mRNA_FDR < 0.05 & pat_mRNA_FC > 0.58) %>% 
+  select(pat_gene_ID, pat_mRNA_FC, dhh_mRNA_FC, pd_mRNA_FC) %>%
+  set_names(str_replace(names(.), "_mRNA_FC", "1")) %>% 
+  set_names(str_replace(names(.), "pd1", "pat1dhh1")) %>% 
+  gather(sample, change, -pat_gene_ID) %>% 
+  drop_na()
+
+head(mRNA_4)
+dim(mRNA_4)
+
+my_comparisons <- list(c('pat1','dhh1'),
+c('dhh1','pat1dhh1'),
+c('pat1','pat1dhh1'))
+
+symnum.arg <- list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), symbols = c("***", "**", "*", "ns"))
+
+ggplot(mRNA_4, aes(x= sample, y=change, fill = sample)) +
+  stat_boxplot(geom ='errorbar', width = 0.4) +
+  geom_boxplot(notch = TRUE, outlier.color = "grey") +
+  stat_compare_means(method = "wilcox.test" , comparisons = my_comparisons, label.y = c(4,4.5,5), tip.length = 0.01, symnum.args = symnum.arg) +
+  coord_cartesian(ylim = c(-1,5.5)) +
+  #scale_y_continuous(limits = c(-1,5.5)) +
+  scale_x_discrete(limits = c("pat1", "dhh1", "pat1dhh1")) +
+  theme_bw() +
+  theme(panel.grid.minor = element_blank(), axis.title = element_text(size = 14), plot.title = element_text(size = 14), panel.grid.major.x = element_blank(),
+    axis.text = element_text(size = 12), axis.text.x = element_text(face = "italic")) +
+  geom_hline(yintercept = 0, color = "black", linetype = "dashed" ) +
+  labs(x = "", y = expression(Delta*"mRNA" (log[2])),
+  title = "Changes in mRNA density vs WT",
+  subtitle = "FDR < 0.05 & > 1.5-fold increase") 
+
+
+
+```
+
+
+
+
+
+
+```{r fig.height=4, fig.width=5, fig.align='center', warning=FALSE}
+mRNA_5 <- combined %>% 
+  filter(pat_mRNA_FDR < 0.05 & pat_mRNA_FC < 0) %>% 
+  select(pat_gene_ID, pat_mRNA_FC, dhh_mRNA_FC, pd_mRNA_FC) %>%
+  set_names(str_replace(names(.), "_mRNA_FC", "1")) %>% 
+  set_names(str_replace(names(.), "pd1", "pat1dhh1")) %>% 
+  gather(sample, change, -pat_gene_ID) %>% 
+  drop_na()
+
+dim(mRNA_5)
+
+my_comparisons <- list(c('pat1','dhh1'),
+c('dhh1','pat1dhh1'),
+c('pat1','pat1dhh1'))
+
+symnum.arg <- list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), symbols = c("***", "**", "*", "ns"))
+
+ggplot(mRNA_5, aes(x= sample, y=change, fill = sample)) +
+  stat_boxplot(geom ='errorbar', width = 0.4) +
+  geom_boxplot(notch = TRUE, outlier.color = "grey") +
+  stat_compare_means(method = "wilcox.test" , comparisons = my_comparisons, label.y = c(1,1.5,2), tip.length = 0.01, symnum.args = symnum.arg) +
+  coord_cartesian(ylim = c(-2.5,2.2)) +
+  #scale_y_continuous(limits = c(-2.5,2.2)) +
+  scale_x_discrete(limits = c("pat1", "dhh1", "pat1dhh1")) +
+  theme_bw() +
+  theme(panel.grid.minor = element_blank(), axis.title = element_text(size = 14), plot.title = element_text(size = 14), panel.grid.major.x = element_blank(),
+    axis.text = element_text(size = 12), axis.text.x = element_text(face = "italic")) +
+  geom_hline(yintercept = 0, color = "black", linetype = "dashed" ) +
+  labs(x = "", y = expression(Delta*"mRNA" (log[2])),
+  title = "Changes in mRNA density vs WT - Downregulated",
+  subtitle = "FDR < 0.05") 
+
+
+
+
+```
+
+
+```{r fig.height=4, fig.width=5, fig.align='center', warning=FALSE}
+mRNA_6 <- combined %>% 
+  filter(pat_mRNA_FDR < 0.05 & pat_mRNA_FC < -0.58) %>% 
+  select(pat_gene_ID, pat_mRNA_FC, dhh_mRNA_FC, pd_mRNA_FC) %>%
+  set_names(str_replace(names(.), "_mRNA_FC", "1")) %>% 
+  set_names(str_replace(names(.), "pd1", "pat1dhh1")) %>% 
+  gather(sample, change, -pat_gene_ID) %>% 
+  drop_na()
+  #mutate(sample = fct_relevel(sample, "pat_mRNA_FC", "dhh_mRNA_FC", "pd_mRNA_FC"))
+
+dim(mRNA_6)
+
+my_comparisons <- list(c('pat1','dhh1'),
+c('dhh1','pat1dhh1'),
+c('pat1','pat1dhh1'))
+
+symnum.arg <- list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), symbols = c("***", "**", "*", "ns"))
+
+ggplot(mRNA_6, aes(x= sample, y=change, fill = sample)) +
+  stat_boxplot(geom ='errorbar', width = 0.4) +
+  geom_boxplot(notch = TRUE, outlier.color = "grey") +
+  stat_compare_means(method = "wilcox.test" , comparisons = my_comparisons, label.y = c(1,1.5,2), tip.length = 0.01, symnum.args = symnum.arg) +
+  coord_cartesian(ylim = c(-2.5,2.2)) +
+ # scale_y_continuous(limits = c(-2.5,2.2)) +
+  scale_x_discrete(limits = c("pat1", "dhh1", "pat1dhh1")) +
+  theme_bw() +
+  theme(panel.grid.minor = element_blank(), axis.title = element_text(size = 14), plot.title = element_text(size = 14), panel.grid.major.x = element_blank(),
+    axis.text = element_text(size = 12), axis.text.x = element_text(face = "italic")) +
+  geom_hline(yintercept = 0, color = "black", linetype = "dashed" ) +
+  labs(x = "", y = expression(Delta*"mRNA" (log[2])),
+  title = "Changes in mRNA density vs WT",
+  subtitle = "FDR < 0.05 & > 1.5-fold decrease") 
+
+
+```
+
+There seems to be an overlap between mRNAs that are regulated by pat1 are also regulated by dhh1.
+
+Then, I wanted to test if it is true for all mRNAs.
+
+Heatmap
+
+Collecting appropriate data.
+
+```{r}
+head(combined)
+
+mRNA_h <- combined %>% 
+  select(-pat_mRNA_FDR,-pd_mRNA_FDR, -dhh_mRNA_FDR, -pat_gene_ID) %>% 
+  set_names(str_replace(names(.), "_mRNA_FC", "")) %>% 
+  drop_na() 
+
+mRNA_h1 <- mRNA_h[,c(1,3,2)]
+head(mRNA_h1)  
+
+head(mRNA_h)
+dim(mRNA_h)
+str(mRNA_h)
+
+mRNA_h2 <-  data.matrix(mRNA_h1)
+head(mRNA_h2)
+str(mRNA_h2)
+```
+
+
+```{r warning=FALSE, message=FALSE}
+library(gplots)
+library(RColorBrewer)
+```
+
+```{r}
+#pdf(file = "mRNA_changes.pdf")
+heatmap.2(mRNA_h2, dend="row", 
+			col=colorRampPalette(c("red","white","blue"), bias=1.01)(n=100),
+			labRow=c(""), trace="none", Colv = FALSE)
+#dev.off()
+
+```
+
+The heatmap doesn't reflect the changes of 1.5 fold well (too white). Changing color scheme
+
+
+
+```{r}
+
+my_palette <- colorRampPalette(c("purple","red","white","blue","black"))(n=499)
+col_breaks <- c(seq(-6,-3,length=100),
+                seq(-2.9,-0.51,length=100),
+                seq(-0.5,0.5,length=100),
+  seq(0.51,2.9,length=100),          
+  seq(3,6,length=100)) 
+anno <- c(expression("pat1"*Delta), expression("dhh1"*Delta), expression("pat1dhh1"*Delta))
+#my_palette <- colorRampPalette(rev(brewer.pal(8, "Spectral")))(n=60)
+#pdf(file ="hm2.pdf")
+heatmap.2(mRNA_h2, dend="row", 
+			col= my_palette,
+			labRow=c(""), trace="none", Colv = FALSE, breaks= col_breaks, labCol = anno, srtCol = 45,
+			margins = c(8,8))
+#dev.off()
+```

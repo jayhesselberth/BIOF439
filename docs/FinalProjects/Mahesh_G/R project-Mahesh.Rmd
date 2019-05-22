@@ -1,0 +1,83 @@
+---
+title: "R Project"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+```{r}
+setwd('confidential_data')
+library(readr)
+res<- read.csv("res.csv", row.names = 1)
+#AD res <- read_csv('res.csv')
+head(res)
+
+final <- as.data.frame(res)
+head(final)
+```
+```{r}
+library(ggplot2)
+ggplot(final, aes(x=baseMean, y=log2FoldChange)) +
+  geom_point(aes(colour = padj<0.1), size=1)
+```
+```{r}
+ggplot(final, aes(x=baseMean, y=log2FoldChange)) +
+  geom_point(aes(colour = padj<0.1), size=1)+
+  geom_hline(aes(yintercept =0), colour ="blue", size =1.2)+
+  scale_x_continuous(trans = "log10", limits = c(0.1, 300000))
+
+```
+
+```{r}
+ggplot(final, aes(x=baseMean, y=log2FoldChange)) +
+  geom_point(aes(colour = padj<0.1), size=1)+
+  geom_hline(aes(yintercept =0), colour ="blue", size =1.2)+
+  scale_color_manual(name='padj <0.1', values = setNames(c('red', 'black'), c(T,F)))+
+  scale_x_continuous(trans = "log10", limits = c(0.1, 300000))
+```
+
+```{r}
+theme_1 <- theme_bw() +
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 8))
+
+ggplot(final, aes(x=baseMean, y=log2FoldChange)) +
+  geom_point(aes(colour = padj<0.1), size=1)+
+  geom_hline(aes(yintercept =0), colour ="blue", size =1)+
+  scale_color_manual(name='padj <0.1', values = setNames(c('red', 'black'), c(T,F)))+
+  scale_x_continuous(trans = "log10", limits = c(0.1, 300000))+
+  theme_1
+```
+
+```{r, message = F}
+library(tidyverse)
+ggplot(final, aes(x=baseMean, y=log2FoldChange)) +
+    geom_point(aes(colour = padj<0.1), size=1)+
+    geom_hline(aes(yintercept =0), colour ="blue", size =1)+
+    scale_color_manual(name='padj <0.1', values = setNames(c('red', 'black'), c(T,F)))+
+    scale_x_continuous(trans = "log10", limits = c(0.1, 300000))+
+  geom_text(aes(label=GeneSymbol),
+            color = 'gray20',
+            data = final %>%
+              filter(GeneSymbol %in% padj < 0.1))
+```
+```{r}
+order <- final[order(final$padj),]
+topR <- rbind( order[ order[,'log2FoldChange'] > 0, ][1:n,],
+                order[ order[,'log2FoldChange'] < 0, ][n:1,] )
+top20 <-topR[1:20,]
+top20
+
+
+ggplot(final, aes(x=baseMean, y=log2FoldChange)) +
+  geom_point(aes(colour = padj<0.1), size=1)+
+  geom_hline(aes(yintercept =0), colour ="blue", size =1)+
+  scale_color_manual(name='padj <0.1', values = setNames(c('red', 'black'), c(T,F)))+
+  scale_x_continuous(trans = "log10", limits = c(0.1, 300000))+
+  geom_text(aes(label=GeneSymbol),
+            color = 'gray20',
+            data = final %>%
+              filter(GeneSymbol %in% top20))
+```
+

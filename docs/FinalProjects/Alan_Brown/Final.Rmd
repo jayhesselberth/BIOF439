@@ -1,0 +1,115 @@
+---
+title: "Final Presentation"
+author: "Alan Brown"
+date: "5/22/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# to make my graphs bigger:
+knitr::opts_chunk$set(out.width='1000px', dpi=300)
+library(tidyverse)
+library(rio)
+```
+
+```{r echo=FALSE}
+exomiser_data <- import("complete_data.csv")
+
+exomiser_data$Rank[is.na(exomiser_data$Rank)] <- "None"
+exomiser_data$Rank <- as.factor(exomiser_data$Rank)
+exomiser_data$Exomiser_version <- as.factor(exomiser_data$Exomiser_version)
+
+ex11 <- subset(exomiser_data, Exomiser_version=="exomiser_11")
+diagnosed_dat <- subset(exomiser_data, Rank=="Diagnosed")
+```
+
+## Exomiser
+<font size="4.5">
+Exomiser is a tool to annotate variants from a vcf file. It takes human phenotype ontology (HPO) terms as input and uses a database of known disease-gene links to score variants. It incorporates information from model organisms to score variants that don't have a human disease association. 
+
+Exomiser annotates variants with a human phenotype score and a combined score (model organisms + human)
+
+## Dataset
+The molecular geneticist wants me to look at this data set to help him show the utility of exomiser over time.
+
+- A list of rare, final variants. 
+- Six different exomiser versions (6-11)
+- Human phenotype score
+- Combined score
+
+There are `r dim(ex11)[1]` observations per exomiser version.
+
+```{r}
+# Data
+ggplot(ex11, aes(x=fct_relevel(Rank, c("Diagnosed","High", "Medium", "Low", "None")))) +
+  geom_bar() +
+  labs(x = "Variant Rank",
+       y = "Count") +
+  theme(axis.title = element_text(size = 14),
+          plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(size = 13))
+```
+
+## Graphs
+How does each version compare when scoring pathogenic (diagnosed rank) or likely pathogenic (high rank) variants? 
+
+```{r echo=FALSE}
+
+mylabs <- c("v11", "v10", "v9", "v8", "v7", "v6")
+
+ggplot(diagnosed_dat, aes(x=fct_relevel(Exomiser_version, c("exomiser_11", "exomiser_10", "exomiser_9", "exomiser_8", "exomiser_7", "exomiser_6")), y=as.double(PhenotypeScore))) +
+  geom_violin() +
+  labs(title = "Diagnosed Phenotype Score, All Exomiser Versions",
+       x = "Rank",
+       y = "Score") +
+  scale_x_discrete(labels= mylabs) + 
+  theme(axis.title = element_text(size = 14),
+        plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text = element_text(size = 13))
+
+ggplot(diagnosed_dat, aes(x=fct_relevel(Exomiser_version, c("exomiser_11", "exomiser_10", "exomiser_9", "exomiser_8", "exomiser_7", "exomiser_6")), y=as.double(CombinedScore))) +
+  geom_violin() +
+  labs(title = "Diagnosed Combined Score, All Exomiser Versions",
+       x = "Rank",
+       y = "Score") +
+  scale_x_discrete(labels= mylabs) + 
+  theme(axis.title = element_text(size = 14),
+        plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text = element_text(size = 13))
+
+compareDiagnosedToMed <- ex11 %>% 
+  gather(ScoreType, Score, PhenotypeScore, CombinedScore)
+#compareDiagnosedToMed
+```
+
+```{r echo=FALSE}
+
+compareEx <- ex11 %>% 
+  gather(ScoreType, Score, PhenotypeScore, CombinedScore)
+#compareEx
+
+ggplot(compareEx, aes(x=as.factor(Rank), y=as.double(Score))) +
+  geom_violin(aes(fill = ScoreType)) +
+  labs(title = "Exomiser 11",
+       x = "Rank",
+       y = "Score") + 
+  theme(axis.title = element_text(size = 14),
+        plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text = element_text(size = 13))
+
+
+compareExSmall <- subset(compareEx, Rank==c("Diagnosed", "High"))
+ggplot(compareExSmall, aes(x=as.factor(Rank), y=as.double(Score))) +
+  geom_violin(aes(fill = ScoreType)) +
+  labs(title = "Exomiser 11",
+       x = "Rank",
+       y = "Score") + 
+  theme(axis.title = element_text(size = 14),
+        plot.title = element_text(hjust = 0.5, size = 16),
+        axis.text = element_text(size = 13))
+
+```
+
+
+</font>

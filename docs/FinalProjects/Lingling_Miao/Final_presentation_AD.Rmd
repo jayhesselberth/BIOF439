@@ -1,0 +1,116 @@
+---
+title: "Final presentation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width=6, fig.height=6, echo = TRUE)
+```
+
+
+```{r}
+#AD setwd("~/Desktop/") This only applies to your setup. Think about doing an RStudio 
+#AD Project on your computer, and then using the `here` package to specify paths. See 
+#AD https://speakerdeck.com/jennybc/zen-and-the-art-of-workflow-maintenance?slide=47
+
+seq.data <- read.table("Seq_data_comparison.txt", header = T, stringsAsFactors = F)
+head(seq.data)
+```
+
+```{r, message = F}
+library(ggplot2)
+library(ggrepel)
+library(ggpubr)
+library(tidyverse)
+
+my_theme <- function(){
+  theme_classic() + 
+    theme(axis.title = element_text(size = 14),
+          axis.text = element_text(size = 12),
+          strip.text = element_text(size = 12),
+          title =element_text(size=14, face='bold'),
+          legend.text=element_text(size=12))}
+  
+plot.data <- seq.data %>% mutate(mean.a = rowMeans(seq.data[,1:82])) %>% mutate(mean.b = rowMeans(seq.data[,83:88])) 
+
+#AD plot.data.ad <- seq.data %>%
+#AD   mutate(mean.a = rowMeans(select(seq.data, starts_with("a")))) %>%
+#AD   mutate(mean.b = rowMeans(select(seq.data, starts_with("b"))))
+#AD   
+#AD This doesn't require counting and just does things based on name patterns. 
+#AD Perhaps less mistake-prone
+
+rownames(plot.data) <- rownames(seq.data)
+
+ggplot(data=plot.data, aes(x= mean.a, y=mean.b)) +
+  geom_point() +
+  my_theme() +
+  labs(x="Method a", y="Method b", title = "Comparison of sequencing method \nsensitivity")
+```
+
+```{r}
+plot.data.1 <- plot.data %>% mutate(log.mean.a=log2(mean.a+1)) %>% mutate(log.mean.b=log2(mean.b+1))
+rownames(plot.data.1) <- rownames(plot.data)
+
+#AD One thing you could do is run plot.data <- plot.data %>% rownames_to_column('id'), which
+#AD pulls the row names as a column (with name "id"). That way, you won't have to remember the step
+#AD in line 44, and later
+
+plot <- ggplot(data=plot.data.1, aes(x= log.mean.a, y=log.mean.b)) +
+  geom_point() +
+  my_theme() +
+  labs(x="Method a", y="Method b", title = "Comparison of sequencing method \nsensitivity") +
+  stat_cor(method = "pearson", col="red", label.x = 0, label.y = 17, size=6)
+
+#AD Don't name this "plot" since plot is an existing function in R
+
+plot
+```
+
+```{r}
+plot.data.2 <- plot.data.1[rownames(plot.data.1) %in% c("Krt79","Krt5","Krt14","Krt1","Krt6a","Krt16","Krt15"),]
+
+#AD IF you had incorporated the rownames into the dataset as I wrote above, this step could 
+#AD have been 
+#AD plot.data.2 <- plot.data.1 %>% filter(id %in% c("Krt79","Krt5","Krt14","Krt1","Krt6a","Krt16","Krt15"))
+
+plot + geom_point(data=plot.data.2,aes(x= log.mean.a, y=log.mean.b), color="purple", size=4) +
+  geom_label_repel(data=plot.data.2, aes(x=log.mean.a, y=log.mean.b, label=rownames(plot.data.2)), color="purple", size=6)
+
+```
+
+```{r}
+selected.data <- as.data.frame(t(log2(seq.data[rownames(seq.data) %in% c("Krt14","Krt15","Krt5","Krt1"),]+1)))
+selected.data$method <- rownames(selected.data)
+selected.data$method <- gsub("\\..*","",selected.data$method)
+head(selected.data)
+plot.selected.data <- selected.data %>% gather(gene, expression, Krt1:Krt5)
+head(plot.selected.data)
+
+#AD plot.selected.data.ad <- seq.data %>% rownames_to_column('gene') %>%
+#AD   filter(gene %in% c("Krt14","Krt15","Krt5","Krt1")) %>%
+#AD   gather(method, expression, -gene) %>%
+#AD   mutate(expression = log2(expression + 1)) %>%
+#AD   mutate(method = str_remove(method, '\\..*'))
+#AD   
+#AD This gets to the same data, but in different row order .
+#AD Doesn't really matter with what you're doing
+#AD I need more lines of code, but it might be more readable. My opinion only, of course
+
+ggplot(data=plot.selected.data, aes(x= method, y=expression, color=gene))+
+  geom_violin()+
+  geom_jitter(width = 0.25)+
+  facet_wrap(~gene)+
+  my_theme() +
+  theme(legend.position = "none")
+
+
+#AD ggplot(data=plot.selected.data.ad, aes(x= method, y=expression, color=gene))+
+#AD   geom_violin()+
+#AD   geom_jitter(width = 0.25)+
+#AD   facet_wrap(~gene)+
+#AD   my_theme() +
+#AD   theme(legend.position = "none")
+
+```
+

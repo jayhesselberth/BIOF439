@@ -1,0 +1,80 @@
+---
+title: "BIOF439 Final Project"
+author: "Michelle Duren"
+date: "5/22/2019"
+output:
+  ioslides_presentation: default
+  powerpoint_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T,
+                      results = "hide",
+                      tidy = TRUE,
+      tidy.opts=list(blank=FALSE, width.cutoff=60,size = 'tiny'),
+      fig.width=7, 
+      fig.height=5)
+```
+
+
+## The Code Behind the Plot:
+```{r loadlib, echo=T, results='hide', message=F, warning=F, echo=FALSE}
+library(ggplot2) 
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggpubr)
+```
+
+
+```{r, echo=F, warning=FALSE, results='hide'}
+Combined <- readRDS("Poly-Substance Dataset.rds")#read in dataset 
+
+Combined <- Combined %>% mutate("Positive Toxicology Tests"= ifelse(Combined$Opioid==0&Combined$Alcohol==1, "Alcohol",
+                                              ifelse(Combined$Opioid==1&Combined$Alcohol==0, "Opioid",
+                                                               ifelse(Combined$Opioid==1&Combined$Alcohol==1, "Alcohol + Opioid",
+                                                                      NA)))) 
+
+Combined <- Combined[!(is.na(Combined$`Positive Toxicology Tests`)), ]
+
+Combined<- Combined%>% 
+  mutate(Age = as.numeric(str_replace(Age, ' Years', '')))#making age numeric
+
+Combined$`Positive Toxicology Tests` <- as.factor(Combined$`Positive Toxicology Tests` ) 
+
+Combined$`Positive Toxicology Tests`  <- factor(Combined$`Positive Toxicology Tests` , levels = 
+                                     c("Alcohol","Opioid","Alcohol + Opioid"))
+counts = Combined %>% group_by(`Positive Toxicology Tests`) %>% tally
+means <- aggregate(Age ~  `Positive Toxicology Tests`, Combined, mean) 
+means$Age <- round(means$Age, digits = 2)
+
+             
+```
+
+```{r, echo=T}
+
+plot1 <- ggplot(data = Combined, 
+                aes(x= `Positive Toxicology Tests` ,
+                    y= Age))+
+  geom_boxplot(fill="lightgrey")+
+  geom_text(data=counts, aes(label = paste0("n=", n), 
+                             y=min(Combined$Age) - 0.6), 
+            position=position_dodge(0.9), 
+            size=3)+
+  stat_summary(fun.y=mean, colour="darkred", geom="point", 
+               shape=18, size=3) + 
+  geom_text(data = means, aes(label = Age, y = Age + 3), size = 3)+
+  theme_bw()+
+  labs(title="Age Comparison of Driver Fatalities by Substance",
+       subtitle="Maryland, 2006-2017",
+       x="Positive Toxicology Tests")+ 
+  stat_compare_means()
+             
+```
+
+## The Resulting Plot:
+
+```{r, echo=FALSE}
+plot1
+```
+

@@ -1,0 +1,53 @@
+---
+title: "Final Project"
+author: "Christine Liu"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+
+R Studio Data Vizualization Class Spring 2019
+
+Summary: In this plot, I am comparing if antibody surface staining is affected by the flow cytometry technique, fluorescent cell barcoding (FCB). Fluorescent cell barcoding is a multiplexing, cytometric platform that enables multiparameter analysis, minimizes inter-assay variations, and reduces antibody consumption. Each sample is labeled with a unique fluorescent signature (barcode). Up to nine samples can be combined into a single tube for antibody staining and undergo immunophenotyping. To determine if surface markers (CD3, CD4, CD8, CD20, and CD14) are altered in the barcoding process, I compare the percent of positive cells of patient samples that both underwent the barcoding process and were only surface stained (not barcoded). If the barcoding process does not affect immunophenotyping, the percent of positive cells should be comparable and closely fall on the line of best fit. There appears to be some variance, but in general, the barcoded and non-barcoded surface stainings are similar.       
+
+
+```{r}
+library(tidyr)
+library(tidyverse)
+library(rio)
+
+NBCvsBC <- import('NBC vs BC DataViz Project CL.xlsx')
+
+NBCvsBC <- as_tibble(NBCvsBC)
+class(NBCvsBC)
+
+NBCvsBC
+
+ggplot(
+  data = NBCvsBC,
+  aes(x = NBC,
+      y = FCB)
+) + geom_smooth(method = "lm", color = "Grey", se = F) +
+  aes(color = Marker) +
+  scale_color_manual(name = '',
+                     values = c("#24576D","#099DD7", "#248E84","#F2583F","#96503F")) +
+  geom_point(shape = 1, size = 3, stroke = 1.25) + 
+  xlim(0,100) +
+  ylim(0,100) +
+  labs(
+    x = "FCB (% of Positive Cells)",
+    y = "NBC (% of Positive Cells)",
+    title = "Comparison of Surface Marker Staining of Fluorescent Cell 
+    Barcoded vs Non-barcoded Samples",
+    subtitle = "FCB = Fluorescent Cell Barcoding   &   NBC = Not Barcoded"
+  ) +
+  theme_minimal() + 
+  theme(legend.position = "top",
+        legend.direction = "horizontal")
+
+
+
+```
+

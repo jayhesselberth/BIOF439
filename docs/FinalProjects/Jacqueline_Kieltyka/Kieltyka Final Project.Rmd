@@ -1,0 +1,61 @@
+---
+title: "BIOF439 Final Project"
+author: "Jacqueline Kieltyka"
+date: "Presentation 5/22/2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+### Overview
+
+In this plot, I am comparing the change in MFI values for several immune cell surface markers and one intracelluar posphoprotien. Peripheral blood mononuclear cells (PBMCs) were collected from whole blood of 9 healthy donors. The PMBCs were stimulated for 20 minutes with IL-10, a cytokine with known action to posphorylate STAT3. The goal of this experiment was to determine whether stimulation with this cytokine would affect staining for the surface markers to differentiate cell types. The MFIs for each surface marker should be comparable with little to no variance in order to ensure there is no stimulation effect on immunophenotyping. From the graph, we can see that the only condition with an obvious difference between "stim" and "unstim" is the pSTAT3 group, which confirms effective stimulation and that immunophenotyping is not altered by stimulation with IL-10.
+
+### Setup
+
+```{r}
+library(rio)
+UnstimvStim <- import("Stim vs Unstim DataViz JK.xlsx")
+head(UnstimvStim)
+```
+
+```{r, eval = T}
+my_theme <- function(){
+  labs_pubr() + 
+    theme(axis.title = element_text(size = 10),
+          axis.text = element_text(size = 10),
+          strip.text = element_text(size = 10),
+          legend.position = "none")
+}
+```
+
+```{r setup, include = T, eval = T}
+library(ggplot2)
+library(ggpubr)
+library(tidyverse)
+```
+
+### Some Data Wrangling
+
+```{r, eval = T}
+UnstimvStim1 <- UnstimvStim %>% 
+  gather(Condition, MFI, Stim, Unstim)
+head(UnstimvStim1)
+```
+
+
+### Generate Graph
+
+```{r, eval = T}
+ggplot(UnstimvStim1, aes(x = Condition, y = MFI, color = Condition)) + 
+  geom_jitter(width = 0.4) +
+  my_theme() +
+  labs(x = "",
+       y = "Median Fluorescent Intensity (MFI)",
+      title = "Conditional Comparison of Surface/Intracellular Markers") +
+  facet_grid(cols = vars(Marker))
+  
+  
+```
+
+

@@ -1,0 +1,77 @@
+---
+title: "final project"
+author: "Yafeng"
+date: "5/21/2019"
+output: html_document
+---
+##
+```{r, message=F, warning=F}
+library(ggbio)
+p.ideo <- Ideogram(genome = "hg19")
+p.ideo
+```
+##
+```{r, message=F, warning=F}
+library(GenomicRanges)
+p.ideo + xlim(GRanges("chr17", IRanges(41234415, 41234569)))
+```
+
+```{r, message=F, warning=F}
+library(ggbio)
+library(Homo.sapiens)
+class(Homo.sapiens)
+data(genesymbol, package = "biovizBase")
+wh <- genesymbol[c("BRCA1", "NBR1")]
+wh <- range(wh, ignore.strand = TRUE)
+p.txdb <- autoplot(Homo.sapiens, which = wh)
+p.txdb
+```
+
+```{r, message=F, warning=F}
+autoplot(Homo.sapiens, which = wh, label.color = "black", color = "brown",
+fill = "brown")
+```
+
+```{r, message=F, warning=F}
+library(BSgenome.Hsapiens.UCSC.hg19)
+bg <- BSgenome.Hsapiens.UCSC.hg19
+p.bg <- autoplot(bg, which = wh) + zoom(1/1000)
+p.bg
+```
+
+```{r, message=F, warning=F}
+fl.bam <- system.file("extdata", "wg-brca1.sorted.bam", package = "biovizBase")
+wh <- keepSeqlevels(wh, "chr17")
+p.bam <- autoplot(fl.bam, which = wh, geom = "gapped.pair")
+p.bam
+```
+
+```{r, message=F, warning=F}
+library(BSgenome.Hsapiens.UCSC.hg19)
+bg <- BSgenome.Hsapiens.UCSC.hg19
+p.mis <- autoplot(fl.bam, bsgenome = bg, which = wh, stat = "mismatch")
+p.mis
+```
+
+```{r, message=F, warning=F}
+library(ggbio)
+library(VariantAnnotation)
+fl.vcf <- system.file("extdata", "17-1409-CEU-brca1.vcf.bgz", package="biovizBase")
+vcf <- readVcf(fl.vcf, "hg19")
+vr <- as(vcf[, 1:3], "VRanges")
+vr <- renameSeqlevels(vr, value = c("17" = "chr17"))
+gr17 <- GRanges("chr17", IRanges(41100000, 41384569))
+p.vr <- autoplot(vr, which = wh) 
+p.vr1 <- p.vr + xlim(gr17) + zoom()
+p.vr1
+```
+
+```{r, message=F, warning=F}
+gr17 <- GRanges("chr17", IRanges(41100000, 41384569))
+tks <- tracks(chr= p.ideo, Align=p.bam, mismatch = p.mis, dbSNP = p.vr1, gene = p.txdb,
+heights = c(4, 3, 3, 3, 4), xlab = "Genome", title="Custom Tracks", label.text.color
+= "blue", label.text.cex = 1,  label.width=unit(4,"lines"), track.plot.color="pink", track.bg.color="lightblue",xlim=gr17) 
+tks
+```
+
+

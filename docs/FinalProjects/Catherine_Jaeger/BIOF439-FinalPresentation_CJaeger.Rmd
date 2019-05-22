@@ -1,0 +1,182 @@
+---
+title: "BIOF-439 Final presentation"
+author: "Catherine Jaeger"
+date: "2019.05.22"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+# Background
+
+Study: Aging-related epigenetic changes in rod photoreceptors  
+Samples: purified mouse rod photoreceptors  
+* 3M: 4 biological replicates  
+* 12M: 4 biological replicates  
+* 18M: 4 biological replicates  
+* 24M: 4 biological replicates  
+Data: Paired ATAC-seq (chromatin accessibility) and RNA-seq (transcriptome) for each sample.  
+Analysis: Differential analysis of all old groups (12M, 18M and 24M) vs 3M:  
+* ATAC-seq: DARs (Differentially Accessible Regions)  
+* RNA-seq: DEGs (Differentially Expressed Genes)  
+
+# Results
+
+Load packages.
+```{r}
+library(tidyverse)
+library(broom)
+library(ggpubr)
+library(glue)
+```
+
+Define a theme.
+```{r}
+my_theme <- theme_classic() + 
+    theme(legend.text=element_text(size=11), axis.text = element_text(size = 11), strip.text = element_text(size = 11))
+theme_set(my_theme)
+```
+
+### 1. ATAC-seq signal at differentially accessible regions over time
+
+Read the dataframe containing the read counts of the DARs (in log~2~(RPKM) values) for the 16 samples and compute the mean signal per group..
+```{r}
+DAR.rpkm <- read.delim("DAR.log2rpkm.tsv")
+DAR.rpkm$peaks <- rownames(DAR.rpkm)
+DAR.rpkm$log2RPKM.03M <- rowMeans(DAR.rpkm[,1:4])
+DAR.rpkm$log2RPKM.12M <- rowMeans(DAR.rpkm[,5:8])
+DAR.rpkm$log2RPKM.18M <- rowMeans(DAR.rpkm[,9:12])
+DAR.rpkm$log2RPKM.24M <- rowMeans(DAR.rpkm[,13:16])
+```
+
+Open files that contain the information of the direction of the change (gain of accessibility or loss of accessibility) for each DAR in order to tag the DARs in the previous dataframe.
+```{r}
+gain.DARs <- read.delim("DARs.up.tsv")
+loss.DARs <- read.delim("DARs.down.tsv")
+
+DAR.rpkm$direction <- ""
+for (i in 1:length(DAR.rpkm$peaks)) {
+  if (DAR.rpkm[i, 17] %in% gain.DARs$peaks) {DAR.rpkm[i, 22] <- "gain-DAR"}
+  else if (DAR.rpkm[i, 17] %in% loss.DARs$peaks) {DAR.rpkm[i, 22] <- "loss-DAR"}
+}
+
+str(DAR.rpkm)
+```
+
+Plot the evolution of chromatin accessibility of gain- and loss-DARs over time.
+```{r}
+DAR.rpkm %>% select(peaks, log2RPKM.03M, log2RPKM.12M, log2RPKM.18M, log2RPKM.24M, direction) %>% 
+  gather('log2RPKM.03M', 'log2RPKM.12M', 'log2RPKM.18M', 'log2RPKM.24M', key = group, value = log2.RPKM) %>% 
+  ggplot(aes(x=factor(direction), y=log2.RPKM, fill = group)) + 
+  geom_violin(position = "identity", alpha = 0.5) +
+  guides(fill=guide_legend(title=NULL)) + 
+  scale_fill_manual(values=c("peru", "floralwhite", "papayawhip", "navajowhite"), labels = c("3 months", "12 months", "18 months", "24 months")) + 
+  stat_summary(fun.y=mean, geom="point", shape=21, size=2, aes(fill = group)) +
+  labs(x = NULL, y = expression("ATAC-seq read count ("~log[2]~"(RPKM))"), title = "Changes in chromatin accessibility of gain- and loss-DARs over time")
+```
+
+With this figure, it seems that gain-DARs and loss-DARs are differentially accessible at 3M, before aging-related changes started. It also becomes clear that the most dramatic changes occur at 12 months already. Finally, changes in chromatin accessibility of loss-DARs seem more dramatic than changes in gain-DARs.  
+I want to test if the difference in the degree of accessibility of gain-DARs vs loss-DARs at 3 months (before aging starts) is significant.
+```{r}
+wilcox.test(log2RPKM.03M ~ direction, data = DAR.rpkm)$p.value
+```
+Yes, it is significant. Loss of chromatin accessibility affects regions of the genome that are more acessible than regions gaining accessibility.
+
+### 2. Comparison of the fold changes of gain-DARs and loss-DARs at 24 months
+
+I now want to test and visualize whether the changes in chromatin accessibility of loss-DARs are more dramatic than the changes in gain-DARs. This time, I use the differential analysis data, i.e. the fold change of each DAR at 24 months vs 3 months (absolute value on a log~2~ scale).   
+Again, read and tag the data.
+```{r}
+DAR.lfc <- read.delim("voom.ebayes.DAR.p0.01lfc0.58.tsv")
+
+DAR.lfc$direction <- ""
+for (i in 1:length(DAR.lfc$peaks)) {
+  if (DAR.lfc[i, 1] %in% gain.DARs$peaks) {DAR.lfc[i, 9] <- "gain-DAR"}
+  else if  (DAR.lfc[i, 1] %in% loss.DARs$peaks) {DAR.lfc[i, 9] <- "loss-DAR"}
+}
+
+str(DAR.lfc)
+```
+
+Test.
+```{r}
+wilcox.test(abs(group24M) ~ direction, data = DAR.lfc)$p.value
+```
+Yes, loss-DARs change more dramatically than gain-DARs.  
+Plot.
+```{r}
+ggplot(DAR.lfc, aes(x=factor(direction), y=abs(group24M))) +
+  geom_boxplot() +
+  stat_summary(fun.y=mean, geom="point", shape=21, size=2, color = "red") +
+  labs(x = NULL, y = expression("Fold change (absolute value of 24M vs 3M,"~log[2]~"scale)"), title = "Changes in chromatin accessibility of loss-DARs\nare more dramatic than changes in gain-DARs") + 
+  stat_compare_means(method = "wilcox.test")
+```
+
+### 3. Correlation between changes in gene expression and changes in chromatin accessibility
+
+I now want to see how the changes in chromatin accessibility and gene expression correlate.  
+By using non-R tools, I associated each DAR with gene(s) whose promoter or gene body they overlap. Intergenic DARs were associated with the nearest upstream and dowmstream genes.   
+Read files that contain DAR annotations and gene expression data (I aldeady have the fold change information for the DARs, I read the annotation information for the DARs and the fold change data for the DEGs); transform the dataframes in a format suitable for plotting; join all the information together. The resulting dataframe contains couples of significant DEGs that are associated with (a) significant DAR(s).
+```{r}
+DAR.annot <- read.delim("DARs.annotated.tsv")
+DAR.annot <- unique(DAR.annot[,c(4,11,13)])
+DAR.lfc <- DAR.lfc[,c(1:4)]
+colnames(DAR.lfc)[2] <- "lfc.12M.DAR"
+colnames(DAR.lfc)[3] <- "lfc.18M.DAR"
+colnames(DAR.lfc)[4] <- "lfc.24M.DAR"
+DAR.lfc <- left_join(DAR.annot, DAR.lfc, by = c("Peak.DAR" = "peaks"))
+DAR.lfc <- gather(DAR.lfc, "lfc.12M.DAR", "lfc.18M.DAR", "lfc.24M.DAR", key = "group", value = "lfc.DAR")
+DAR.lfc$group <- str_sub(DAR.lfc$group, start = 5L, end = -5L)
+
+DEG.lfc <- read.delim("DE_sig-MSTR_5CPM15FC05FDRV2.tsv")
+DEG.lfc <- unique(DEG.lfc[,c(1,12:14)])
+colnames(DEG.lfc) <- c("GeneID", "lfc.12M.DEG", "lfc.18M.DEG", "lfc.24M.DEG")
+DEG.lfc <- gather(DEG.lfc, "lfc.12M.DEG", "lfc.18M.DEG", "lfc.24M.DEG", key = "group", value = "lfc.DEG")
+DEG.lfc$group <- str_sub(DEG.lfc$group, start = 5L, end = -5L)
+
+couples <- full_join(DEG.lfc, DAR.lfc)
+couples <- remove_missing(couples)
+couples$Category <- factor(couples$Category,levels=c("Promoter", "GeneBody", "Intergenic"))
+
+str(couples)
+```
+
+I create a dataframe containing the result of a Spearman's correlation test applied category by category to my comparison so I can add this information later on to the plot.
+```{r}
+corr.DAR.DEG <- data.frame("Category" = c("Promoter", "GeneBody", "Intergenic"), "rho" = c(0,0,0), "p.value" = c(0,0,0))
+
+for (i in corr.DAR.DEG$Category) {
+  subset.couples <- filter(couples, Category == i)
+  result <- cor.test(subset.couples$lfc.DAR, subset.couples$lfc.DEG, method="spearman")
+  corr.DAR.DEG[corr.DAR.DEG$Category == i, 2] = round(result$estimate, 2)
+  corr.DAR.DEG[corr.DAR.DEG$Category == i, 3] = format(result$p.value, digits=3)
+}
+
+corr.DAR.DEG
+
+#modlm <- group_by(couples, Category) %>% do(glance(lm(lfc.DAR ~ lfc.DEG, data = .))) # I may decide to annotate the plot with r2 instead of rho later on
+```
+
+Plot.
+```{r}
+ggplot(couples, aes(lfc.DAR, lfc.DEG, group = group, color = group)) + 
+  geom_point(alpha = 0.5) + 
+  geom_hline(yintercept = -0.58 , linetype = "dashed", color = "lightgray", size = 0.5) +
+  geom_hline(yintercept = 0.58 , linetype = "dashed", color = "lightgray", size = 0.5) +
+  geom_vline(xintercept = -0.58 , linetype = "dashed", color = "lightgray", size = 0.5) +
+  geom_vline(xintercept = 0.58 , linetype = "dashed", color = "lightgray", size = 0.5) +
+  facet_grid(.~ Category) +
+  theme(panel.spacing = unit(0.5, "lines"), panel.border=element_rect(colour="black", fill=NA, size=1)) +
+  labs(x = expression("DAR fold change ("~log[2]~"scale)"), y = expression("DEG fold change ("~log[2]~"scale)"), title = "Correlation between changes in chromatin accessibility\nand changes in gene expression") +
+  scale_color_manual(values=c("navajowhite", "peru", "saddlebrown"), labels = c("12M vs 3M", "18M vs 3M", "24M vs 3M")) +
+  guides(color=guide_legend(title=NULL)) +
+  annotate(geom = "text",  x = -3.5, y = 7.5, size = 3.5, hjust = 0, label = glue("rho = {r}", r = corr.DAR.DEG$rho)) +
+  annotate(geom = "text",  x = -3.5, y = 6.8, size = 3.5, hjust = 0, label = glue("p.value = {p}", p = corr.DAR.DEG$p.value))
+  #annotate(geom = "text",  x = -2, y = 7, size = 4, label = glue("r^2 == {r}", r = round(modlm$r.squared, 2)), parse = TRUE) +
+  #geom_smooth(aes(lfc.DAR, lfc.DEG), method='lm', size = 0.5, inherit.aes = FALSE, color = "black")
+```
+Changes in gene expression largely correlate with changes in chromatin accessibility (direction and magnitude), especially at promoters. The correlation with intergenic DARs is lower likely because of the lack of accuracy of the annotation method (proximity instead of functional association).

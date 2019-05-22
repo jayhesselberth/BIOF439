@@ -1,0 +1,116 @@
+---
+title: "Final project for BIOF439"
+author: "Jacob Roth"
+date: "5/22/2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r include=FALSE}
+install.packages("tidyverse")
+install.packages("ggpubr")
+install.packages("RColorBrewer")
+install.packages("forcats")
+library(tidyverse)
+library(ggrepel)
+library(ggpubr)
+library(dplyr)
+library(RColorBrewer)
+```
+## Define jsr.theme4
+
+```{r echo=TRUE}
+
+jsr.theme4 <- theme_bw() %+replace% 
+  theme(
+    plot.title = element_text(family = NULL, face = NULL, colour = "black", size = 13,
+                              hjust = 0.5, vjust = 2, angle = NULL, lineheight = NULL),
+    plot.subtitle = element_text(family = NULL, face = NULL, colour = "slategray4", size = 9,
+                                 hjust = 0.5, vjust = 1.5, angle = NULL, lineheight = NULL,
+                                 color = NULL),
+    panel.grid.major  = element_line(color = "azure3", size = 0.5),
+    panel.grid.minor  = element_line(color = "azure2", size = 0.5),
+    panel.background = element_rect(fill = "azure"),
+    plot.margin = margin(1, 1, 1, 1, "cm"),
+    panel.border = element_rect(color = "darkslategray4", fill = NA),
+    axis.line = element_line(color = "darkslategray4", size = 0.5),
+    axis.ticks = element_line(color = "darkslategray4"),
+    axis.text = element_text(color = "black", size = 8),
+    axis.title.x = element_blank()
+  )
+
+```
+## Review of the cell lines that I have screened
+
+In this project, I've been working with an external collaborator to explore cytotoxic combination synergies between a few investigational compounds that they are developing as oncology therapies. At NCATS, we are interested in the mechanism of action of these compounds and developing the field's knowledge on these interactions across multiple cell lines. Our collaborator is interested in working to identify biomarkers and/or indications that may be sensitive to combination therapies for a few of their compounds in early phase I trials.
+
+Utilizing only 180 uL of 10 mM DMSO stock solutions, we prepared over 320 1,536-well assay plates, screened 160 cell lines, and created nearly half a million data points. Of 160 unique cell lines we screened, data from 153 cell lines met assay performance cut-offs.
+
+While our collaborators cultured and delivered the cell lines, I set up and completed all experiments at NCATS over the course of 5 months. Science-enabling robots are awesome.
+
+```{r echo=FALSE, fig.width=6, fig.height=6}
+library(tidyverse)
+library(ggrepel)
+library(ggpubr)
+library(dplyr)
+library(RColorBrewer)
+library(gridExtra)
+
+DataDump <- read_csv("DataDump for BIOF439 upload.csv")
+DataDump$combo <- paste(DataDump$X2,DataDump$Y2)
+DataDump$Count<-round(DataDump$SitePrimaryCount)
+colourCount = length(unique(DataDump$HistSubtype1))
+getPalette = colorRampPalette(brewer.pal(8, "Spectral"))
+
+
+DataDump %>% 
+  filter(DataType == "viability") %>%
+  filter(combo == "cmpd X cmpd E") %>%
+  ggplot(aes(x = reorder(SitePrimary, -Count), fill = HistSubtype1)) +
+  geom_bar() +
+  geom_text(aes(y=SitePrimaryCount, label=Count, vjust=-0.5)) +
+  scale_fill_manual(values = getPalette(colourCount)) +
+  labs(title = "Screened Cell Lines by Primary Tumor Site", subtitle = "153 cell lines; 18 unique tumor primary sites; \n 25 unique histology subtypes \n",
+       tag = "", caption = "\n \n Bars filled by the tumor histology subtype \n as specificed in the CCLE database",
+       x = " Tumor Primary Site (CCLE)", y = "Count of unique \n cell lines") +
+  jsr.theme4 +
+  theme(
+    axis.text.x=element_text(angle=60, hjust = 1, vjust = 1),
+    legend.title = element_blank(),
+    legend.position = "none")
+```
+
+## Exploring drug combination synergies; Compounds X and Y vs Compounds A-F
+
+This figure compares the combination synergy scores (as calculated by the Bliss synergy metric) of compound A versus compounds X or Y when screened against 153 unique cancer cell lines. This visualization depicts the data as a boxplot, comparing the responses between compound X and Y, parsed by the site primary of the tumor of origin. Future work will integrate this data with genomic data and mutational status of the relevant genes of interest.
+
+(Data is blinded as agreed upon in an NDA with our external collaborator)
+
+For a meeting with our collaborators last week, I replicated this figure for all combinations A-F and further explored the same type of display with the Histology Subtype data for each primary site for the most interesting combinations of X or Y with A-F.
+
+```{r echo=FALSE, fig.width=8, fig.height=5}
+library(tidyverse)
+library(ggrepel)
+library(ggpubr)
+library(dplyr)
+library(RColorBrewer)
+library(gridExtra)
+
+DataDump %>% filter(DataType == "viability") %>% filter(Y2 == "cmpd A") %>%
+  ggplot(aes(x = SitePrimary, fill = X2)) +
+  geom_hline(yintercept = mean(DataDump$dbsumneg), linetype = 2) +
+  geom_boxplot(aes(y = dbsumneg)) +
+  labs(title = "Combination synergies between compound A \n with compounds X and Y", subtitle = "",
+       tag = "", caption = "",
+       x = "Tumor Primary Site", y = "Synergy Score \n (DBSumNeg)") +
+  scale_y_reverse() +
+  jsr.theme4 +
+  ylim(0, -12.5) +
+  theme(axis.text.x = element_text(angle = 60,hjust = 1, vjust = 1))
+
+```

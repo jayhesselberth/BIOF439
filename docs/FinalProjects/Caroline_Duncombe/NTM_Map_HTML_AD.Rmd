@@ -1,0 +1,57 @@
+---
+title: "NTM_HTML"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r, include = F}
+if(!require('plotly')) install.packages('plotly')
+if(!require('devtools'))install.packages('devtools')
+if(!require('evaluate')) install.packages("evaluate")
+if(!require('colourpicker')) install.packages("colourpicker")
+knitr::opts_chunk$set(warning=F, message=F)
+
+#AD I had changed the code here so that you don't install packages
+#AD every time you knit. This loads the package if available, otherwise it
+#AD installs it
+```
+
+
+```{r}
+
+library(plotly)
+library(readr)
+Con2 <- read_csv("NTM_Consolidated2.csv")
+#View(Con2)
+```
+
+
+
+```{r}
+h <- list(showframe = TRUE,
+  landcolor = toRGB("grey90"),
+  showcountry = FALSE,
+  showcoastlines = TRUE,
+  coastlinecolor = toRGB("black"),
+  showland = TRUE,
+  projection = list(type = 'Mercator')
+  )
+
+plot_con2 <- plot_geo(Con2) %>%
+  add_trace(
+  color = ~Z_VAR,
+  z = ~Z_VAR, 
+  showlegend = FALSE, 
+  text = ~WRITTEN,
+  locations= ~CODE, 
+  showscale = FALSE,
+  hoverinfo = "text"
+  ) %>%
+  layout(title = "Non-Mycobacterium Species by Country <br> Ultra GeneXpert MTB/RIF Diagnostic Accuracy Study", geo = h)
+plot_con2
+```
+
+## Abhijit's comments
+
+This is a concise presentation of interactive maps using `plotly`. Nicely done. 

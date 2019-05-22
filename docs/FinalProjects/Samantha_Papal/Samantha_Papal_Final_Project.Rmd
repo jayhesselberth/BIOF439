@@ -1,0 +1,165 @@
+---
+title: "Differential expression analysis of cone and S-cone-like photoreceptors"
+Date: 05-22-2019
+output:
+  html_document:
+    df_print: paged
+Author: Samantha Papal
+---
+
+## Background
+- Cone photoreceptors are necessary for visual acuity and color perception in human.
+- Cones rely on rod photorecptor for their survival.
+- Loss of rods leads to subsequent death of cones which can lead to blindness
+- We compared purified cone photoreceptors from WT mice with S-cone-like cells from a    knockout mouse line (*Nrl*^-/-^) where cone photoreceptors survive in the absence of      rods.
+- Hypothesis: Some genes expressed by *Nrl*^-/-^ mice are responsible for their      maintenance in the absence of rods
+
+
+
+```{r, include= FALSE}
+setwd("~/Documents/FAES/Visualization_with_R/Samantha_Papal_Data_visualization_with_R/Data_visualization")
+getwd()
+```
+##Principal component analysis plot
+
+
+1. Load libraries
+```{r, message= FALSE, warning= FALSE}
+library(tidyverse)
+library(DESeq2)
+library(ggplot2)
+```
+2. Load DESeq2 data
+```{r}
+Normalized_data_for_PCA <- readRDS("Normalized_data_for_PCA")
+```
+3. Create the PCA plot
+```{r}
+# Create labels to be used in legend
+labelsName <- c("cone P2", "cone P4", "cone P6", "cone P10", "S-cone-like P2", "S-cone-like P4", "S-cone-like P6", "S-cone-like P10")
+```
+```{r}
+# Gete the PCA data to plot with ggplot
+pcadata <- plotPCA(Normalized_data_for_PCA, returnData = TRUE)
+percentVar <- round(100*attr(pcadata,"percentVar"))
+```
+```{r}
+# Plot PCA
+ggplot(pcadata, aes(PC1,PC2, color = fct_relevel(condition, c("control_P2", "control_P4", "control_P6", "control_P10", "experiment_P2", "experiment_P4", "experiment_P6", "experiment_P10")))) +
+  geom_point(size = 3) +
+  labs(x = paste0("PC1: ",percentVar[1],"% variance"), 
+       y = paste0("PC2: ",percentVar[2],"% variance"), 
+       title = "Principal component analysis of cone and S-cone-like photoreceptors", 
+       caption = "Cone data:Daum et al., 2017\nS-cone-like data: Kim et al., 2016") +
+  coord_fixed() + 
+  scale_color_discrete(name = "Samples", labels = labelsName) +
+  theme(panel.background = element_blank(), 
+        axis.line = element_line(), 
+        panel.grid.major = element_line(colour = alpha("black", 0.2)), 
+        legend.key = element_rect(colour = "transparent", fill = "transparent"), 
+        plot.caption = element_text(size = 6),
+        plot.title = element_text(size = 14, margin = margin(0,0,40,0), hjust = 0.3))
+```
+
+##Hierachical clustering of cone specific genes in Cone and S-cone-like cells
+
+1. Load library
+```{r, message= FALSE, warning= FALSE}
+library(gplots)
+```
+2. Load file containing the selected genes to plot
+```{r, message= FALSE}
+# Load file
+genes_meta <- read_csv("Table_cone_genes.csv")
+```
+```{r, warning= FALSE}
+# Organize the table for the heatmap and dconvert it to a matrix for clustering analysis
+heatmap_meta <- genes_meta[, c(2:10)]
+rownames(heatmap_meta) <- heatmap_meta$mgi_symbol
+heatmap_meta <- select(heatmap_meta,-mgi_symbol)
+heatmap_meta <- as.matrix(heatmap_meta)
+```
+```{r}
+# Names of the colums for the heatmap
+colnames(heatmap_meta) <- c("cone P2", "cone P4", "cone P6", "cone P10", "cone-like P2", "cone-like P4", "cone-like P6", "cone-like P10") # rename samples
+```
+```{r warning= FALSE}
+# Clustering options
+row_distance = dist(heatmap_meta, method = "euclidean")
+row_cluster = hclust(row_distance, method = "ward.D2")
+
+# Sequential color from http://colorbrewer2.org/
+colors <- colorRampPalette(c('#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#800026'))
+
+# Generate heatmap
+par(cex.main=1)
+heatmap.2(round(heatmap_meta, digits = 2),
+          
+          # dendrogram control
+          Rowv = as.dendrogram(row_cluster), # apply clustering method
+          dendrogram = "row", # generate only row dendrogram
+          Colv = NULL, # No column dendrogram
+          
+          # colors
+          col = colors, # use colors defined previously
+          
+          # level trace
+          trace = "none", # turn off trace lines inside heat map
+          
+          # 2gins and row/column label sizes
+          margins = c(6,5), # widens margins around plot
+          cexRow = 1, # font size for row labels dependent on number of rows
+          cexCol = 1, # font size for column labels dependent on number of columns
+          cex.main = 2,
+          
+          # color key and density information
+          key = TRUE, # plot color key
+          keysize = 0.4, # color key size
+          key.par = list(cex=0.6),
+          density.info = "none", # turn off density plot inside color legend
+          key.title = "NULL",
+          key.xlab = expression(log[2]~(CPM+1)),
+          key.ylab = "",
+          
+          # plot labels
+          main = "Expression pattern of cone specific genes",
+          xlab = "", # x-axis title
+          ylab = NULL, # y-axis title
+          srtCol = 90,
+          adjCol = c(1, 0.5),
+          labCol = c("cone\nP2", "cone\nP4", "cone\nP6", "cone\nP10", "S-cone-like\nP2", "S-cone-like\nP4", "S-cone-like\nP6", "S-cone-like\nP10"),
+          
+          lhei = c(4, 14),
+          lwid = c(3, 14))
+
+```
+
+## Gene enrichment analysis
+
+1. Load library
+```{r, message= FALSE, warning= FALSE}
+library(gProfileR)
+```
+2. Open tables to plot the graph
+```{r, message= FALSE, warning= FALSE}
+DE_gprofileR_results <- read_csv("DE_gprofileR_results.csv")
+domain.code <- read_csv("domain.code.csv")
+```
+3. Plot Human Phenotype Ontology for the differentialy expressed genes
+```{r fig.asp= 0.8}
+  Data <- filter(DE_gprofileR_results, domain == "hp")
+ ggplot(Data, aes(x = query.number, y = term.name, size = overlap.size, color = p.value)) + 
+   geom_point() + 
+   scale_x_discrete(labels = element_blank()) +
+    labs(title = "Human Phenotype Ontology of S-cone like enriched genes",
+         color = "p.value", size = "count") +
+   guides(color = guide_colorbar(order = 1), 
+          size = guide_legend(order = 0)) +
+    theme(panel.background = element_blank(), 
+          axis.line.y = element_line(), 
+          axis.title.x = element_blank(), 
+          axis.title.y = element_blank(), 
+          axis.text.y = element_text(size=11), 
+          plot.title = element_text(size = 14, margin = margin(0,0,30,0), hjust = 0.7))
+  
+```
