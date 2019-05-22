@@ -1,0 +1,41 @@
+---
+title: "Final Presentations"
+author: "BIOF 439"
+date: "5/22/2019"
+output: html_document
+---
+
+
+```{r setup, include = F}
+library(tidyverse)
+library(here)
+library(fs)
+library(glue)
+```
+
+```{r}
+link_template = '[link]({x})'
+proj_dir <- here('FinalProjects') %>% path_rel()
+student_names <- tibble(ID = dir(proj_dir)) %>% 
+  mutate(Name = str_replace(ID, '_',' '))
+
+htmlfiles <- fs::dir_ls(proj_dir, glob = '*.html', recurse = T) %>% path_rel()
+htmlnames <- str_match(htmlfiles, 'FinalProjects/([A-Za-z_]+)')[,2]
+html_df <- tibble(ID = htmlnames, htmllink = htmlfiles)
+
+pdffiles <- fs::dir_ls(proj_dir, glob = '*.pdf', recurse = T) %>% path_rel()
+pdfnames <- str_match(pdffiles, 'FinalProjects/([A-Za-z_]+)')[,2]
+pdf_df <- tibble(ID = pdfnames, pdflink = pdffiles)
+
+dat <- student_names %>% left_join(html_df) %>% left_join(pdf_df) %>% 
+  select(-ID)
+
+set.seed(102)
+dat <- dat %>% slice(sample.int(nrow(dat))) %>% 
+  mutate(htmllink = glue_data(., '[link]({htmllink})')) %>% 
+  mutate(pdflink = glue_data(., '[link]({pdflink})')) %>% 
+  mutate_all(~ifelse(str_detect(., 'NA'), '',.))
+
+knitr::kable(dat)
+```
+

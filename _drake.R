@@ -15,7 +15,7 @@ hw_rmdfiles <- dir_ls('assignments/HW', glob = '*.Rmd')
 hw_outdir <- here::here('docs','assignments','HW')
 hw_outrmd <- fs::path('docs',hw_rmdfiles)
 
-top_rmdfiles <- dir_ls('.', glob = '*.Rmd')
+top_rmdfiles <- fs::dir_ls('.', glob = '*.Rmd')
 
 full_plan <- drake_plan(
   create_slides_html = target(
