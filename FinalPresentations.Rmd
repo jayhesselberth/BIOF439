@@ -1,7 +1,7 @@
 ---
 title: "Final Presentations"
 author: "BIOF 439"
-date: "5/22/2019"
+date: "May 22, 2019"
 output: html_document
 ---
 
@@ -34,7 +34,10 @@ set.seed(102)
 dat <- dat %>% slice(sample.int(nrow(dat))) %>% 
   mutate(htmllink = glue_data(., '[link]({htmllink})')) %>% 
   mutate(pdflink = glue_data(., '[link]({pdflink})')) %>% 
-  mutate_all(~ifelse(str_detect(., 'NA'), '',.))
+  mutate_all(~ifelse(str_detect(., 'NA'), '',.)) %>% 
+  rename('HTML' = 'htmllink','PDF'='pdflink') %>% 
+  mutate('No' = 1:n()) %>% 
+  select(No, everything())
 
 knitr::kable(dat)
 ```
