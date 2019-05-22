@@ -14,5 +14,5 @@ notes/_bookdown_files/*
 .drake/*
 docs/slides/lectures/*_cache/*
 *.tex
-FinalProjects/*/confidential_data/*
+FinalProjects/*
 docs/FinalProjects/*/confidential_data/*
