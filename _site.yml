@@ -14,16 +14,14 @@ navbar:
       href: slides/
     - text: Homework
       href: assignments/
-    - text: Final Projects
-      href: FinalPresentations.html
     - text: Resources
       href: resources.html
+
   right:
+    - text: Final Projects
+      href: FinalPresentations.html
     - text: Course Notes
       href: notes/
-    - icon: fa-slack
-      text: Slack
-      href: https://biof439dataviz.slack.com
     - icon: fa-github
       text: GitHub
       href: https://www.github.com/araastat/BIOF439

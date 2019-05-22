@@ -13,7 +13,7 @@ library(fs)
 library(glue)
 ```
 
-```{r}
+```{r, echo = F, message = F, warning = F}
 link_template = '[link]({x})'
 proj_dir <- here('FinalProjects') %>% path_rel()
 student_names <- tibble(ID = dir(proj_dir)) %>% 
